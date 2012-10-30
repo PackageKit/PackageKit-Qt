@@ -2,6 +2,7 @@
 project(packagekit-qt)
 
 cmake_minimum_required(VERSION 2.8.6 FATAL_ERROR)
+find_package(PkgConfig REQUIRED)
 
 set(CMAKE_BUILD_TYPE "Debug")
 
@@ -20,11 +21,20 @@ if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
       message(FATAL_ERROR "In-tree-build detected!")
 endif(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
 
+# we need this to ensure files like the DBus spec are present.
+# The Qt lib itself does not depend on GLib
+pkg_check_modules(PACKAGEKIT REQUIRED packagekit-glib2>=${QPACKAGEKIT_VERSION})
+
 #
 # Options
 #
 
-#NONE
+# NONE
+
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX
+    "/usr" CACHE PATH "Listaller default install prefix" FORCE)
+endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
 #
 # Configure files
@@ -38,6 +48,9 @@ set (GETTEXT_PACKAGE "packagekit")
 set (LOCALE_DIR "${DATADIR}/locale")
 set (VERSION "${LISTALLER_VERSION}")
 set (BUILDDIR "${CMAKE_BINARY_DIR}")
+set (LOCALSTATEDIR "/var")
+
+add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
 
 set(CMAKE_INSTALL_LIBDIR "lib/${CMAKE_LIBRARY_ARCHITECTURE}" CACHE PATH "Output directory for libraries")
 

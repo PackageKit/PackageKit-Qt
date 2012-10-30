@@ -34,6 +34,15 @@ set(packagekitqt_SRC
 		transactionprivate.cpp
 )
 
+set(PK_INTERFACE_XML ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml)
+set(PK_TRANSACTION_INTERFACE_XML ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml)
+
+set_source_files_properties(${PK_INTERFACE_XML} PROPERTIES CLASSNAME DaemonProxy)
+qt4_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
+
+set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES CLASSNAME TransactionProxy)
+qt4_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+
 qt4_automoc(${packagekitqt_SRC})
 qt4_wrap_cpp(packagekitqt_MOC_SRC ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
 
@@ -42,6 +51,11 @@ set_target_properties(packagekit-qt2 PROPERTIES VERSION ${QPACKAGEKIT_VERSION} S
 
 target_link_libraries(packagekit-qt2
 		${QT_LIBRARIES}
+)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekit-qt2.pc.in
+  ${CMAKE_CURRENT_BINARY_DIR}/packagekit-qt2.pc
+  @ONLY
 )
 
 install(TARGETS packagekit-qt2 DESTINATION ${CMAKE_INSTALL_LIBDIR})
