@@ -14,11 +14,12 @@ include_directories(${CMAKE_BINARY_DIR}
 )
 
 set(packagekitqt_HEADERS
-		Daemon
-		Transaction
-		common.h
-		daemon.h
-		transaction.h
+    Daemon
+    Transaction
+    common.h
+    daemon.h
+    transaction.h
+    bitfield.h
 )
 
 set(packagekitqt_HEADERS_PRIVATE
