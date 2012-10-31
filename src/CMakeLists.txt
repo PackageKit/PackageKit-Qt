@@ -34,8 +34,15 @@ set(packagekitqt_SRC
 		transactionprivate.cpp
 )
 
-set(PK_INTERFACE_XML ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml)
-set(PK_TRANSACTION_INTERFACE_XML ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml)
+find_file(PK_INTERFACE_XML org.freedesktop.PackageKit.xml
+	PATHS ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/
+)
+find_file(PK_TRANSACTION_INTERFACE_XML org.freedesktop.PackageKit.Transaction.xml
+	PATHS ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/
+)
+if (PK_INTERFACE_XML STREQUAL "PK_INTERFACE_XML-NOTFOUND" OR PK_TRANSACTION_INTERFACE_XML STREQUAL "PK_TRANSACTION_INTERFACE_XML-NOTFOUND")
+	message (FATAL_ERROR "Unable to find PackageKit DBus specifications! Please install PackageKit to continue!")
+endif ()
 
 set_source_files_properties(${PK_INTERFACE_XML} PROPERTIES CLASSNAME DaemonProxy)
 qt4_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)

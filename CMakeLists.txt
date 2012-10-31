@@ -21,10 +21,6 @@ if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
       message(FATAL_ERROR "In-tree-build detected!")
 endif(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
 
-# we need this to ensure files like the DBus spec are present.
-# The Qt lib itself does not depend on GLib
-pkg_check_modules(PACKAGEKIT REQUIRED packagekit-glib2>=${QPACKAGEKIT_VERSION})
-
 #
 # Options
 #
