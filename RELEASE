@@ -1,0 +1,49 @@
+PackageKit-Qt Release Notes
+
+1. Write NEWS entries for PackageKit-Qt in the same format as usual.
+
+git shortlog PACKAGEKIT_0_8_5.. | grep -i -v trivial | grep -v Merge > NEWS.new
+
+--------------------------------------------------------------------------------
+Version 0.8.6
+~~~~~~~~~~~~~
+Released: 2012-xx-xx
+
+Notes:
+
+New Features:
+
+Bugfixes:
+--------------------------------------------------------------------------------
+
+2. Update library version if new ABI or API in CMakeLists.txt
+
+3. Commit changes in PackageKit-Qt git:
+
+git commit -a -m "Release version 0.8.6"
+git tag -s -f -m "Release 0.8.6" PACKAGEKIT_0_8_6
+<gpg password>
+git push --tags
+git push
+
+4. run './release.sh --version=0.8.6 --git-tag=QPACKAGEKIT_0_8_6 --sign'
+
+5. Upload tarball to:
+
+scp *.tar.* packagekit.org:/srv/www/html/releases/
+
+6. Do post release version bump in CMakeLists.txt
+
+7. Commit trivial changes:
+
+git commit -a -m "trivial: post release version bump"
+git push
+
+8. Send an email to packagekit@lists.freedesktop.org
+
+=================================================
+PackageKit-Qt 0.8.6 released!
+
+Tarballs available here: http://www.packagekit.org/releases/
+
+=================================================
