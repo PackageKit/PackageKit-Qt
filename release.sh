@@ -40,7 +40,9 @@ fi
 rm -rf ./release-tar-tmp
 
 # check if we can build PackageKit-Qt
-make clean all
+mkdir -p ./t-build-release
+make -C ./build clean all
+rm -rf ./t-build-release
 
 mkdir -p ./release-tar-tmp
 git archive --prefix="PackageKit-Qt-$QPK_VERSION/" "$GIT_TAG^{tree}" | tar -x -C ./release-tar-tmp
@@ -50,8 +52,6 @@ R_ROOT="./release-tar-tmp/PackageKit-Qt-$QPK_VERSION"
 # cleanup files which should not go to the release tarball
 find ./release-tar-tmp -name .gitignore -type f -delete
 rm $R_ROOT/release.sh
-rm $R_ROOT/Makefile.in
-rm $R_ROOT/prepare
 
 # create release tarball
 cd ./release-tar-tmp

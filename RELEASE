@@ -21,7 +21,7 @@ Bugfixes:
 3. Commit changes in PackageKit-Qt git:
 
 git commit -a -m "Release version 0.8.6"
-git tag -s -f -m "Release 0.8.6" PACKAGEKIT_0_8_6
+git tag -s -f -m "Release 0.8.6" QPACKAGEKIT_0_8_6
 <gpg password>
 git push --tags
 git push
