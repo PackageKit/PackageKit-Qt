@@ -55,8 +55,8 @@ rm $R_ROOT/release.sh
 
 # create release tarball
 cd ./release-tar-tmp
-tar cvzf "PackageKit-Qt-$QPK_VERSION.tar.gz" "./PackageKit-Qt-$QPK_VERSION/"
-mv "PackageKit-Qt-$QPK_VERSION.tar.gz" ../
+tar cvJf "PackageKit-Qt-$QPK_VERSION.tar.xz" "./PackageKit-Qt-$QPK_VERSION/"
+mv "PackageKit-Qt-$QPK_VERSION.tar.xz" ../
 cd ..
 
 # cleanup
@@ -64,5 +64,5 @@ rm -r ./release-tar-tmp
 
 # sign release, if flag is set
 if [ "$SIGN_RELEASE" = "1" ]; then
- gpg --armor --sign --detach-sig "PackageKit-Qt-$QPK_VERSION.tar.gz"
+ gpg --armor --sign --detach-sig "PackageKit-Qt-$QPK_VERSION.tar.xz"
 fi
