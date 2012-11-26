@@ -1,0 +1,22 @@
+Version 0.8.6
+~~~~~~~~~~~~~
+Released: 2012-11-26
+
+Notes:
+ - This is the first release of Packagekit-Qt which has been split out
+   of the main PackageKit project.
+ - This project is decoupled from the main PackageKit project from this
+   point onwards and does not subscribe to the same API and ABI promises
+   of PackageKit. That said, it's no co-incidence that this tarball
+   release happened on the same day as the PackageKit release :)
+
+New Features:
+ - Add packagekit-qt library from the PackageKit project (Daniel Nicoletti)
+ - Added release instructions and simple release-script (Matthias Klumpp)
+ - Added versioning, Qt4 support and installed basic files (Matthias Klumpp)
+ - Created basic project and CMake skeleton (Matthias Klumpp)
+
+Bugfixes:
+ - Add bitfield.h to the files to install (Daniel Nicoletti)
+ - Always make sure DBus interface specs are present (Matthias Klumpp)
+ - Fix QPK API level (Matthias Klumpp)
