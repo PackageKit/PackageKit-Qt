@@ -225,7 +225,10 @@ bool Transaction::isCallerActive() const
 
 void Transaction::cancel()
 {
-    RUN_TRANSACTION(Cancel())
+    Q_D(const Transaction);
+    if (d->p) {
+        RUN_TRANSACTION(Cancel())
+    }
 }
 
 QString Transaction::packageName(const QString &packageID)
