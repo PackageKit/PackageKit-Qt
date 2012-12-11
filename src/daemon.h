@@ -179,7 +179,7 @@ public:
     /**
      * Returns the time (in seconds) since the specified \p action
      */
-    Q_INVOKABLE uint getTimeSinceAction(Transaction::Role action);
+    Q_INVOKABLE uint getTimeSinceAction(PackageKit::Transaction::Role action);
 
     /**
      * \brief creates a new transaction path
