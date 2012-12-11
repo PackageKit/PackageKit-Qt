@@ -100,7 +100,7 @@ public:
     /**
      * Describes the role of the transaction
      */
-    typedef enum {
+    enum Role {
         RoleUnknown,
         RoleCancel,
         RoleGetDepends,
@@ -132,7 +132,7 @@ public:
         RoleGetOldTransactions,
         RoleUpgradeSystem, // Since 0.6.11
         RoleRepairSystem   // Since 0.7.2
-    } Role;
+    };
     typedef Bitfield Roles;
 
     /**
