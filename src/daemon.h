@@ -259,27 +259,27 @@ public:
     /**
      * Returns the package name from the \p packageID
      */
-    Q_INVOKABLE QString packageName(const QString &packageID);
+    Q_INVOKABLE static QString packageName(const QString &packageID);
 
     /**
      * Returns the package version from the \p packageID
      */
-    Q_INVOKABLE QString packageVersion(const QString &packageID);
+    Q_INVOKABLE static QString packageVersion(const QString &packageID);
 
     /**
      * Returns the package arch from the \p packageID
      */
-    Q_INVOKABLE QString packageArch(const QString &packageID);
+    Q_INVOKABLE static QString packageArch(const QString &packageID);
 
     /**
      * Returns the package data from the \p packageID
      */
-    Q_INVOKABLE QString packageData(const QString &packageID);
+    Q_INVOKABLE static QString packageData(const QString &packageID);
 
     /**
      * Returns the package icon from the \p packageID
      */
-    Q_INVOKABLE QString packageIcon(const QString &packageID);
+    Q_INVOKABLE static QString packageIcon(const QString &packageID);
     
     /**
      * Returns the string representing the enum
