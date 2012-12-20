@@ -123,6 +123,8 @@ bool Transaction::init(const QDBusObjectPath &tid)
             SIGNAL(category(QString,QString,QString,QString,QString)));
     connect(d->p, SIGNAL(Destroy()),
             SLOT(destroy()));
+    connect(d->p, SIGNAL(Destroy()),
+            SIGNAL(destroy()));
     connect(d->p, SIGNAL(Details(QString,QString,uint,QString,QString,qulonglong)),
             SLOT(Details(QString,QString,uint,QString,QString,qulonglong)));
     connect(d->p, SIGNAL(DistroUpgrade(uint,QString,QString)),

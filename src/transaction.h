@@ -1210,6 +1210,13 @@ Q_SIGNALS:
      * \sa getOldTransactions()
      */
     void transaction(PackageKit::Transaction *transaction);
+    
+    /**
+     * Emitted a bit after a transaction has been finished
+     * It's useful when the transaction is too fast and emits
+     * finished before we finish connecting
+     */
+    void destroy();
 
 protected:
     static Transaction::InternalError parseError(const QString &errorName);

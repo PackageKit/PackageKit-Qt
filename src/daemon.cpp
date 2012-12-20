@@ -20,6 +20,7 @@
 */
 
 #include <QtSql>
+#include <QDebug>
 
 #include "daemon.h"
 #include "daemonprivate.h"
