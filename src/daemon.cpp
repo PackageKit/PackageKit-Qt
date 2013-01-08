@@ -158,7 +158,11 @@ uint Daemon::getTimeSinceAction(Transaction::Role role)
 QList<QDBusObjectPath> Daemon::getTransactionList()
 {
     Q_D(const Daemon);
-    return d->daemon->GetTransactionList();
+    QDBusPendingReply<QList<QDBusObjectPath> > reply = d->daemon->GetTransactionList();
+    if (reply.isValid()) {
+        return reply.value();
+    }
+    return QList<QDBusObjectPath>();
 }
 
 QList<Transaction*> Daemon::getTransactionObjects(QObject *parent)
