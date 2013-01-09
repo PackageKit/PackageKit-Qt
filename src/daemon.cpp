@@ -146,7 +146,12 @@ Daemon::Authorize Daemon::canAuthorize(const QString &actionId)
 QDBusObjectPath Daemon::getTid()
 {
     Q_D(const Daemon);
-    return d->daemon->CreateTransaction();
+    QDBusPendingReply<QDBusObjectPath> reply = d->daemon->CreateTransaction();
+    reply.waitForFinished();
+    if (reply.isValid()) {
+        return reply.value();
+    }
+    return QDBusObjectPath();
 }
 
 uint Daemon::getTimeSinceAction(Transaction::Role role)
@@ -159,6 +164,7 @@ QList<QDBusObjectPath> Daemon::getTransactionList()
 {
     Q_D(const Daemon);
     QDBusPendingReply<QList<QDBusObjectPath> > reply = d->daemon->GetTransactionList();
+    reply.waitForFinished();
     if (reply.isValid()) {
         return reply.value();
     }
