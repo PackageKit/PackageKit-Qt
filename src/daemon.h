@@ -24,6 +24,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QMetaEnum>
+#include <QtDBus/QDBusError>
 
 #include "transaction.h"
 
@@ -255,6 +256,11 @@ public:
      * Asks PackageKit to quit, for example to let a native package manager operate
      */
     Q_INVOKABLE void suggestDaemonQuit();
+
+    /**
+     * Get the last call status
+     */
+    Q_INVOKABLE QDBusError lastError() const;
 
     /**
      * Returns the package name from the \p packageID

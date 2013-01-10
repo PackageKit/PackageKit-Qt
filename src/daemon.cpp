@@ -28,6 +28,12 @@
 
 #include "common.h"
 
+#define PENDING_CALL(blurb)                      \
+       Q_D(Daemon);                              \
+       QDBusPendingReply<> r = d->daemon->blurb; \
+       r.waitForFinished();                      \
+       d->lastError = r.error();                 \
+
 using namespace PackageKit;
 
 Daemon* Daemon::m_global = 0;
@@ -137,17 +143,22 @@ QString Daemon::distroID()
 
 Daemon::Authorize Daemon::canAuthorize(const QString &actionId)
 {
-    Q_D(const Daemon);
-    uint ret;
-    ret = d->daemon->CanAuthorize(actionId);
-    return static_cast<Daemon::Authorize>(ret);
+    Q_D(Daemon);
+    QDBusPendingReply<uint> reply = d->daemon->CanAuthorize(actionId);
+    reply.waitForFinished();
+    d->lastError = reply.error();
+    if (reply.isValid()) {
+        return static_cast<Daemon::Authorize>(reply.value());
+    }
+    return Daemon::AuthorizeUnknown;
 }
 
 QDBusObjectPath Daemon::getTid()
 {
-    Q_D(const Daemon);
+    Q_D(Daemon);
     QDBusPendingReply<QDBusObjectPath> reply = d->daemon->CreateTransaction();
     reply.waitForFinished();
+    d->lastError = reply.error();
     if (reply.isValid()) {
         return reply.value();
     }
@@ -156,15 +167,22 @@ QDBusObjectPath Daemon::getTid()
 
 uint Daemon::getTimeSinceAction(Transaction::Role role)
 {
-    Q_D(const Daemon);
-    return d->daemon->GetTimeSinceAction(role);
+    Q_D(Daemon);
+    QDBusPendingReply<uint> reply = d->daemon->GetTimeSinceAction(role);
+    reply.waitForFinished();
+    d->lastError = reply.error();
+    if (reply.isValid()) {
+        return reply.value();
+    }
+    return 0u;
 }
 
 QList<QDBusObjectPath> Daemon::getTransactionList()
 {
-    Q_D(const Daemon);
+    Q_D(Daemon);
     QDBusPendingReply<QList<QDBusObjectPath> > reply = d->daemon->GetTransactionList();
     reply.waitForFinished();
+    d->lastError = reply.error();
     if (reply.isValid()) {
         return reply.value();
     }
@@ -197,10 +215,11 @@ QStringList Daemon::hints()
 
 Transaction::InternalError Daemon::setProxy(const QString& http_proxy, const QString& https_proxy, const QString& ftp_proxy, const QString& socks_proxy, const QString& no_proxy, const QString& pac)
 {
-    Q_D(const Daemon);
+    Q_D(Daemon);
     QDBusPendingReply<> r = d->daemon->SetProxy(http_proxy, https_proxy, ftp_proxy, socks_proxy, no_proxy, pac);
     r.waitForFinished();
-    if (r.isError ()) {
+    d->lastError = r.error();
+    if (r.isError()) {
         return Transaction::parseError(r.error().name());
     } else {
         return Transaction::InternalErrorNone;
@@ -209,14 +228,18 @@ Transaction::InternalError Daemon::setProxy(const QString& http_proxy, const QSt
 
 void Daemon::stateHasChanged(const QString& reason)
 {
-    Q_D(const Daemon);
-    d->daemon->StateHasChanged(reason);
+    PENDING_CALL(StateHasChanged(reason))
 }
 
 void Daemon::suggestDaemonQuit()
 {
+    PENDING_CALL(SuggestDaemonQuit())
+}
+
+QDBusError Daemon::lastError() const
+{
     Q_D(const Daemon);
-    d->daemon->SuggestDaemonQuit();
+    return d->lastError;
 }
 
 uint Daemon::versionMajor()

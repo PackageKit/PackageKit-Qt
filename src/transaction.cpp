@@ -28,17 +28,14 @@
 
 #include <QtSql/QSqlQuery>
 
-#define CHECK_TRANSACTION                           \
-        if (r.isError()) {                          \
-            d->error = Transaction::parseError(r.error().name()); \
-        }                                           \
-
 #define RUN_TRANSACTION(blurb)                      \
         Q_D(Transaction);                           \
         if (init()) {                               \
             QDBusPendingReply<> r = d->p->blurb;    \
             r.waitForFinished();                    \
-            CHECK_TRANSACTION                       \
+            if (r.isError()) {                      \
+                d->error = Transaction::parseError(r.error().name()); \
+            }                                                         \
         }                                           \
 
 using namespace PackageKit;
