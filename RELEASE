@@ -2,10 +2,10 @@ PackageKit-Qt Release Notes
 
 1. Write NEWS entries for PackageKit-Qt in the same format as usual.
 
-git shortlog QPACKAGEKIT_0_8_6.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog QPACKAGEKIT_0_8_7.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
 --------------------------------------------------------------------------------
-Version 0.8.7
+Version 0.8.8
 ~~~~~~~~~~~~~
 Released: 2013-xx-xx
 
@@ -20,13 +20,13 @@ Bugfixes:
 
 3. Commit changes in PackageKit-Qt git:
 
-git commit -a -m "Release version 0.8.7"
-git tag -s -f -m "Release 0.8.7" QPACKAGEKIT_0_8_7
+git commit -a -m "Release version 0.8.8"
+git tag -s -f -m "Release 0.8.8" QPACKAGEKIT_0_8_8
 <gpg password>
 git push --tags
 git push
 
-4. run './release.sh --version=0.8.7 --git-tag=QPACKAGEKIT_0_8_7 --sign'
+4. run './release.sh --version=0.8.8 --git-tag=QPACKAGEKIT_0_8_8 --sign'
 
 5. Upload tarball to:
 
@@ -42,7 +42,7 @@ git push
 8. Send an email to packagekit@lists.freedesktop.org
 
 =================================================
-PackageKit-Qt 0.8.7 released!
+PackageKit-Qt 0.8.8 released!
 
 Tarballs available here: http://www.packagekit.org/releases/
 
