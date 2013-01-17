@@ -1,3 +1,21 @@
+Version 0.8.7
+~~~~~~~~~~~~~
+Released: 2012-01-17
+
+Notes:
+
+New Features:
+ - Add back the destroy() signal, it might be useful for fast transactions (Daniel Nicoletti)
+ - Compress release tarballs using LZMA by default (Matthias Klumpp)
+
+Bugfixes:
+ - For some reason QML doesn't work with typedef enum (Daniel Nicoletti)
+ - Make our package spliters static (Daniel Nicoletti)
+ - Make sure we waitForFinishe() when getting the TransactionList (Daniel Nicoletti)
+ - Only call Cancel() if the transaction proxy exist (Daniel Nicoletti)
+ - The full namespace is needed for a slot to be called (Daniel Nicoletti)
+ - Workaround Qt bug not contructing default values when the call fails (Daniel Nicoletti)
+
 Version 0.8.6
 ~~~~~~~~~~~~~
 Released: 2012-11-26

@@ -2,12 +2,12 @@ PackageKit-Qt Release Notes
 
 1. Write NEWS entries for PackageKit-Qt in the same format as usual.
 
-git shortlog PACKAGEKIT_0_8_6.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog QPACKAGEKIT_0_8_6.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
 --------------------------------------------------------------------------------
 Version 0.8.7
 ~~~~~~~~~~~~~
-Released: 2012-xx-xx
+Released: 2013-xx-xx
 
 Notes:
 
