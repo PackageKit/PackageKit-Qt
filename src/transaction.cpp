@@ -607,7 +607,16 @@ void Transaction::searchGroup(Group group, Filters filters)
 
 void Transaction::searchGroups(Groups groups, Transaction::Filters filters)
 {
-    searchGroups(groups, filters);
+    QStringList groupsStringList;
+    for (int i = 1; i < 64; ++i) {
+        if (groups & i) {
+            Transaction::Group group = static_cast<Transaction::Group>(i);
+            if (group != Transaction::GroupUnknown) {
+                groupsStringList << Daemon::enumToString<Transaction>(group, "Group");
+            }
+        }
+    }
+    searchGroups(groupsStringList, filters);
 }
 
 void Transaction::searchNames(const QStringList &search, Transaction::Filters filters)
