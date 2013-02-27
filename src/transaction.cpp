@@ -370,6 +370,15 @@ Transaction::Status Transaction::status() const
     return Transaction::StatusUnknown;
 }
 
+Transaction::TransactionFlags Transaction::transactionFlags() const
+{
+    Q_D(const Transaction);
+    if (d->p) {
+        return static_cast<Transaction::TransactionFlags>(d->p->transactionFlags());
+    }
+    return Transaction::TransactionFlagNone;
+}
+
 QDateTime Transaction::timespec() const
 {
     Q_D(const Transaction);

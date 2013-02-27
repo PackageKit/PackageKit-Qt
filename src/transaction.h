@@ -76,6 +76,7 @@ class Transaction : public QObject
     Q_PROPERTY(qulonglong downloadSizeRemaining READ downloadSizeRemaining)
     Q_PROPERTY(Role role READ role NOTIFY changed)
     Q_PROPERTY(Status status READ status NOTIFY changed)
+    Q_PROPERTY(TransactionFlags transactionFlags READ transactionFlags NOTIFY changed)
 public:
     /**
      * Describes an error at the daemon level (for example, PackageKit crashes or is unreachable)
@@ -608,6 +609,12 @@ public:
      * \return a Transaction::Status value describing the status of the transaction
      */
     Status status() const;
+
+    /**
+     * The current flags set in this transaction
+     * \return a \sa Transaction::TransactionFlags of this transaction
+     */
+    TransactionFlags transactionFlags() const;
 
     /**
      * \brief Tells the underlying package manager to use the given \p hints
