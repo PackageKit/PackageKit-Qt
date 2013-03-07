@@ -67,19 +67,19 @@ bool Transaction::init(const QDBusObjectPath &tid)
     // he want us to get it
     if (tid.path().isNull()) {
         d->tid = Daemon::global()->getTid();
+        if (d->tid.path().isEmpty()) {
+            d->error = Transaction::InternalErrorDaemonUnreachable;
+            return false;
+        }
     } else {
         d->tid = tid;
     }
 
-    if (d->tid.path().isEmpty()) {
-        d->error = Transaction::InternalErrorDaemonUnreachable;
-        return false;
-    } else {
-        
-    }
-
     int retry = 0;
     do {
+        if (d->p) {
+            delete d->p;
+        }
         d->p = new TransactionProxy(QLatin1String(PK_NAME),
                                     d->tid.path(),
                                     QDBusConnection::systemBus(),
@@ -95,23 +95,24 @@ bool Transaction::init(const QDBusObjectPath &tid)
             message << qVariantFromValue(0U);
             QDBusConnection::sessionBus().call(message, QDBus::BlockWithGui);
 
-            // The transaction was not created
-            delete d->p;
-            d->p = 0;
             retry++;
         } else {
             retry = 0;
         }
     } while (retry == 1);
 
-    // if the transaction proxy was not created return false
-    if (!d->p) {
+    // if the transaction proxy was not created return false and set the error
+    if (!d->p->isValid()) {
+        // The transaction was not created
+        d->error = Transaction::InternalErrorCannotStartDaemon;
+        emit errorCode(Transaction::ErrorInternalError, d->p->lastError().message());
+        delete d->p;
         return false;
-    } else {
-        d->error = Transaction::InternalErrorNone;
-        if (!Daemon::global()->hints().isEmpty()) {
-            setHints(Daemon::global()->hints());
-        }
+    }
+
+    d->error = Transaction::InternalErrorNone;
+    if (!Daemon::global()->hints().isEmpty()) {
+        setHints(Daemon::global()->hints());
     }
 
     connect(d->p, SIGNAL(Changed()),
