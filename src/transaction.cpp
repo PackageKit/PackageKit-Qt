@@ -197,6 +197,7 @@ bool Transaction::init(const QDBusObjectPath &tid)
         d->error = Transaction::InternalErrorCannotStartDaemon;
         emit errorCode(Transaction::ErrorInternalError, d->p->lastError().message());
         delete d->p;
+        d->p = 0;
         return false;
     }
 
