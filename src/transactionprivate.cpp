@@ -73,12 +73,6 @@ void TransactionPrivate::mediaChangeRequired(uint mediaType, const QString &medi
                            mediaText);
 }
 
-void TransactionPrivate::files(const QString &pid, const QStringList &fileList)
-{
-    Q_Q(Transaction);
-    q->files(pid, fileList);
-}
-
 void TransactionPrivate::finished(uint exitCode, uint runtime)
 {
     Q_Q(Transaction);
@@ -92,6 +86,7 @@ void TransactionPrivate::destroy()
        delete p;
        p = 0;
     }
+    q->destroy();
 }
 
 void TransactionPrivate::daemonQuit()
@@ -121,7 +116,7 @@ void TransactionPrivate::ItemProgress(const QString &itemID, uint status, uint p
 {
     Q_Q(Transaction);
     q->itemProgress(itemID,
-                    static_cast<Transaction::Status>(status),
+                    static_cast<PackageKit::Transaction::Status>(status),
                     percentage);
 }
 
@@ -148,7 +143,7 @@ void TransactionPrivate::RepoSignatureRequired(const QString &pid,
 void TransactionPrivate::requireRestart(uint type, const QString &pid)
 {
     Q_Q(Transaction);
-    q->requireRestart(static_cast<Transaction::Restart>(type), pid);
+    q->requireRestart(static_cast<PackageKit::Transaction::Restart>(type), pid);
 }
 
 void TransactionPrivate::transaction(const QDBusObjectPath &oldTid,
@@ -184,10 +179,10 @@ void TransactionPrivate::UpdateDetail(const QString &package_id,
                     vendor_urls,
                     bugzilla_urls,
                     cve_urls,
-                    static_cast<Transaction::Restart>(restart),
+                    static_cast<PackageKit::Transaction::Restart>(restart),
                     update_text,
                     changelog,
-                    static_cast<Transaction::UpdateState>(state),
+                    static_cast<PackageKit::Transaction::UpdateState>(state),
                     QDateTime::fromString(issued, Qt::ISODate),
                     QDateTime::fromString(updated, Qt::ISODate));
 }

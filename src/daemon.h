@@ -397,6 +397,20 @@ Q_SIGNALS:
     void daemonQuit();
 
 protected:
+    /**
+     * This method connects to DBus signals
+     * \attention Make sure to call this method in inherited classes
+     * otherwise no signals will be emitted
+     */
+    virtual void connectNotify(const char *signal);
+
+    /**
+     * This method disconnects from DBus signals
+     * \attention Make sure to call this method in inherited classes
+     * otherwise no signals will be disconnected
+     */
+    virtual void disconnectNotify(const char *signal);
+
     DaemonPrivate * const d_ptr;
 
 private:

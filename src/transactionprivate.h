@@ -22,8 +22,9 @@
 #ifndef PACKAGEKIT_TRANSACTION_PRIVATE_H
 #define PACKAGEKIT_TRANSACTION_PRIVATE_H
 
-#include <QtCore/QString>
-#include <QtCore/QHash>
+#include <QString>
+#include <QHash>
+#include <QStringList>
 
 #include "transaction.h"
 
@@ -36,11 +37,12 @@ class TransactionPrivate
     Q_DECLARE_PUBLIC(Transaction)
 protected:
     TransactionPrivate(Transaction *parent);
-    virtual ~TransactionPrivate() {};
+    virtual ~TransactionPrivate() {}
 
     QDBusObjectPath tid;
     ::TransactionProxy* p;
     Transaction *q_ptr;
+    QStringList connectedSignals;
 
     // Only used for old transactions
     QDateTime timespec;
@@ -53,12 +55,13 @@ protected:
 
     Transaction::InternalError error;
 
+    void setupSignal(const QString &signal, bool connect);
+
 protected Q_SLOTS:
     void Details(const QString &pid, const QString &license, uint group, const QString &detail, const QString &url, qulonglong size);
     void distroUpgrade(uint type, const QString &name, const QString &description);
     void errorCode(uint error, const QString &details);
     void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText);
-    void files(const QString &pid, const QStringList &file_list);
     void finished(uint exitCode, uint runtime);
     void message(uint type, const QString &message);
     void Package(uint info, const QString &pid, const QString &summary);

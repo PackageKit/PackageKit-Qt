@@ -57,23 +57,65 @@ Daemon::Daemon(QObject *parent) :
                                   QDBusConnection::systemBus(),
                                   this);
 
-    connect(d->daemon, SIGNAL(Changed()),
-            this, SIGNAL(changed()));
-    connect(d->daemon, SIGNAL(RepoListChanged()),
-            this, SIGNAL(repoListChanged()));
-    connect(d->daemon, SIGNAL(RestartSchedule()),
-            this, SIGNAL(restartScheduled()));
-    connect(d->daemon, SIGNAL(TransactionListChanged(QStringList)),
-            this, SIGNAL(transactionListChanged(QStringList)));
-    connect(d->daemon, SIGNAL(UpdatesChanged()),
-            this, SIGNAL(updatesChanged()));
-
     // Set up database for desktop files
     QSqlDatabase db;
     db = QSqlDatabase::addDatabase("QSQLITE", PK_DESKTOP_DEFAULT_DATABASE);
     db.setDatabaseName(PK_DESKTOP_DEFAULT_DATABASE);
     if (!db.open()) {
         qDebug() << "Failed to initialize the desktop files database";
+    }
+}
+
+void DaemonPrivate::setupSignal(const QString &signal, bool connect)
+{
+    Q_Q(Daemon);
+
+    const char *signalToConnect = 0;
+    const char *memberToConnect = 0;
+
+    if (signal == SIGNAL(changed())) {
+        signalToConnect = SIGNAL(Changed());
+        memberToConnect = SIGNAL(changed());
+    } else if (signal == SIGNAL(repoListChanged())) {
+        signalToConnect = SIGNAL(RepoListChanged());
+        memberToConnect = SIGNAL(repoListChanged());
+    } else if (signal == SIGNAL(restartScheduled())) {
+        signalToConnect = SIGNAL(RestartSchedule());
+        memberToConnect = SIGNAL(restartScheduled());
+    } else if (signal == SIGNAL(transactionListChanged(QStringList))) {
+        signalToConnect = SIGNAL(TransactionListChanged(QStringList));
+        memberToConnect = SIGNAL(transactionListChanged(QStringList));
+    } else if (signal == SIGNAL(updatesChanged())) {
+        signalToConnect = SIGNAL(UpdatesChanged());
+        memberToConnect = SIGNAL(updatesChanged());
+    }
+
+    if (signalToConnect && memberToConnect) {
+        if (connect) {
+            q->connect(daemon, signalToConnect, memberToConnect);
+        } else {
+            daemon->disconnect(signalToConnect, q, memberToConnect);
+        }
+    }
+}
+
+void Daemon::connectNotify(const char *signal)
+{
+    Q_D(Daemon);
+    if (!d->connectedSignals.contains(signal) && d->daemon) {
+        d->setupSignal(signal, true);
+    }
+    d->connectedSignals << signal;
+}
+
+void Daemon::disconnectNotify(const char *signal)
+{
+    Q_D(Daemon);
+    if (d->connectedSignals.contains(signal)) {
+        d->connectedSignals.removeOne(signal);
+        if (d->daemon && !d->connectedSignals.contains(signal)) {
+            d->setupSignal(signal, false);
+        }
     }
 }
 

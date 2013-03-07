@@ -1228,6 +1228,20 @@ Q_SIGNALS:
 protected:
     static Transaction::InternalError parseError(const QString &errorName);
 
+    /**
+     * This method connects to DBus signals
+     * \attention Make sure to call this method in inherited classes
+     * otherwise no signals will be emitted
+     */
+    virtual void connectNotify(const char *signal);
+
+    /**
+     * This method disconnects from DBus signals
+     * \attention Make sure to call this method in inherited classes
+     * otherwise no signals will be disconnected
+     */
+    virtual void disconnectNotify(const char *signal);
+
     TransactionPrivate * const d_ptr;
 
 private:
@@ -1248,7 +1262,6 @@ private:
     Q_PRIVATE_SLOT(d_ptr, void distroUpgrade(uint type, const QString &name, const QString &description));
     Q_PRIVATE_SLOT(d_ptr, void errorCode(uint error, const QString &details));
     Q_PRIVATE_SLOT(d_ptr, void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText));
-    Q_PRIVATE_SLOT(d_ptr, void files(const QString &pid, const QStringList &filenames));
     Q_PRIVATE_SLOT(d_ptr, void finished(uint exitCode, uint runtime));
     Q_PRIVATE_SLOT(d_ptr, void message(uint type, const QString &message));
     Q_PRIVATE_SLOT(d_ptr, void Package(uint info, const QString &pid, const QString &summary));

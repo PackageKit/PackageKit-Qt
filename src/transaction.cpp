@@ -26,7 +26,8 @@
 #include "daemon.h"
 #include "common.h"
 
-#include <QtSql/QSqlQuery>
+#include <QSqlQuery>
+#include <QDBusError>
 
 #define RUN_TRANSACTION(blurb)                      \
         Q_D(Transaction);                           \
@@ -53,6 +54,95 @@ Transaction::Transaction(const QDBusObjectPath &tid, QObject *parent) :
 {
     connect(Daemon::global(), SIGNAL(daemonQuit()), SLOT(daemonQuit()));
     init(tid);
+}
+
+void Transaction::connectNotify(const char *signal)
+{
+    Q_D(Transaction);
+    if (!d->connectedSignals.contains(signal) && d->p) {
+        d->setupSignal(signal, true);
+    }
+    d->connectedSignals << signal;
+}
+
+void Transaction::disconnectNotify(const char *signal)
+{
+    Q_D(Transaction);
+    if (d->connectedSignals.contains(signal)) {
+        d->connectedSignals.removeOne(signal);
+        if (d->p && !d->connectedSignals.contains(signal)) {
+            d->setupSignal(signal, false);
+        }
+    }
+}
+
+void TransactionPrivate::setupSignal(const QString &signal, bool connect)
+{
+    Q_Q(Transaction);
+
+    const char *signalToConnect = 0;
+    const char *memberToConnect = 0;
+
+    if (signal == SIGNAL(changed())) {
+        signalToConnect = SIGNAL(Changed());
+        memberToConnect = SIGNAL(changed());
+    } else if (signal == SIGNAL(category(QString,QString,QString,QString,QString))) {
+        signalToConnect = SIGNAL(Category(QString,QString,QString,QString,QString));
+        memberToConnect = SIGNAL(category(QString,QString,QString,QString,QString));
+    } else if (signal == SIGNAL(details(QString,QString,PackageKit::Transaction::Group,QString,QString,qulonglong))) {
+        signalToConnect = SIGNAL(Details(QString,QString,uint,QString,QString,qulonglong));
+        memberToConnect = SLOT(Details(QString,QString,uint,QString,QString,qulonglong));
+    } else if (signal == SIGNAL(distroUpgrade(PackageKit::Transaction::DistroUpgrade,QString,QString))) {
+        signalToConnect = SIGNAL(DistroUpgrade(uint,QString,QString));
+        memberToConnect = SLOT(distroUpgrade(uint,QString,QString));
+    } else if (signal == SIGNAL(errorCode(PackageKit::Transaction::Error,QString))) {
+        signalToConnect = SIGNAL(ErrorCode(uint,QString));
+        memberToConnect = SLOT(errorCode(uint,QString));
+    } else if (signal == SIGNAL(files(QString,QStringList))) {
+        signalToConnect = SIGNAL(Files(QString,QStringList));
+        memberToConnect = SIGNAL(files(QString,QStringList));
+    } else if (signal == SIGNAL(finished(PackageKit::Transaction::Exit,uint))) {
+        signalToConnect = SIGNAL(Finished(uint,uint));
+        memberToConnect = SLOT(finished(uint,uint));
+    } else if (signal == SIGNAL(message(PackageKit::Transaction::Message,QString))) {
+        signalToConnect = SIGNAL(Message(uint,QString));
+        memberToConnect = SLOT(message(uint,QString));
+    } else if (signal == SIGNAL(package(PackageKit::Transaction::Info,QString,QString))) {
+        signalToConnect = SIGNAL(Package(uint,QString,QString));
+        memberToConnect = SLOT(Package(uint,QString,QString));
+    } else if (signal == SIGNAL(repoDetail(QString,QString,bool))) {
+        signalToConnect = SIGNAL(RepoDetail(QString,QString,bool));
+        memberToConnect = SIGNAL(repoDetail(QString,QString,bool));
+    } else if (signal == SIGNAL(repoSignatureRequired(QString,QString,QString,QString,QString,QString,QString,PackageKit::Transaction::SigType))) {
+        signalToConnect = SIGNAL(RepoSignatureRequired(QString,QString,QString,QString,QString,QString,QString,uint));
+        memberToConnect = SLOT(RepoSignatureRequired(QString,QString,QString,QString,QString,QString,QString,uint));
+    } else if (signal == SIGNAL(eulaRequired(QString,QString,QString,QString))) {
+        signalToConnect = SIGNAL(EulaRequired(QString,QString,QString,QString));
+        memberToConnect = SIGNAL(eulaRequired(QString,QString,QString,QString));
+    } else if (signal == SIGNAL(mediaChangeRequired(PackageKit::Transaction::MediaType,QString,QString))) {
+        signalToConnect = SIGNAL(MediaChangeRequired(uint,QString,QString));
+        memberToConnect = SLOT(mediaChangeRequired(uint,QString,QString));
+    } else if (signal == SIGNAL(itemProgress(QString,PackageKit::Transaction::Status,uint))) {
+        signalToConnect = SIGNAL(ItemProgress(QString,uint,uint));
+        memberToConnect = SLOT(ItemProgress(QString,uint,uint));
+    } else if (signal == SIGNAL(requireRestart(PackageKit::Transaction::Restart,QString))) {
+        signalToConnect = SIGNAL(RequireRestart(uint,QString));
+        memberToConnect = SLOT(requireRestart(uint,QString));
+    } else if (signal == SIGNAL(transaction(PackageKit::Transaction*))) {
+        signalToConnect = SIGNAL(Transaction(QDBusObjectPath,QString,bool,uint,uint,QString,uint,QString));
+        memberToConnect = SLOT(transaction(QDBusObjectPath,QString,bool,uint,uint,QString,uint,QString));
+    } else if (signal == SIGNAL(updateDetail(QString,QStringList,QStringList,QStringList,QStringList,QStringList,PackageKit::Transaction::Restart,QString,QString,PackageKit::Transaction::UpdateState,QDateTime,QDateTime))) {
+        signalToConnect = SIGNAL(UpdateDetail(QString,QStringList,QStringList,QStringList,QStringList,QStringList,uint,QString,QString,uint,QString,QString));
+        memberToConnect = SLOT(UpdateDetail(QString,QStringList,QStringList,QStringList,QStringList,QStringList,uint,QString,QString,uint,QString,QString));
+    }
+
+    if (signalToConnect && memberToConnect) {
+        if (connect) {
+            q->connect(p, signalToConnect, memberToConnect);
+        } else {
+            p->disconnect(signalToConnect, q, memberToConnect);
+        }
+    }
 }
 
 bool Transaction::init(const QDBusObjectPath &tid)
@@ -115,44 +205,15 @@ bool Transaction::init(const QDBusObjectPath &tid)
         setHints(Daemon::global()->hints());
     }
 
-    connect(d->p, SIGNAL(Changed()),
-            SIGNAL(changed()));
-    connect(d->p, SIGNAL(Category(QString,QString,QString,QString,QString)),
-            SIGNAL(category(QString,QString,QString,QString,QString)));
     connect(d->p, SIGNAL(Destroy()),
             SLOT(destroy()));
-    connect(d->p, SIGNAL(Destroy()),
-            SIGNAL(destroy()));
-    connect(d->p, SIGNAL(Details(QString,QString,uint,QString,QString,qulonglong)),
-            SLOT(Details(QString,QString,uint,QString,QString,qulonglong)));
-    connect(d->p, SIGNAL(DistroUpgrade(uint,QString,QString)),
-            SLOT(distroUpgrade(uint,QString,QString)));
-    connect(d->p, SIGNAL(ErrorCode(uint,QString)),
-            SLOT(errorCode(uint,QString)));
-    connect(d->p, SIGNAL(Files(QString,QStringList)),
-            SLOT(files(QString,QStringList)));
-    connect(d->p, SIGNAL(Finished(uint,uint)),
-            SLOT(finished(uint,uint)));
-    connect(d->p, SIGNAL(Message(uint,QString)),
-            SLOT(message(uint,QString)));
-    connect(d->p, SIGNAL(Package(uint,QString,QString)),
-            SLOT(Package(uint,QString,QString)));
-    connect(d->p, SIGNAL(RepoDetail(QString,QString,bool)),
-            SIGNAL(repoDetail(QString,QString,bool)));
-    connect(d->p, SIGNAL(RepoSignatureRequired(QString,QString,QString,QString,QString, QString,QString,uint)),
-            SLOT(RepoSignatureRequired(QString,QString,QString,QString,QString, QString,QString,uint)));
-    connect(d->p, SIGNAL(EulaRequired(QString,QString,QString,QString)),
-            SIGNAL(eulaRequired(QString,QString,QString,QString)));
-    connect(d->p, SIGNAL(MediaChangeRequired(uint,QString,QString)),
-            SLOT(mediaChangeRequired(uint,QString,QString)));
-    connect(d->p, SIGNAL(ItemProgress(QString,uint,uint)),
-            SLOT(ItemProgress(QString,uint,uint)));
-    connect(d->p, SIGNAL(RequireRestart(uint,QString)),
-            SLOT(requireRestart(uint,QString)));
-    connect(d->p, SIGNAL(Transaction(QDBusObjectPath,QString,bool,uint,uint,QString,uint,QString)),
-            SLOT(transaction(QDBusObjectPath,QString,bool,uint,uint,QString,uint,QString)));
-    connect(d->p, SIGNAL(UpdateDetail(QString,QStringList,QStringList,QStringList,QStringList,QStringList, uint,QString,QString,uint,QString,QString)),
-            SLOT(UpdateDetail(QString,QStringList,QStringList,QStringList,QStringList,QStringList,uint,QString,QString,uint,QString,QString)));
+
+    QStringList currentSignals = d->connectedSignals;
+    currentSignals.removeDuplicates();
+    foreach (const QString &signal, currentSignals) {
+        d->setupSignal(signal, true);
+    }
+
     return true;
 }
 
