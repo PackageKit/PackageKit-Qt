@@ -54,6 +54,7 @@ protected:
     QString cmdline;
 
     Transaction::InternalError error;
+    QString errorMessage;
 
     void setupSignal(const QString &signal, bool connect);
 

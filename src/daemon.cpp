@@ -64,6 +64,24 @@ Daemon::Daemon(QObject *parent) :
     if (!db.open()) {
         qDebug() << "Failed to initialize the desktop files database";
     }
+
+    qRegisterMetaType<PackageKit::Transaction::InternalError>("PackageKit::Transaction::InternalError");
+    qRegisterMetaType<PackageKit::Transaction::Role>("PackageKit::Transaction::Role");
+    qRegisterMetaType<PackageKit::Transaction::Error>("PackageKit::Transaction::Error");
+    qRegisterMetaType<PackageKit::Transaction::Exit>("PackageKit::Transaction::Exit");
+    qRegisterMetaType<PackageKit::Transaction::Filter>("PackageKit::Transaction::Filter");
+    qRegisterMetaType<PackageKit::Transaction::Message>("PackageKit::Transaction::Message");
+    qRegisterMetaType<PackageKit::Transaction::Status>("PackageKit::Transaction::Status");
+    qRegisterMetaType<PackageKit::Transaction::MediaType>("PackageKit::Transaction::MediaType");
+    qRegisterMetaType<PackageKit::Transaction::Provides>("PackageKit::Transaction::Provides");
+    qRegisterMetaType<PackageKit::Transaction::DistroUpgrade>("PackageKit::Transaction::DistroUpgrade");
+    qRegisterMetaType<PackageKit::Transaction::UpgradeKind>("PackageKit::Transaction::UpgradeKind");
+    qRegisterMetaType<PackageKit::Transaction::TransactionFlag>("PackageKit::Transaction::TransactionFlag");
+    qRegisterMetaType<PackageKit::Transaction::Restart>("PackageKit::Transaction::Restart");
+    qRegisterMetaType<PackageKit::Transaction::UpdateState>("PackageKit::Transaction::UpdateState");
+    qRegisterMetaType<PackageKit::Transaction::Group>("PackageKit::Transaction::Group");
+    qRegisterMetaType<PackageKit::Transaction::Info>("PackageKit::Transaction::Info");
+    qRegisterMetaType<PackageKit::Transaction::SigType>("PackageKit::Transaction::SigType");
 }
 
 void DaemonPrivate::setupSignal(const QString &signal, bool connect)

@@ -36,6 +36,7 @@
             r.waitForFinished();                    \
             if (r.isError()) {                      \
                 d->error = Transaction::parseError(r.error().name()); \
+                d->errorMessage = r.error().message(); \
             }                                                         \
         }                                           \
 
@@ -153,29 +154,28 @@ bool Transaction::init(const QDBusObjectPath &tid)
         return true;
     }
 
-    // If the user used a null tid
-    // he want us to get it
-    if (tid.path().isNull()) {
-        d->tid = Daemon::global()->getTid();
-        if (d->tid.path().isEmpty()) {
-            d->error = Transaction::InternalErrorDaemonUnreachable;
-            return false;
-        }
-    } else {
+    if (!tid.path().isNull()) {
         d->tid = tid;
     }
 
     int retry = 0;
     do {
-        if (d->p) {
-            delete d->p;
+        if (tid.path().isNull()) {
+            d->tid = Daemon::global()->getTid();
         }
-        d->p = new TransactionProxy(QLatin1String(PK_NAME),
-                                    d->tid.path(),
-                                    QDBusConnection::systemBus(),
-                                    this);
-        if (!d->p->isValid()) {
-            qWarning() << "Error, cannot create transaction proxy" << d->p->lastError();
+
+        if (!d->tid.path().isNull()) {
+            if (d->p) {
+                delete d->p;
+            }
+            d->p = new TransactionProxy(QLatin1String(PK_NAME),
+                                        d->tid.path(),
+                                        QDBusConnection::systemBus(),
+                                        this);
+        }
+
+        if (!d->p || !d->p->isValid()) {
+            qWarning() << "Error, cannot create transaction proxy for path:" << d->tid.path();
             QDBusMessage message;
             message = QDBusMessage::createMethodCall(QLatin1String("org.freedesktop.DBus"),
                                                      QLatin1String("/"),
@@ -192,16 +192,21 @@ bool Transaction::init(const QDBusObjectPath &tid)
     } while (retry == 1);
 
     // if the transaction proxy was not created return false and set the error
-    if (!d->p->isValid()) {
+    if (!d->p || !d->p->isValid()) {
         // The transaction was not created
-        d->error = Transaction::InternalErrorCannotStartDaemon;
-        emit errorCode(Transaction::ErrorInternalError, d->p->lastError().message());
+        d->error = Transaction::InternalErrorFailed;
+        if (!d->p || Daemon::global()->lastError().isValid()) {
+            d->errorMessage = Daemon::global()->lastError().message();
+        } else {
+            d->errorMessage = d->p->lastError().message();
+        }
         delete d->p;
         d->p = 0;
         return false;
     }
 
     d->error = Transaction::InternalErrorNone;
+    d->errorMessage.clear();
     if (!Daemon::global()->hints().isEmpty()) {
         setHints(Daemon::global()->hints());
     }
@@ -265,6 +270,18 @@ Transaction::InternalError Transaction::error() const
 {
     Q_D(const Transaction);
     return d->error;
+}
+
+Transaction::InternalError Transaction::internalError() const
+{
+    Q_D(const Transaction);
+    return d->error;
+}
+
+QString Transaction::internalErrorMessage() const
+{
+    Q_D(const Transaction);
+    return d->errorMessage;
 }
 
 bool Transaction::allowCancel() const
