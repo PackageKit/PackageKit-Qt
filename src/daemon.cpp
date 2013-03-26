@@ -77,6 +77,7 @@ Daemon::Daemon(QObject *parent) :
     qRegisterMetaType<PackageKit::Transaction::DistroUpgrade>("PackageKit::Transaction::DistroUpgrade");
     qRegisterMetaType<PackageKit::Transaction::UpgradeKind>("PackageKit::Transaction::UpgradeKind");
     qRegisterMetaType<PackageKit::Transaction::TransactionFlag>("PackageKit::Transaction::TransactionFlag");
+    qRegisterMetaType<PackageKit::Transaction::TransactionFlags>("PackageKit::Transaction::TransactionFlags");
     qRegisterMetaType<PackageKit::Transaction::Restart>("PackageKit::Transaction::Restart");
     qRegisterMetaType<PackageKit::Transaction::UpdateState>("PackageKit::Transaction::UpdateState");
     qRegisterMetaType<PackageKit::Transaction::Group>("PackageKit::Transaction::Group");

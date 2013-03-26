@@ -1396,5 +1396,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::TransactionFlags)
 } // End namespace PackageKit
 
 Q_DECLARE_METATYPE(PackageKit::Transaction::Info)
+Q_DECLARE_METATYPE(PackageKit::Transaction::TransactionFlags)
 
 #endif
