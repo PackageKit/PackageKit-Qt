@@ -64,6 +64,7 @@ class Transaction : public QObject
     Q_ENUMS(Group)
     Q_ENUMS(Info)
     Q_ENUMS(SigType)
+    Q_ENUMS(Filter)
     Q_FLAGS(TransactionFlag TransactionFlags)
     Q_FLAGS(Filter Filters)
     Q_PROPERTY(QDBusObjectPath tid READ tid NOTIFY changed)
@@ -1394,8 +1395,23 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::TransactionFlags)
 
 } // End namespace PackageKit
-
+Q_DECLARE_METATYPE(PackageKit::Transaction::InternalError)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Role)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Error)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Exit)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Message)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Status)
+Q_DECLARE_METATYPE(PackageKit::Transaction::MediaType)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Provides)
+Q_DECLARE_METATYPE(PackageKit::Transaction::DistroUpgrade)
+Q_DECLARE_METATYPE(PackageKit::Transaction::TransactionFlag)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Restart)
+Q_DECLARE_METATYPE(PackageKit::Transaction::UpdateState)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Group)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Info)
+Q_DECLARE_METATYPE(PackageKit::Transaction::SigType)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Filter)
 Q_DECLARE_METATYPE(PackageKit::Transaction::TransactionFlags)
+Q_DECLARE_METATYPE(PackageKit::Transaction::Filters)
 
 #endif
