@@ -148,6 +148,12 @@ Transaction::Roles Daemon::actions()
     return d->daemon->roles();
 }
 
+Transaction::ProvidesFlag Daemon::provides()
+{
+    Q_D(const Daemon);
+    return static_cast<Transaction::ProvidesFlag>(d->daemon->provides());
+}
+
 QString Daemon::backendName()
 {
     Q_D(const Daemon);

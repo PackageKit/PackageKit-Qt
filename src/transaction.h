@@ -367,6 +367,7 @@ public:
         ProvidesPythonModule,
         ProvidesLanguageSupport
     };
+    Q_DECLARE_FLAGS(ProvidesFlag, Provides)
 
     /**
      * Describes an distro upgrade state

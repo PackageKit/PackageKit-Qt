@@ -108,6 +108,11 @@ public:
     Transaction::Roles actions();
 
     /**
+     * Returns all the actions supported by the current backend
+     */
+    Transaction::ProvidesFlag provides();
+
+    /**
      * The backend name, e.g. "yum".
      */
     QString backendName();
