@@ -52,6 +52,7 @@ class Daemon : public QObject
     Q_ENUMS(Network)
     Q_ENUMS(Authorize)
     Q_PROPERTY(Transaction::Roles actions READ actions NOTIFY changed)
+    Q_PROPERTY(Transaction::ProvidesFlag provides READ provides NOTIFY changed)
     Q_PROPERTY(QString backendName READ backendName NOTIFY changed)
     Q_PROPERTY(QString backendDescription READ backendDescription NOTIFY changed)
     Q_PROPERTY(QString backendAuthor READ backendAuthor NOTIFY changed)
@@ -426,5 +427,8 @@ private:
 };
 
 } // End namespace PackageKit
+
+Q_DECLARE_METATYPE(PackageKit::Daemon::Network)
+Q_DECLARE_METATYPE(PackageKit::Daemon::Authorize)
 
 #endif

@@ -1394,6 +1394,7 @@ private:
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::TransactionFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::ProvidesFlag)
 
 } // End namespace PackageKit
 Q_DECLARE_METATYPE(PackageKit::Transaction::InternalError)
@@ -1414,5 +1415,6 @@ Q_DECLARE_METATYPE(PackageKit::Transaction::SigType)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Filter)
 Q_DECLARE_METATYPE(PackageKit::Transaction::TransactionFlags)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Filters)
+Q_DECLARE_METATYPE(PackageKit::Transaction::ProvidesFlag)
 
 #endif
