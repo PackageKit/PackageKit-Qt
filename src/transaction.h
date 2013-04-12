@@ -1375,22 +1375,22 @@ private:
                 uint uid,
                 const QString &cmdline,
                 QObject *parent);
-    Q_DECLARE_PRIVATE(Transaction);
+    Q_DECLARE_PRIVATE(Transaction)
     Q_DISABLE_COPY(Transaction)
-    Q_PRIVATE_SLOT(d_ptr, void Details(const QString &pid, const QString &license, uint group, const QString &detail, const QString &url, qulonglong size));
-    Q_PRIVATE_SLOT(d_ptr, void distroUpgrade(uint type, const QString &name, const QString &description));
-    Q_PRIVATE_SLOT(d_ptr, void errorCode(uint error, const QString &details));
-    Q_PRIVATE_SLOT(d_ptr, void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText));
-    Q_PRIVATE_SLOT(d_ptr, void finished(uint exitCode, uint runtime));
-    Q_PRIVATE_SLOT(d_ptr, void message(uint type, const QString &message));
-    Q_PRIVATE_SLOT(d_ptr, void Package(uint info, const QString &pid, const QString &summary));
-    Q_PRIVATE_SLOT(d_ptr, void ItemProgress(const QString &itemID, uint status, uint percentage));
-    Q_PRIVATE_SLOT(d_ptr, void RepoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type));
-    Q_PRIVATE_SLOT(d_ptr, void requireRestart(uint type, const QString &pid));
-    Q_PRIVATE_SLOT(d_ptr, void transaction(const QDBusObjectPath &oldTid, const QString &timespec, bool succeeded, uint role, uint duration, const QString &data, uint uid, const QString &cmdline));
-    Q_PRIVATE_SLOT(d_ptr, void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated));
-    Q_PRIVATE_SLOT(d_ptr, void destroy());
-    Q_PRIVATE_SLOT(d_ptr, void daemonQuit());
+    Q_PRIVATE_SLOT(d_ptr, void Details(const QString &pid, const QString &license, uint group, const QString &detail, const QString &url, qulonglong size))
+    Q_PRIVATE_SLOT(d_ptr, void distroUpgrade(uint type, const QString &name, const QString &description))
+    Q_PRIVATE_SLOT(d_ptr, void errorCode(uint error, const QString &details))
+    Q_PRIVATE_SLOT(d_ptr, void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText))
+    Q_PRIVATE_SLOT(d_ptr, void finished(uint exitCode, uint runtime))
+    Q_PRIVATE_SLOT(d_ptr, void message(uint type, const QString &message))
+    Q_PRIVATE_SLOT(d_ptr, void Package(uint info, const QString &pid, const QString &summary))
+    Q_PRIVATE_SLOT(d_ptr, void ItemProgress(const QString &itemID, uint status, uint percentage))
+    Q_PRIVATE_SLOT(d_ptr, void RepoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type))
+    Q_PRIVATE_SLOT(d_ptr, void requireRestart(uint type, const QString &pid))
+    Q_PRIVATE_SLOT(d_ptr, void transaction(const QDBusObjectPath &oldTid, const QString &timespec, bool succeeded, uint role, uint duration, const QString &data, uint uid, const QString &cmdline))
+    Q_PRIVATE_SLOT(d_ptr, void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated))
+    Q_PRIVATE_SLOT(d_ptr, void destroy())
+    Q_PRIVATE_SLOT(d_ptr, void daemonQuit())
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::TransactionFlags)
