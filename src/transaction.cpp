@@ -156,55 +156,21 @@ bool Transaction::init(const QDBusObjectPath &tid)
 
     if (!tid.path().isNull()) {
         d->tid = tid;
-    }
-
-    int retry = 0;
-    do {
-        if (tid.path().isNull()) {
-            d->tid = Daemon::global()->getTid();
-        }
-
-        if (!d->tid.path().isNull()) {
-            if (d->p) {
-                delete d->p;
+    } else {
+        d->tid = Daemon::global()->getTid();
+        if (d->tid.path().isNull()) {
+            d->error = Transaction::InternalErrorFailed;
+            if (Daemon::global()->lastError().isValid()) {
+                d->errorMessage = Daemon::global()->lastError().message();
             }
-            d->p = new TransactionProxy(QLatin1String(PK_NAME),
-                                        d->tid.path(),
-                                        QDBusConnection::systemBus(),
-                                        this);
+            return false;
         }
-
-        if (!d->p || !d->p->isValid()) {
-            qWarning() << "Error, cannot create transaction proxy for path:" << d->tid.path();
-            QDBusMessage message;
-            message = QDBusMessage::createMethodCall(QLatin1String("org.freedesktop.DBus"),
-                                                     QLatin1String("/"),
-                                                     QLatin1String("org.freedesktop.DBus"),
-                                                     QLatin1String("StartServiceByName"));
-            message << qVariantFromValue(QString("org.freedesktop.PackageKit"));
-            message << qVariantFromValue(0U);
-            QDBusConnection::sessionBus().call(message, QDBus::BlockWithGui);
-
-            retry++;
-        } else {
-            retry = 0;
-        }
-    } while (retry == 1);
-
-    // if the transaction proxy was not created return false and set the error
-    if (!d->p || !d->p->isValid()) {
-        // The transaction was not created
-        d->error = Transaction::InternalErrorFailed;
-        if (!d->p || Daemon::global()->lastError().isValid()) {
-            d->errorMessage = Daemon::global()->lastError().message();
-        } else {
-            d->errorMessage = d->p->lastError().message();
-        }
-        delete d->p;
-        d->p = 0;
-        return false;
     }
 
+    d->p = new TransactionProxy(QLatin1String(PK_NAME),
+                                d->tid.path(),
+                                QDBusConnection::systemBus(),
+                                this);
     d->error = Transaction::InternalErrorNone;
     d->errorMessage.clear();
     if (!Daemon::global()->hints().isEmpty()) {
@@ -219,7 +185,6 @@ bool Transaction::init(const QDBusObjectPath &tid)
     foreach (const QString &signal, currentSignals) {
         d->setupSignal(signal, true);
     }
-
     return true;
 }
 
