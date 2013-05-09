@@ -1,3 +1,22 @@
+Version 0.8.8
+~~~~~~~~~~~~~
+Released: 2013-05-09
+
+New Features:
+ - Adding Provides property to Daemon (Daniel Nicoletti)
+ - Adding some Meta information (Daniel Nicoletti)
+ - Adds the transactionFlags to the Transaction class (Daniel Nicoletti)
+ - Add TransactionFlags registration (Daniel Nicoletti)
+ - Implement connectNotify and disconnectNotify (Daniel Nicoletti)
+
+Bugfixes:
+ - Add missing declare enums (Daniel Nicoletti)
+ - Fix searchGroups() be iterating over the flaged values (Daniel Nicoletti)
+ - Ignore Interface isValid() check (Daniel Nicoletti)
+ - Improve error handling and make it easier for QML use it (Daniel Nicoletti)
+ - Make sure we set an error if we fail to contact PackageKit (Daniel Nicoletti)
+ - Use the correct version of the LGPL library (Richard Hughes)
+
 Version 0.8.7
 ~~~~~~~~~~~~~
 Released: 2012-01-17
