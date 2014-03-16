@@ -355,6 +355,5 @@ QString Daemon::packageIcon(const QString &packageID)
     return Transaction::packageIcon(packageID);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include "daemon.moc"
-#endif
+

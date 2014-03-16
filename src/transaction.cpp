@@ -66,6 +66,15 @@ void Transaction::connectNotify(const char *signal)
     d->connectedSignals << signal;
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+void Transaction::connectNotify(const QMetaMethod &signal)
+{
+    // ugly but recommended way to convert a methodSignature to a SIGNAL
+    connectNotify(QString("2%1")
+                  .arg(QLatin1String(signal.methodSignature())).toLatin1());
+}
+#endif
+
 void Transaction::disconnectNotify(const char *signal)
 {
     Q_D(Transaction);
@@ -76,6 +85,15 @@ void Transaction::disconnectNotify(const char *signal)
         }
     }
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+void Transaction::disconnectNotify(const QMetaMethod &signal)
+{
+    // ugly but recommended way to convert a methodSignature to a SIGNAL
+    disconnectNotify(QString("2%1")
+                     .arg(QLatin1String(signal.methodSignature())).toLatin1());
+}
+#endif
 
 void TransactionPrivate::setupSignal(const QString &signal, bool connect)
 {
@@ -744,6 +762,5 @@ Transaction::InternalError Transaction::parseError(const QString &errorName)
     return Transaction::InternalErrorFailed;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include "transaction.moc"
-#endif
+

@@ -1,22 +1,33 @@
 # CMakeLists for PackageKit-Qt library
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5DBus REQUIRED)
-find_package(Qt5Sql REQUIRED)
+if (USE_QT5)
+  find_package(Qt5Core REQUIRED)
+  set(Qt5_FOUND YES)
+else ()
+  find_package(Qt4 REQUIRED)
+  set(Qt4_FOUND YES)
+endif ()
 
-# Set up Qt5
-set(QT_USE_QTDBUS TRUE)
-set(QT_USE_QTSQL TRUE)
-set(QT_DONT_USE_QTGUI TRUE)
-
-set(CMAKE_AUTOMOC TRUE)
+# Set up Qt
+if (Qt5_FOUND)
+  find_package(Qt5DBus REQUIRED)
+  find_package(Qt5Sql REQUIRED)
+  include_directories(${Qt5Core_INCLUDE_DIRS}
+                      ${Qt5DBus_INCLUDE_DIRS}
+                      ${Qt5Sql_INCLUDE_DIRS}
+  )
+  add_definitions(${Qt5DBus_DEFINITIONS})
+  add_definitions(${Qt5Sql_DEFINITIONS})
+elseif (Qt4_FOUND)
+  set(QT_USE_QTDBUS TRUE)
+  set(QT_USE_QTSQL TRUE)
+  set(QT_DONT_USE_QTGUI TRUE)
+  include(${QT_USE_FILE})
+endif ()
 
 include_directories(${CMAKE_BINARY_DIR}
 		    ${CMAKE_CURRENT_BINARY_DIR}
 		    ${CMAKE_CURRENT_SOURCE_DIR}
-                    ${Qt5Core_INCLUDE_DIRS}
-                    ${Qt5DBus_INCLUDE_DIRS}
-                    ${Qt5Sql_INCLUDE_DIRS}
 )
 
 set(packagekitqt_HEADERS
@@ -52,31 +63,46 @@ if (PK_INTERFACE_XML STREQUAL "PK_INTERFACE_XML-NOTFOUND" OR PK_TRANSACTION_INTE
 endif ()
 
 set_source_files_properties(${PK_INTERFACE_XML} PROPERTIES CLASSNAME DaemonProxy)
-qt5_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
-
 set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES CLASSNAME TransactionProxy)
-qt5_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
 
-qt5_wrap_cpp(packagekitqt_MOC_SRC ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
+if (Qt5_FOUND)
+  qt5_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
+  qt5_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+  qt5_generate_moc(daemon.h daemon.moc)
+  qt5_generate_moc(transaction.h transaction.moc)
+  add_custom_target(mocs DEPENDS daemon.moc transaction.moc)
+elseif (Qt4_FOUND)
+  qt4_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
+  qt4_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+  qt4_automoc(${packagekitqt_SRC})
+  qt4_wrap_cpp(packagekitqt_MOC_SRC ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
+endif ()
 
-add_library(packagekit-qt2 SHARED ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
-set_target_properties(packagekit-qt2 PROPERTIES VERSION ${QPACKAGEKIT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})
+add_library(${LIBNAME} SHARED ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
+set_target_properties(${LIBNAME} PROPERTIES VERSION ${QPACKAGEKIT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})
 
-target_link_libraries(packagekit-qt2
+if (Qt5_FOUND)
+  add_dependencies(${LIBNAME} mocs)
+  target_link_libraries(${LIBNAME}
+		${Qt5DBus_LIBRARIES} ${Qt5Sql_LIBRARIES}
+  )
+elseif (Qt4_FOUND)
+  target_link_libraries(${LIBNAME}
 		${QT_LIBRARIES}
-)
+  )
+endif ()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekit-qt2.pc.in
-  ${CMAKE_CURRENT_BINARY_DIR}/packagekit-qt2.pc
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${LIBNAME}.pc.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
   @ONLY
 )
 
-install(TARGETS packagekit-qt2 DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekit-qt2.pc
+install(TARGETS ${LIBNAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 install(FILES ${packagekitqt_HEADERS}
-	DESTINATION include/PackageKit/packagekit-qt2
+        DESTINATION include/PackageKit/${LIBNAME}
 )
 
 add_subdirectory(modules)
