@@ -44,13 +44,24 @@ protected:
     Transaction *q_ptr;
     QStringList connectedSignals;
 
+    bool allowCancel;
+    bool callerActive;
+    qulonglong downloadSizeRemaining;
+    uint elapsedTime;
+    QString lastPackage;
+    uint percentage;
+    uint remainingTime;
+    Transaction::Role role;
+    uint speed;
+    Transaction::Status status;
+    Transaction::TransactionFlags transactionFlags;
+    uint uid;
+
     // Only used for old transactions
     QDateTime timespec;
-    Transaction::Role role;
     bool succeeded;
     uint duration;
     QString data;
-    uint uid;
     QString cmdline;
 
     Transaction::InternalError error;
@@ -80,6 +91,7 @@ protected Q_SLOTS:
     void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated);
     void destroy();
     void daemonQuit();
+    void propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties);
 };
 
 } // End namespace PackageKit

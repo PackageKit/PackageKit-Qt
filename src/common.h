@@ -21,6 +21,8 @@
 #define PK_NAME					"org.freedesktop.PackageKit"
 #define PK_PATH					"/org/freedesktop/PackageKit"
 
+#define DBUS_PROPERTIES  "org.freedesktop.DBus.Properties"
+
 #define AUTH_PACKAGE_INSTALL			"org.freedesktop.packagekit.package-install"
 #define AUTH_PACKAGE_INSTALL_UNTRUSTED		"org.freedesktop.packagekit.package-install-untrusted"
 #define AUTH_SYSTEM_TRUST_SIGNING_KEY		"org.freedesktop.packagekit.system-trust-signing-key"

@@ -57,6 +57,13 @@ Daemon::Daemon(QObject *parent) :
                                   QDBusConnection::systemBus(),
                                   this);
 
+    QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
+                                         QLatin1String(PK_PATH),
+                                         DBUS_PROPERTIES,
+                                         QLatin1String("PropertiesChanged"),
+                                         this,
+                                         SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+
     // Set up database for desktop files
     QSqlDatabase db;
     db = QSqlDatabase::addDatabase("QSQLITE", PK_DESKTOP_DEFAULT_DATABASE);

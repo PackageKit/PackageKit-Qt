@@ -31,7 +31,9 @@ using namespace PackageKit;
 TransactionPrivate::TransactionPrivate(Transaction* parent) :
     q_ptr(parent),
     p(0),
-    role(Transaction::RoleUnknown)
+    role(Transaction::RoleUnknown),
+    status(Transaction::StatusUnknown),
+    transactionFlags(Transaction::TransactionFlagNone)
 {
 }
 
@@ -95,6 +97,69 @@ void TransactionPrivate::daemonQuit()
     if (p) {
         q->finished(Transaction::ExitFailed, 0);
         destroy();
+    }
+}
+
+void TransactionPrivate::propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties)
+{
+    Q_Q(Transaction);
+    Q_UNUSED(interface)
+
+//    qDebug() << interface << properties << invalidatedProperties;
+
+    foreach (const QString &property, invalidatedProperties) {
+//        properties.remove(property);
+    }
+
+    QVariantMap::ConstIterator it = properties.constBegin();
+    while (it != properties.constEnd()) {
+        const QString &property = it.key();
+        const QVariant &value = it.value();
+        if (property == QLatin1String("AllowCancel")) {
+            allowCancel = value.toBool();
+            q->allowCancelChanged();
+        } else if (property == QLatin1String("CallerActive")) {
+            callerActive = value.toBool();
+            q->isCallerActiveChanged();
+        } else if (property == QLatin1String("DownloadSizeRemaining")) {
+            downloadSizeRemaining = value.toLongLong();
+            q->downloadSizeRemainingChanged();
+        } else if (property == QLatin1String("ElapsedTime")) {
+            elapsedTime = value.toUInt();
+            q->elapsedTimeChanged();
+        } else if (property == QLatin1String("LastPackage")) {
+            lastPackage = value.toString();
+            q->lastPackageChanged();
+        } else if (property == QLatin1String("Percentage")) {
+            percentage = value.toUInt();
+            q->percentageChanged();
+        } else if (property == QLatin1String("RemainingTime")) {
+            remainingTime = value.toUInt();
+            q->remainingTimeChanged();
+        } else if (property == QLatin1String("Role")) {
+            role = static_cast<Transaction::Role>(value.toUInt());
+            q->roleChanged();
+        } else if (property == QLatin1String("Speed")) {
+            speed = value.toUInt();
+            q->speedChanged();
+        } else if (property == QLatin1String("Status")) {
+            status = static_cast<Transaction::Status>(value.toUInt());
+            q->statusChanged();
+        } else if (property == QLatin1String("TransactionFlags")) {
+            transactionFlags = static_cast<Transaction::TransactionFlags>(value.toULongLong());
+            q->transactionFlagsChanged();
+        } else if (property == QLatin1String("Uid")) {
+            uid = value.toUInt();
+            q->uidChanged();
+        } else {
+            qWarning() << "Unknown Transaction property:" << property << value;
+        }
+
+        ++it;
+    }
+
+    if (!properties.isEmpty()) {
+        q->changed();
     }
 }
 

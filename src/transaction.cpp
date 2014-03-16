@@ -198,6 +198,13 @@ bool Transaction::init(const QDBusObjectPath &tid)
     connect(d->p, SIGNAL(Destroy()),
             SLOT(destroy()));
 
+    QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
+                                         d->tid.path(),
+                                         DBUS_PROPERTIES,
+                                         QLatin1String("PropertiesChanged"),
+                                         this,
+                                         SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+
     QStringList currentSignals = d->connectedSignals;
     currentSignals.removeDuplicates();
     foreach (const QString &signal, currentSignals) {
@@ -270,19 +277,13 @@ QString Transaction::internalErrorMessage() const
 bool Transaction::allowCancel() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->allowCancel();
-    }
-    return false;
+    return d->allowCancel;
 }
 
 bool Transaction::isCallerActive() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->callerActive();
-    }
-    return false;
+    return d->callerActive;
 }
 
 void Transaction::cancel()
@@ -351,63 +352,42 @@ QString Transaction::packageIcon(const QString &packageID)
 QString Transaction::lastPackage() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->lastPackage();
-    }
-    return QString();
+    return d->lastPackage;
 }
 
 uint Transaction::percentage() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->percentage();
-    }
-    return 0;
+    return d->percentage;
 }
 
 uint Transaction::elapsedTime() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->elapsedTime();
-    }
-    return 0;
+    return d->elapsedTime;
 }
 
 uint Transaction::remainingTime() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->remainingTime();
-    }
-    return 0;
+    return d->remainingTime;
 }
 
 uint Transaction::speed() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->speed();
-    }
-    return 0;
+    return d->speed;
 }
 
 qulonglong Transaction::downloadSizeRemaining() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return d->p->downloadSizeRemaining();
-    }
-    return 0;
+    return d->downloadSizeRemaining;
 }    
 
 Transaction::Role Transaction::role() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return static_cast<Transaction::Role>(d->p->role());
-    }
     return d->role;
 }
 
@@ -427,19 +407,13 @@ void Transaction::setHints(const QString &hints)
 Transaction::Status Transaction::status() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return static_cast<Transaction::Status>(d->p->status());
-    }
-    return Transaction::StatusUnknown;
+    return d->status;
 }
 
 Transaction::TransactionFlags Transaction::transactionFlags() const
 {
     Q_D(const Transaction);
-    if (d->p) {
-        return static_cast<Transaction::TransactionFlags>(d->p->transactionFlags());
-    }
-    return Transaction::TransactionFlagNone;
+    return d->transactionFlags;
 }
 
 QDateTime Transaction::timespec() const
@@ -469,9 +443,6 @@ QString Transaction::data() const
 uint Transaction::uid() const
 {
     Q_D(const Transaction);
-    if(d->p) {
-        return d->p->uid();
-    }
     return d->uid;
 }
 

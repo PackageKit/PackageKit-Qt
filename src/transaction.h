@@ -71,22 +71,22 @@ class Transaction : public QObject
     Q_PROPERTY(InternalError error READ internalError NOTIFY changed)
     Q_PROPERTY(InternalError internalError READ internalError NOTIFY changed)
     Q_PROPERTY(QString internalErrorMessage READ internalErrorMessage NOTIFY changed)
-    Q_PROPERTY(bool allowCancel READ allowCancel NOTIFY changed)
-    Q_PROPERTY(bool isCallerActive READ isCallerActive NOTIFY changed)
-    Q_PROPERTY(QString lastPackage READ lastPackage NOTIFY changed)
-    Q_PROPERTY(uint percentage READ percentage NOTIFY changed)
-    Q_PROPERTY(uint elapsedTime READ elapsedTime NOTIFY changed)
-    Q_PROPERTY(uint remainingTime READ remainingTime NOTIFY changed)
-    Q_PROPERTY(uint speed READ speed NOTIFY changed)
-    Q_PROPERTY(qulonglong downloadSizeRemaining READ downloadSizeRemaining)
-    Q_PROPERTY(Role role READ role NOTIFY changed)
-    Q_PROPERTY(Status status READ status NOTIFY changed)
-    Q_PROPERTY(TransactionFlags transactionFlags READ transactionFlags NOTIFY changed)
+    Q_PROPERTY(bool allowCancel READ allowCancel NOTIFY allowCancelChanged)
+    Q_PROPERTY(bool isCallerActive READ isCallerActive NOTIFY isCallerActiveChanged)
+    Q_PROPERTY(QString lastPackage READ lastPackage NOTIFY lastPackageChanged)
+    Q_PROPERTY(uint percentage READ percentage NOTIFY percentageChanged)
+    Q_PROPERTY(uint elapsedTime READ elapsedTime NOTIFY elapsedTimeChanged)
+    Q_PROPERTY(uint remainingTime READ remainingTime NOTIFY remainingTimeChanged)
+    Q_PROPERTY(uint speed READ speed NOTIFY speedChanged)
+    Q_PROPERTY(qulonglong downloadSizeRemaining READ downloadSizeRemaining NOTIFY downloadSizeRemainingChanged)
+    Q_PROPERTY(Role role READ role NOTIFY roleChanged)
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(TransactionFlags transactionFlags READ transactionFlags NOTIFY transactionFlagsChanged)
     Q_PROPERTY(QDateTime timespec READ timespec NOTIFY changed)
     Q_PROPERTY(bool succeeded READ succeeded NOTIFY changed)
     Q_PROPERTY(uint duration READ duration NOTIFY changed)
     Q_PROPERTY(QString data READ data NOTIFY changed)
-    Q_PROPERTY(uint uid READ uid NOTIFY changed)
+    Q_PROPERTY(uint uid READ uid NOTIFY uidChanged)
     Q_PROPERTY(QString cmdline READ cmdline NOTIFY changed)
 public:
     /**
@@ -1200,10 +1200,34 @@ public:
     static QString packageIcon(const QString &packageID);
 
 Q_SIGNALS:
+    void allowCancelChanged();
+
+    void isCallerActiveChanged();
+
+    void downloadSizeRemainingChanged();
+
+    void elapsedTimeChanged();
+
+    void lastPackageChanged();
+
+    void percentageChanged();
+
+    void remainingTimeChanged();
+
+    void roleChanged();
+
+    void speedChanged();
+
+    void statusChanged();
+
+    void transactionFlagsChanged();
+
+    void uidChanged();
+
     /**
      * The transaction has changed one of it's properties
      */
-    void changed();
+    Q_DECL_DEPRECATED void changed();
 
     /**
      * \brief Sends a category
@@ -1397,6 +1421,7 @@ private:
     Q_PRIVATE_SLOT(d_ptr, void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated))
     Q_PRIVATE_SLOT(d_ptr, void destroy())
     Q_PRIVATE_SLOT(d_ptr, void daemonQuit())
+    Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::TransactionFlags)
