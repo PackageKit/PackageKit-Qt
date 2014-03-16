@@ -1,16 +1,22 @@
 # CMakeLists for PackageKit-Qt library
 
-find_package(Qt4 REQUIRED)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5DBus REQUIRED)
+find_package(Qt5Sql REQUIRED)
 
-# Set up Qt4
+# Set up Qt5
 set(QT_USE_QTDBUS TRUE)
 set(QT_USE_QTSQL TRUE)
 set(QT_DONT_USE_QTGUI TRUE)
-include(${QT_USE_FILE})
+
+set(CMAKE_AUTOMOC TRUE)
 
 include_directories(${CMAKE_BINARY_DIR}
 		    ${CMAKE_CURRENT_BINARY_DIR}
 		    ${CMAKE_CURRENT_SOURCE_DIR}
+                    ${Qt5Core_INCLUDE_DIRS}
+                    ${Qt5DBus_INCLUDE_DIRS}
+                    ${Qt5Sql_INCLUDE_DIRS}
 )
 
 set(packagekitqt_HEADERS
@@ -46,13 +52,12 @@ if (PK_INTERFACE_XML STREQUAL "PK_INTERFACE_XML-NOTFOUND" OR PK_TRANSACTION_INTE
 endif ()
 
 set_source_files_properties(${PK_INTERFACE_XML} PROPERTIES CLASSNAME DaemonProxy)
-qt4_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
+qt5_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
 
 set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES CLASSNAME TransactionProxy)
-qt4_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+qt5_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
 
-qt4_automoc(${packagekitqt_SRC})
-qt4_wrap_cpp(packagekitqt_MOC_SRC ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
+qt5_wrap_cpp(packagekitqt_MOC_SRC ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
 
 add_library(packagekit-qt2 SHARED ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
 set_target_properties(packagekit-qt2 PROPERTIES VERSION ${QPACKAGEKIT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})

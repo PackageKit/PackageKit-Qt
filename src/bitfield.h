@@ -1,7 +1,7 @@
 #ifndef PACKAGEKIT_BITFIELD_H
 #define PACKAGEKIT_BITFIELD_H
 
-#include <QtGlobal>
+#include <QtCore/QtGlobal>
 
 namespace PackageKit {
 

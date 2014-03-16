@@ -358,10 +358,10 @@ public:
 
         int id = T::staticMetaObject.indexOfEnumerator(enumName);
         QMetaEnum e = T::staticMetaObject.enumerator(id);
-        int enumValue = e.keyToValue(realName.toAscii().data());
+        int enumValue = e.keyToValue(realName.toLatin1().data());
 
         if (enumValue == -1) {
-            enumValue = e.keyToValue(prefix.append("Unknown").toAscii().data());
+            enumValue = e.keyToValue(prefix.append("Unknown").toLatin1().data());
             if (!QString(enumName).isEmpty()) {
 //                 qDebug() << "enumFromString (" << enumName << ") : converted" << str << "to" << QString("Unknown").append(enumName) << ", enum id" << id;
             }
