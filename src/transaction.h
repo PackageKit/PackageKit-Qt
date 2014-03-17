@@ -1422,6 +1422,7 @@ private:
     Q_PRIVATE_SLOT(d_ptr, void destroy())
     Q_PRIVATE_SLOT(d_ptr, void daemonQuit())
     Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
+    Q_PRIVATE_SLOT(d_func(), void updateProperties(QVariantMap))
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::TransactionFlags)

@@ -198,9 +198,20 @@ bool Transaction::init(const QDBusObjectPath &tid)
     connect(d->p, SIGNAL(Destroy()),
             SLOT(destroy()));
 
+    // Get current properties
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String(PK_NAME),
+                                                          d->tid.path(),
+                                                          QLatin1String(DBUS_PROPERTIES),
+                                                          QLatin1String("GetAll"));
+    message << PK_TRANSACTION_INTERFACE;
+    QDBusConnection::systemBus().callWithCallback(message,
+                                                  this,
+                                                  SLOT(updateProperties(QVariantMap)));
+
+    // Watch for properties updates
     QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
                                          d->tid.path(),
-                                         DBUS_PROPERTIES,
+                                         QLatin1String(DBUS_PROPERTIES),
                                          QLatin1String("PropertiesChanged"),
                                          this,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));

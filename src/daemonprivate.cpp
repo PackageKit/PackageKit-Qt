@@ -24,18 +24,35 @@
 #include "common.h"
 
 #include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusArgument>
+#include <QDBusReply>
+#include <QDebug>
 
 using namespace PackageKit;
 
 DaemonPrivate::DaemonPrivate(Daemon* parent) :
-    q_ptr(parent)
+    q_ptr(parent),
+    filters(Transaction::FilterUnknown),
+    groups(Transaction::GroupUnknown),
+    locked(false),
+    networkState(Daemon::NetworkUnknown),
+    provides(Transaction::ProvidesUnknown),
+    roles(0),
+    versionMajor(0),
+    versionMicro(0),
+    versionMinor(0),
+    running(false)
 {
     m_watcher = new QDBusServiceWatcher(QLatin1String(PK_NAME),
                                         QDBusConnection::systemBus(),
-                                        QDBusServiceWatcher::WatchForUnregistration,
+                                        QDBusServiceWatcher::WatchForOwnerChange,
                                         q_ptr);
-    q_ptr->connect(m_watcher, SIGNAL(serviceUnregistered(QString)),
-                   SLOT(serviceUnregistered()));
+    q_ptr->connect(m_watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)),
+                   SLOT(serviceOwnerChanged(QString,QString,QString)));
+
+    // On PK 0.9 this will always be async
+    getAllProperties(true);
 }
 
 QList<Transaction*> DaemonPrivate::transactions(const QList<QDBusObjectPath> &tids, QObject *parent)
@@ -48,12 +65,113 @@ QList<Transaction*> DaemonPrivate::transactions(const QList<QDBusObjectPath> &ti
     return transactionList;
 }
 
-void DaemonPrivate::serviceUnregistered()
+void DaemonPrivate::serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner)
+{
+    Q_Q(Daemon);
+    Q_UNUSED(service)
+
+    if (newOwner.isEmpty() || !oldOwner.isEmpty()) {
+        // TODO check if we don't emit this twice when
+        // the daemon exits cleanly
+        q->daemonQuit();
+    }
+
+    // There is a new PackageKit running get it's props
+    if (!newOwner.isEmpty()) {
+        // We don't have more transactions running
+        q->transactionListChanged(QStringList());
+
+        getAllProperties(false);
+
+        if (!running) {
+            running = true;
+            q->isRunningChanged();
+        }
+    } else if (running) {
+        running = false;
+        q->isRunningChanged();
+    }
+}
+
+void DaemonPrivate::getAllProperties(bool sync)
 {
     Q_Q(Daemon);
 
-    q->daemonQuit();
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String(PK_NAME),
+                                                          QLatin1String(PK_PATH),
+                                                          QLatin1String(DBUS_PROPERTIES),
+                                                          QLatin1String("GetAll"));
+    message << PK_NAME;
+    if (sync) {
+        QDBusReply<QVariantMap> reply = QDBusConnection::systemBus().call(message);
+        if (reply.isValid()) {
+            updateProperties(reply.value());
+        }
+    } else {
+        QDBusConnection::systemBus().callWithCallback(message,
+                                                      q,
+                                                      SLOT(updateProperties(QVariantMap)));
+    }
+}
 
-    // We don't have more transactions running
-    q->transactionListChanged(QStringList());
+void DaemonPrivate::propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties)
+{
+    Q_UNUSED(interface)
+    Q_UNUSED(invalidatedProperties)
+
+    updateProperties(properties);
+}
+
+void DaemonPrivate::updateProperties(const QVariantMap &properties)
+{
+    Q_Q(Daemon);
+
+    if (!running) {
+        running = true;
+        q->isRunningChanged();
+    }
+
+    QVariantMap::ConstIterator it = properties.constBegin();
+    while (it != properties.constEnd()) {
+        const QString &property = it.key();
+        const QVariant &value = it.value();
+        if (property == QLatin1String("BackendAuthor")) {
+            backendAuthor = value.toString();
+        } else if (property == QLatin1String("BackendDescription")) {
+            backendDescription = value.toString();
+        } else if (property == QLatin1String("BackendName")) {
+            backendName = value.toString();
+        } else if (property == QLatin1String("DistroId")) {
+            distroId = value.toString();
+        } else if (property == QLatin1String("Filters")) {
+            filters = static_cast<Transaction::Filters>(value.toULongLong());
+        } else if (property == QLatin1String("Groups")) {
+            groups =  static_cast<Transaction::Groups>(value.toULongLong());
+        } else if (property == QLatin1String("Locked")) {
+            locked = value.toBool();
+        } else if (property == QLatin1String("MimeTypes")) {
+            mimeTypes = value.toStringList();
+        } else if (property == QLatin1String("NetworkState")) {
+            networkState = static_cast<Daemon::Network>(value.toUInt());
+            q->networkStateChanged();
+        } else if (property == QLatin1String("Provides")) {
+            provides = static_cast<Transaction::ProvidesFlag>(value.toULongLong());
+        } else if (property == QLatin1String("Roles")) {
+            roles = value.toULongLong();
+        } else if (property == QLatin1String("VersionMajor")) {
+            versionMajor = value.toUInt();
+        } else if (property == QLatin1String("VersionMicro")) {
+            versionMicro = value.toUInt();
+        } else if (property == QLatin1String("VersionMinor")) {
+            versionMinor = value.toUInt();
+        } else {
+            qWarning() << "Unknown Transaction property:" << property << value;
+        }
+
+        ++it;
+    }
+
+    if (!properties.isEmpty()) {
+        q->changed();
+    }
 }

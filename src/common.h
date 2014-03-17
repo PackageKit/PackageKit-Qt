@@ -20,6 +20,7 @@
 
 #define PK_NAME					"org.freedesktop.PackageKit"
 #define PK_PATH					"/org/freedesktop/PackageKit"
+#define PK_TRANSACTION_INTERFACE "org.freedesktop.PackageKit.Transaction"
 
 #define DBUS_PROPERTIES  "org.freedesktop.DBus.Properties"
 

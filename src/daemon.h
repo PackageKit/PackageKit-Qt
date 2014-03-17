@@ -51,6 +51,7 @@ class Daemon : public QObject
     Q_OBJECT
     Q_ENUMS(Network)
     Q_ENUMS(Authorize)
+    Q_PROPERTY(bool isRunning READ isRunning NOTIFY isRunningChanged)
     Q_PROPERTY(Transaction::Roles actions READ actions NOTIFY changed)
     Q_PROPERTY(Transaction::ProvidesFlag provides READ provides NOTIFY changed)
     Q_PROPERTY(QString backendName READ backendName NOTIFY changed)
@@ -60,7 +61,7 @@ class Daemon : public QObject
     Q_PROPERTY(Transaction::Groups groups READ groups NOTIFY changed)
     Q_PROPERTY(bool locked READ locked NOTIFY changed)
     Q_PROPERTY(QStringList mimeTypes READ mimeTypes NOTIFY changed)
-    Q_PROPERTY(Daemon::Network networkState READ networkState NOTIFY changed)
+    Q_PROPERTY(Daemon::Network networkState READ networkState NOTIFY networkStateChanged)
     Q_PROPERTY(QString distroID READ distroID NOTIFY changed)
     Q_PROPERTY(uint versionMajor READ versionMajor NOTIFY changed)
     Q_PROPERTY(uint versionMinor READ versionMinor NOTIFY changed)
@@ -102,6 +103,11 @@ public:
      * Destructor
      */
     ~Daemon();
+
+    /**
+     * Returns true if the daemon is running (ie registered to DBus)
+     */
+    bool isRunning() const;
 
     /**
      * Returns all the actions supported by the current backend
@@ -370,6 +376,10 @@ public:
     }
 
 Q_SIGNALS:
+    void isRunningChanged();
+
+    void networkStateChanged();
+
     /**
      * This signal is emitted when a property on the interface changes.
      */
@@ -420,8 +430,10 @@ protected:
     DaemonPrivate * const d_ptr;
 
 private:
-    Q_DECLARE_PRIVATE(Daemon);
-    Q_PRIVATE_SLOT(d_ptr, void serviceUnregistered());
+    Q_DECLARE_PRIVATE(Daemon)
+    Q_PRIVATE_SLOT(d_func(), void serviceOwnerChanged(QString,QString,QString))
+    Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
+    Q_PRIVATE_SLOT(d_func(), void updateProperties(QVariantMap))
     Daemon(QObject *parent = 0);
     static Daemon *m_global;
 };

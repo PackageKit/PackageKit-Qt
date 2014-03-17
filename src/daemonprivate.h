@@ -36,7 +36,7 @@ class DaemonPrivate
     Q_DECLARE_PUBLIC(Daemon)
 protected:
     DaemonPrivate(Daemon *parent);
-    virtual ~DaemonPrivate() {};
+    virtual ~DaemonPrivate() {}
 
     Daemon *q_ptr;
     ::DaemonProxy *daemon;
@@ -46,9 +46,29 @@ protected:
 
     QList<Transaction*> transactions(const QList<QDBusObjectPath> &tids, QObject *parent);
     void setupSignal(const QString &signal, bool connect);
+    void getAllProperties(bool sync);
+
+    QString backendAuthor;
+    QString backendDescription;
+    QString backendName;
+    QString distroId;
+    Transaction::Filters filters;
+    Transaction::Groups groups;
+    bool locked;
+    QStringList mimeTypes;
+    Daemon::Network networkState;
+    Transaction::ProvidesFlag provides;
+    Transaction::Roles roles;
+    uint versionMajor;
+    uint versionMicro;
+    uint versionMinor;
+
+    bool running;
 
 protected Q_SLOTS:
-    void serviceUnregistered();
+    void serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner);
+    void propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties);
+    void updateProperties(const QVariantMap &properties);
 
 private:
     QDBusServiceWatcher *m_watcher;

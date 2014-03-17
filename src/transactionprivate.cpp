@@ -102,14 +102,15 @@ void TransactionPrivate::daemonQuit()
 
 void TransactionPrivate::propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties)
 {
-    Q_Q(Transaction);
     Q_UNUSED(interface)
+    Q_UNUSED(invalidatedProperties)
 
-//    qDebug() << interface << properties << invalidatedProperties;
+    updateProperties(properties);
+}
 
-    foreach (const QString &property, invalidatedProperties) {
-//        properties.remove(property);
-    }
+void TransactionPrivate::updateProperties(const QVariantMap &properties)
+{
+    Q_Q(Transaction);
 
     QVariantMap::ConstIterator it = properties.constBegin();
     while (it != properties.constEnd()) {

@@ -59,7 +59,7 @@ Daemon::Daemon(QObject *parent) :
 
     QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
                                          QLatin1String(PK_PATH),
-                                         DBUS_PROPERTIES,
+                                         QLatin1String(DBUS_PROPERTIES),
                                          QLatin1String("PropertiesChanged"),
                                          this,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
@@ -152,70 +152,75 @@ Daemon::~Daemon()
 {
 }
 
+bool Daemon::isRunning() const
+{
+
+}
+
 Transaction::Roles Daemon::actions()
 {
     Q_D(const Daemon);
-    return d->daemon->roles();
+    return d->roles;
 }
 
 Transaction::ProvidesFlag Daemon::provides()
 {
     Q_D(const Daemon);
-    return static_cast<Transaction::ProvidesFlag>(d->daemon->provides());
+    return d->provides;
 }
 
 QString Daemon::backendName()
 {
     Q_D(const Daemon);
-    return d->daemon->backendName();
+    return d->backendName;
 }
 
 QString Daemon::backendDescription()
 {
     Q_D(const Daemon);
-    return d->daemon->backendDescription();
+    return d->backendDescription;
 }
 
 QString Daemon::backendAuthor()
 {
     Q_D(const Daemon);
-    return d->daemon->backendAuthor();
+    return d->backendAuthor;
 }
 
 Transaction::Filters Daemon::filters()
 {
     Q_D(const Daemon);
-    return static_cast<Transaction::Filters>(d->daemon->filters());
+    return d->filters;
 }
 
 Transaction::Groups Daemon::groups()
 {
     Q_D(const Daemon);
-    return static_cast<Transaction::Groups>(d->daemon->groups());
+    return d->groups;
 }
 
 bool Daemon::locked()
 {
     Q_D(const Daemon);
-    return d->daemon->locked();
+    return d->locked;
 }
 
 QStringList Daemon::mimeTypes()
 {
     Q_D(const Daemon);
-    return d->daemon->mimeTypes();
+    return d->mimeTypes;
 }
 
 Daemon::Network Daemon::networkState()
 {
     Q_D(const Daemon);
-    return static_cast<Daemon::Network>(d->daemon->networkState());
+    return d->networkState;
 }
 
 QString Daemon::distroID()
 {
     Q_D(const Daemon);
-    return d->daemon->distroId();
+    return d->distroId;
 }
 
 Daemon::Authorize Daemon::canAuthorize(const QString &actionId)
@@ -322,19 +327,19 @@ QDBusError Daemon::lastError() const
 uint Daemon::versionMajor()
 {
     Q_D(const Daemon);
-    return d->daemon->versionMajor();
+    return d->versionMajor;
 }
 
 uint Daemon::versionMinor()
 {
     Q_D(const Daemon);
-    return d->daemon->versionMinor();
+    return d->versionMinor;
 }
 
 uint Daemon::versionMicro()
 {
     Q_D(const Daemon);
-    return d->daemon->versionMicro();
+    return d->versionMicro;
 }
 
 QString Daemon::packageName(const QString &packageID)

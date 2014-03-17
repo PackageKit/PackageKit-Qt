@@ -92,6 +92,7 @@ protected Q_SLOTS:
     void destroy();
     void daemonQuit();
     void propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties);
+    void updateProperties(const QVariantMap &properties);
 };
 
 } // End namespace PackageKit
