@@ -234,16 +234,10 @@ Daemon::Authorize Daemon::canAuthorize(const QString &actionId)
     return Daemon::AuthorizeUnknown;
 }
 
-QDBusObjectPath Daemon::getTid()
+QDBusPendingReply<QDBusObjectPath> Daemon::createTransaction() const
 {
-    Q_D(Daemon);
-    QDBusPendingReply<QDBusObjectPath> reply = d->daemon->CreateTransaction();
-    reply.waitForFinished();
-    d->lastError = reply.error();
-    if (reply.isValid()) {
-        return reply.value();
-    }
-    return QDBusObjectPath();
+    Q_D(const Daemon);
+    return d->daemon->CreateTransaction();
 }
 
 uint Daemon::getTimeSinceAction(Transaction::Role role)

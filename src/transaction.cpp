@@ -29,17 +29,6 @@
 #include <QSqlQuery>
 #include <QDBusError>
 
-#define RUN_TRANSACTION(blurb)                      \
-        Q_D(Transaction);                           \
-        if (init()) {                               \
-            QDBusPendingReply<> r = d->p->blurb;    \
-            r.waitForFinished();                    \
-            if (r.isError()) {                      \
-                d->error = Transaction::parseError(r.error().name()); \
-                d->errorMessage = r.error().message(); \
-            }                                                         \
-        }                                           \
-
 using namespace PackageKit;
 
 Transaction::Transaction(QObject *parent) :
@@ -173,55 +162,15 @@ bool Transaction::init(const QDBusObjectPath &tid)
     }
 
     if (!tid.path().isNull()) {
-        d->tid = tid;
+        d->setup(tid);
     } else {
-        d->tid = Daemon::global()->getTid();
-        if (d->tid.path().isNull()) {
-            d->error = Transaction::InternalErrorFailed;
-            if (Daemon::global()->lastError().isValid()) {
-                d->errorMessage = Daemon::global()->lastError().message();
-            }
-            return false;
-        }
+        QDBusPendingReply<QDBusObjectPath> reply = Daemon::global()->createTransaction();
+        QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
+        QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                         this, SLOT(createTransactionFinished(QDBusPendingCallWatcher*)));
     }
 
-    d->p = new TransactionProxy(QLatin1String(PK_NAME),
-                                d->tid.path(),
-                                QDBusConnection::systemBus(),
-                                this);
-    d->error = Transaction::InternalErrorNone;
-    d->errorMessage.clear();
-    if (!Daemon::global()->hints().isEmpty()) {
-        setHints(Daemon::global()->hints());
-    }
-
-    connect(d->p, SIGNAL(Destroy()),
-            SLOT(destroy()));
-
-    // Get current properties
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String(PK_NAME),
-                                                          d->tid.path(),
-                                                          QLatin1String(DBUS_PROPERTIES),
-                                                          QLatin1String("GetAll"));
-    message << PK_TRANSACTION_INTERFACE;
-    QDBusConnection::systemBus().callWithCallback(message,
-                                                  this,
-                                                  SLOT(updateProperties(QVariantMap)));
-
-    // Watch for properties updates
-    QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
-                                         d->tid.path(),
-                                         QLatin1String(DBUS_PROPERTIES),
-                                         QLatin1String("PropertiesChanged"),
-                                         this,
-                                         SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
-
-    QStringList currentSignals = d->connectedSignals;
-    currentSignals.removeDuplicates();
-    foreach (const QString &signal, currentSignals) {
-        d->setupSignal(signal, true);
-    }
-    return true;
+    return false;
 }
 
 Transaction::Transaction(const QDBusObjectPath &tid,
@@ -301,7 +250,7 @@ void Transaction::cancel()
 {
     Q_D(const Transaction);
     if (d->p) {
-        RUN_TRANSACTION(Cancel())
+        d->p->Cancel();
     }
 }
 
@@ -465,12 +414,23 @@ QString Transaction::cmdline() const
 
 void Transaction::acceptEula(const QString &eulaId)
 {
-    RUN_TRANSACTION(AcceptEula(eulaId))
+    Q_D(Transaction);
+    d->role = Transaction::RoleAcceptEula;
+    d->eulaId = eulaId;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::downloadPackages(const QStringList &packageIDs, bool storeInCache)
 {
-    RUN_TRANSACTION(DownloadPackages(storeInCache, packageIDs))
+    Q_D(Transaction);
+    d->role = Transaction::RoleDownloadPackages;
+    d->search = packageIDs;
+    d->storeInCache = storeInCache;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::downloadPackage(const QString &packageID, bool storeInCache)
@@ -480,12 +440,23 @@ void Transaction::downloadPackage(const QString &packageID, bool storeInCache)
 
 void Transaction::getCategories()
 {
-    RUN_TRANSACTION(GetCategories())
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetCategories;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getDepends(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
-    RUN_TRANSACTION(DependsOn(filters, packageIDs, recursive))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetDepends;
+    d->search = packageIDs;
+    d->filters = filters;
+    d->recursive = recursive;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getDepends(const QString &packageID, Transaction::Filters filters, bool recursive)
@@ -495,7 +466,12 @@ void Transaction::getDepends(const QString &packageID, Transaction::Filters filt
 
 void Transaction::getDetails(const QStringList &packageIDs)
 {
-    RUN_TRANSACTION(GetDetails(packageIDs))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetDetails;
+    d->search = packageIDs;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getDetails(const QString &packageID)
@@ -505,7 +481,12 @@ void Transaction::getDetails(const QString &packageID)
 
 void Transaction::getFiles(const QStringList &packageIDs)
 {
-    RUN_TRANSACTION(GetFiles(packageIDs))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetFiles;
+    d->search = packageIDs;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getFiles(const QString &packageID)
@@ -515,22 +496,44 @@ void Transaction::getFiles(const QString &packageID)
 
 void Transaction::getOldTransactions(uint number)
 {
-    RUN_TRANSACTION(GetOldTransactions(number))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetOldTransactions;
+    d->numberOfOldTransactions = number;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getPackages(Transaction::Filters filters)
 {
-    RUN_TRANSACTION(GetPackages(filters))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetPackages;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getRepoList(Transaction::Filters filters)
 {
-    RUN_TRANSACTION(GetRepoList(filters))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetRepoList;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getRequires(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
-    RUN_TRANSACTION(RequiredBy(filters, packageIDs, recursive))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetRequires;
+    d->search = packageIDs;
+    d->filters = filters;
+    d->recursive = recursive;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getRequires(const QString &packageID, Transaction::Filters filters, bool recursive)
@@ -540,7 +543,12 @@ void Transaction::getRequires(const QString &packageID, Transaction::Filters fil
 
 void Transaction::getUpdatesDetails(const QStringList &packageIDs)
 {
-    RUN_TRANSACTION(GetUpdateDetail(packageIDs))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetUpdateDetail;
+    d->search = packageIDs;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getUpdateDetail(const QString &packageID)
@@ -550,17 +558,32 @@ void Transaction::getUpdateDetail(const QString &packageID)
 
 void Transaction::getUpdates(Transaction::Filters filters)
 {
-    RUN_TRANSACTION(GetUpdates(filters))
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetUpdates;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::getDistroUpgrades()
 {
-    RUN_TRANSACTION(GetDistroUpgrades())
+    Q_D(Transaction);
+    d->role = Transaction::RoleGetDistroUpgrades;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::installFiles(const QStringList &files, TransactionFlags flags)
 {
-    RUN_TRANSACTION(InstallFiles(flags, files))
+    Q_D(Transaction);
+    d->role = Transaction::RoleInstallFiles;
+    d->search = files;
+    d->flags = flags;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::installFile(const QString &file, TransactionFlags flags)
@@ -570,7 +593,13 @@ void Transaction::installFile(const QString &file, TransactionFlags flags)
 
 void Transaction::installPackages(const QStringList &packageIDs, TransactionFlags flags)
 {
-    RUN_TRANSACTION(InstallPackages(flags, packageIDs))
+    Q_D(Transaction);
+    d->role = Transaction::RoleInstallPackages;
+    d->search = packageIDs;
+    d->flags = flags;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::installPackage(const QString &packageID, TransactionFlags flags)
@@ -580,17 +609,37 @@ void Transaction::installPackage(const QString &packageID, TransactionFlags flag
 
 void Transaction::installSignature(SigType type, const QString &keyID, const QString &packageID)
 {
-    RUN_TRANSACTION(InstallSignature(type, keyID, packageID))
+    Q_D(Transaction);
+    d->role = Transaction::RoleInstallSignature;
+    d->signatureType = type;
+    d->signatureKey = keyID;
+    d->signaturePackage = packageID;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::refreshCache(bool force)
 {
-    RUN_TRANSACTION(RefreshCache(force))
+    Q_D(Transaction);
+    d->role = Transaction::RoleRefreshCache;
+    d->refreshCacheForce = force;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::removePackages(const QStringList &packageIDs, bool allowDeps, bool autoremove, TransactionFlags flags)
 {
-    RUN_TRANSACTION(RemovePackages(flags, packageIDs, allowDeps, autoremove))
+    Q_D(Transaction);
+    d->role = Transaction::RoleRemovePackages;
+    d->search = packageIDs;
+    d->allowDeps = allowDeps;
+    d->autoremove = autoremove;
+    d->flags = flags;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::removePackage(const QString &packageID, bool allowDeps, bool autoremove, TransactionFlags flags)
@@ -600,22 +649,46 @@ void Transaction::removePackage(const QString &packageID, bool allowDeps, bool a
 
 void Transaction::repairSystem(TransactionFlags flags)
 {
-    RUN_TRANSACTION(RepairSystem(flags))
+    Q_D(Transaction);
+    d->role = Transaction::RoleRepairSystem;
+    d->flags = flags;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::repoEnable(const QString &repoId, bool enable)
 {
-    RUN_TRANSACTION(RepoEnable(repoId, enable))
+    Q_D(Transaction);
+    d->role = Transaction::RoleRepoEnable;
+    d->repoId = repoId;
+    d->repoEnable = enable;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::repoSetData(const QString &repoId, const QString &parameter, const QString &value)
 {
-    RUN_TRANSACTION(RepoSetData(repoId, parameter, value))
+    Q_D(Transaction);
+    d->role = Transaction::RoleRepoSetData;
+    d->repoId = repoId;
+    d->repoParameter = parameter;
+    d->repoValue = value;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::resolve(const QStringList &packageNames, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(Resolve(filters, packageNames))
+    Q_D(Transaction);
+    d->role = Transaction::RoleResolve;
+    d->search = packageNames;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::resolve(const QString &packageName, Transaction::Filters filters)
@@ -625,7 +698,13 @@ void Transaction::resolve(const QString &packageName, Transaction::Filters filte
 
 void Transaction::searchFiles(const QStringList &search, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(SearchFiles(filters, search))
+    Q_D(Transaction);
+    d->role = Transaction::RoleSearchFile;
+    d->search = search;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::searchFiles(const QString &search, Transaction::Filters filters)
@@ -635,7 +714,13 @@ void Transaction::searchFiles(const QString &search, Transaction::Filters filter
 
 void Transaction::searchDetails(const QStringList &search, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(SearchDetails(filters, search))
+    Q_D(Transaction);
+    d->role = Transaction::RoleSearchDetails;
+    d->search = search;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::searchDetails(const QString &search, Transaction::Filters filters)
@@ -645,7 +730,13 @@ void Transaction::searchDetails(const QString &search, Transaction::Filters filt
 
 void Transaction::searchGroups(const QStringList &groups, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(SearchGroups(filters, groups))
+    Q_D(Transaction);
+    d->role = Transaction::RoleSearchGroup;
+    d->search = groups;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::searchGroup(const QString &group, Transaction::Filters filters)
@@ -675,7 +766,13 @@ void Transaction::searchGroups(Groups groups, Transaction::Filters filters)
 
 void Transaction::searchNames(const QStringList &search, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(SearchNames(filters, search))
+    Q_D(Transaction);
+    d->role = Transaction::RoleSearchName;
+    d->search = search;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::searchNames(const QString &search, Transaction::Filters filters)
@@ -685,7 +782,13 @@ void Transaction::searchNames(const QString &search, Transaction::Filters filter
 
 void Transaction::updatePackages(const QStringList &packageIDs, TransactionFlags flags)
 {
-    RUN_TRANSACTION(UpdatePackages(flags, packageIDs))
+    Q_D(Transaction);
+    d->role = Transaction::RoleUpdatePackages;
+    d->search = packageIDs;
+    d->flags = flags;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::updatePackage(const QString &packageID, TransactionFlags flags)
@@ -695,7 +798,13 @@ void Transaction::updatePackage(const QString &packageID, TransactionFlags flags
 
 void Transaction::whatProvides(const QStringList &search, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(WhatProvides(filters, search))
+    Q_D(Transaction);
+    d->role = Transaction::RoleWhatProvides;
+    d->search = search;
+    d->filters = filters;
+    if (init()) {
+        d->runQueuedTransaction();
+    }
 }
 
 void Transaction::whatProvides(const QString &search, Transaction::Filters filters)

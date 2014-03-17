@@ -22,6 +22,8 @@
 #include "transactionprivate.h"
 
 #include "transactionproxy.h"
+#include "daemon.h"
+#include "common.h"
 
 #include <QStringList>
 #include <QDebug>
@@ -35,6 +37,157 @@ TransactionPrivate::TransactionPrivate(Transaction* parent) :
     status(Transaction::StatusUnknown),
     transactionFlags(Transaction::TransactionFlagNone)
 {
+}
+
+void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
+{
+    Q_Q(Transaction);
+
+    tid = transactionId;
+    p = new TransactionProxy(QLatin1String(PK_NAME),
+                             tid.path(),
+                             QDBusConnection::systemBus(),
+                             q);
+    error = Transaction::InternalErrorNone;
+    errorMessage.clear();
+    if (!Daemon::global()->hints().isEmpty()) {
+        q->setHints(Daemon::global()->hints());
+    }
+
+    q->connect(p, SIGNAL(Destroy()),
+               SLOT(destroy()));
+
+    // Get current properties
+    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String(PK_NAME),
+                                                          tid.path(),
+                                                          QLatin1String(DBUS_PROPERTIES),
+                                                          QLatin1String("GetAll"));
+    message << PK_TRANSACTION_INTERFACE;
+    QDBusConnection::systemBus().callWithCallback(message,
+                                                  q,
+                                                  SLOT(updateProperties(QVariantMap)));
+
+    // Watch for properties updates
+    QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
+                                         tid.path(),
+                                         QLatin1String(DBUS_PROPERTIES),
+                                         QLatin1String("PropertiesChanged"),
+                                         q,
+                                         SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+
+    QStringList currentSignals = connectedSignals;
+    currentSignals.removeDuplicates();
+    foreach (const QString &signal, currentSignals) {
+        setupSignal(signal, true);
+    }
+}
+
+void TransactionPrivate::runQueuedTransaction()
+{
+    QDBusPendingReply<> reply;
+    switch (role) {
+    case Transaction::RoleAcceptEula:
+        reply = p->AcceptEula(eulaId);
+        break;
+    case Transaction::RoleDownloadPackages:
+        reply = p->DownloadPackages(storeInCache, search);
+        break;
+    case Transaction::RoleGetCategories:
+        reply = p->GetCategories();
+        break;
+    case Transaction::RoleGetDepends:
+        reply = p->DependsOn(filters, search, recursive);
+        break;
+    case Transaction::RoleGetDetails:
+        reply = p->GetDetails(search);
+        break;
+    case Transaction::RoleGetFiles:
+        reply = p->GetFiles(search);
+        break;
+    case Transaction::RoleGetOldTransactions:
+        reply = p->GetOldTransactions(numberOfOldTransactions);
+        break;
+    case Transaction::RoleGetPackages:
+        reply = p->GetPackages(filters);
+        break;
+    case Transaction::RoleGetRepoList:
+        reply = p->GetRepoList(filters);
+        break;
+    case Transaction::RoleGetRequires:
+        reply = p->RequiredBy(filters, search, recursive);
+        break;
+    case Transaction::RoleGetUpdateDetail:
+        reply = p->GetUpdateDetail(search);
+        break;
+    case Transaction::RoleGetUpdates:
+        reply = p->GetUpdates(filters);
+        break;
+    case Transaction::RoleGetDistroUpgrades:
+        reply = p->GetDistroUpgrades();
+        break;
+    case Transaction::RoleInstallFiles:
+        reply = p->InstallFiles(flags, search);
+        break;
+    case Transaction::RoleInstallPackages:
+        reply = p->InstallPackages(flags, search);
+        break;
+    case Transaction::RoleInstallSignature:
+        reply = p->InstallSignature(signatureType, signatureKey, signaturePackage);
+        break;
+    case Transaction::RoleRefreshCache:
+        reply = p->RefreshCache(refreshCacheForce);
+        break;
+    case Transaction::RoleRemovePackages:
+        reply = p->RemovePackages(flags, search, allowDeps, autoremove);
+        break;
+    case Transaction::RoleRepairSystem:
+        reply = p->RepairSystem(flags);
+        break;
+    case Transaction::RoleRepoEnable:
+        reply = p->RepoEnable(repoId, repoEnable);
+        break;
+    case Transaction::RoleRepoSetData:
+        reply = p->RepoSetData(repoId, repoParameter, repoValue);
+        break;
+    case Transaction::RoleResolve:
+        reply = p->Resolve(filters, search);
+        break;
+    case Transaction::RoleSearchFile:
+        reply = p->SearchFiles(filters, search);
+        break;
+    case Transaction::RoleSearchDetails:
+        reply = p->SearchDetails(filters, search);
+        break;
+    case Transaction::RoleSearchGroup:
+        reply = p->SearchGroups(filters, search);
+        break;
+    case Transaction::RoleSearchName:
+        reply = p->SearchNames(filters, search);
+        break;
+    case Transaction::RoleUpdatePackages:
+        reply = p->UpdatePackages(flags, search);
+        break;
+    case Transaction::RoleWhatProvides:
+        reply = p->WhatProvides(filters, search);
+        break;
+    default:
+        break;
+    }
+
+
+}
+
+void TransactionPrivate::createTransactionFinished(QDBusPendingCallWatcher *call)
+{
+    QDBusPendingReply<QDBusObjectPath> reply = *call;
+    if (reply.isError()) {
+        error = Transaction::InternalErrorFailed;
+        errorMessage = reply.error().message();
+    } else {
+        QDBusObjectPath tid = reply.argumentAt<0>();
+        setup(tid);
+    }
+    call->deleteLater();
 }
 
 void TransactionPrivate::Details(const QString &pid,

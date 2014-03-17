@@ -25,6 +25,7 @@
 #include <QString>
 #include <QHash>
 #include <QStringList>
+#include <QDBusPendingCallWatcher>
 
 #include "transaction.h"
 
@@ -38,6 +39,9 @@ class TransactionPrivate
 protected:
     TransactionPrivate(Transaction *parent);
     virtual ~TransactionPrivate() {}
+
+    void setup(const QDBusObjectPath &transactionId);
+    void runQueuedTransaction();
 
     QDBusObjectPath tid;
     ::TransactionProxy* p;
@@ -57,6 +61,25 @@ protected:
     Transaction::TransactionFlags transactionFlags;
     uint uid;
 
+    // Queue params
+    QString eulaId;
+    bool storeInCache;
+    Transaction::Filters filters;
+    bool recursive;
+    uint numberOfOldTransactions;
+    Transaction::TransactionFlags flags;
+    Transaction::SigType signatureType;
+    QString signatureKey;
+    QString signaturePackage;
+    bool refreshCacheForce;
+    bool allowDeps;
+    bool autoremove;
+    QString repoId;
+    QString repoParameter;
+    QString repoValue;
+    bool repoEnable;
+    QStringList search;
+
     // Only used for old transactions
     QDateTime timespec;
     bool succeeded;
@@ -70,6 +93,7 @@ protected:
     void setupSignal(const QString &signal, bool connect);
 
 protected Q_SLOTS:
+    void createTransactionFinished(QDBusPendingCallWatcher *call);
     void Details(const QString &pid, const QString &license, uint group, const QString &detail, const QString &url, qulonglong size);
     void distroUpgrade(uint type, const QString &name, const QString &description);
     void errorCode(uint error, const QString &details);

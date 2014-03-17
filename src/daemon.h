@@ -25,6 +25,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QMetaEnum>
 #include <QtDBus/QDBusError>
+#include <QtDBus/QDBusPendingReply>
 
 #include "transaction.h"
 
@@ -196,16 +197,16 @@ public:
 
     /**
      * \brief creates a new transaction path
-     * 
+     *
      * This function register a new DBus path on PackageKit
      * allowing a \c Transaction object to be created.
-     * 
+     *
      * \note Unless you want to know the transaction id
      * before creating the \c Transaction object this function
      * is not useful as simply creating a \c Transaction object will
      * automatically create this path.
      */
-    Q_INVOKABLE QDBusObjectPath getTid();
+    QDBusPendingReply<QDBusObjectPath> createTransaction() const;
 
     /**
      * Returns the list of current transactions
