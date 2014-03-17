@@ -382,17 +382,6 @@ public:
      * Describes the type of distribution upgrade to perform
      * \sa upgradeSystem()
      */
-    enum UpgradeKind {
-        UpgradeKindUnknown,
-        UpgradeKindMinimal,
-        UpgradeKindDefault,
-        UpgradeKindComplete
-    };
-
-    /**
-     * Describes the type of distribution upgrade to perform
-     * \sa upgradeSystem()
-     */
     enum TransactionFlag {
         TransactionFlagNone         = 1 << 0, // Since: 0.8.1
         TransactionFlagOnlyTrusted  = 1 << 1, // Since: 0.8.1
@@ -1129,35 +1118,13 @@ public:
     Q_INVOKABLE void updatePackage(const QString &packageID, TransactionFlags flags = TransactionFlagOnlyTrusted);
 
     /**
-     * Updates the whole system
-     *
-     * This method perfoms a distribution upgrade to the
-     * specified version.
-     *
-     * The \p type of upgrade, e.g. minimal, default or complete.
-     * Minimal upgrades will download the smallest amount of data
-     * before launching a installer.
-     * The default is to download enough data to launch a full
-     * graphical installer, but a complete upgrade will be
-     * required if there is no internet access during install time.
-     *
-     * \note This method typically emits
-     * \li changed()
-     * \li error()
-     * \li package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void upgradeSystem(const QString &distroId, UpgradeKind kind);
-
-    /**
      * Searchs for a package providing a file/a mimetype
      *
      * \note This method emits \sa package()
      *
      * \warning check \sa error() to know if it the call has any error
      */
-    Q_INVOKABLE void whatProvides(Provides type, const QStringList &search, Filters filters = FilterNone);
+    Q_INVOKABLE void whatProvides(const QStringList &search, Filters filters = FilterNone);
 
     /**
      * Convenience function to search for what provides
@@ -1165,7 +1132,7 @@ public:
      *
      * \warning check \sa error() to know if it the call has any error
      */
-    Q_INVOKABLE void whatProvides(Provides type, const QString &search, Filters filters = FilterNone);
+    Q_INVOKABLE void whatProvides(const QString &search, Filters filters = FilterNone);
 
     /**
      * Cancels the transaction

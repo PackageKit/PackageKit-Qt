@@ -485,7 +485,7 @@ void Transaction::getCategories()
 
 void Transaction::getDepends(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
-    RUN_TRANSACTION(GetDepends(filters, packageIDs, recursive))
+    RUN_TRANSACTION(DependsOn(filters, packageIDs, recursive))
 }
 
 void Transaction::getDepends(const QString &packageID, Transaction::Filters filters, bool recursive)
@@ -530,7 +530,7 @@ void Transaction::getRepoList(Transaction::Filters filters)
 
 void Transaction::getRequires(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
-    RUN_TRANSACTION(GetRequires(filters, packageIDs, recursive))
+    RUN_TRANSACTION(RequiredBy(filters, packageIDs, recursive))
 }
 
 void Transaction::getRequires(const QString &packageID, Transaction::Filters filters, bool recursive)
@@ -693,19 +693,14 @@ void Transaction::updatePackage(const QString &packageID, TransactionFlags flags
     updatePackages(QStringList() << packageID, flags);
 }
 
-void Transaction::upgradeSystem(const QString &distroId, UpgradeKind kind)
+void Transaction::whatProvides(const QStringList &search, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(UpgradeSystem(distroId, kind))
+    RUN_TRANSACTION(WhatProvides(filters, search))
 }
 
-void Transaction::whatProvides(Transaction::Provides type, const QStringList &search, Transaction::Filters filters)
+void Transaction::whatProvides(const QString &search, Transaction::Filters filters)
 {
-    RUN_TRANSACTION(WhatProvides(filters, type, search))
-}
-
-void Transaction::whatProvides(Transaction::Provides type, const QString &search, Transaction::Filters filters)
-{
-    whatProvides(type, QStringList() << search, filters);
+    whatProvides(QStringList() << search, filters);
 }
 
 Transaction::InternalError Transaction::parseError(const QString &errorName)

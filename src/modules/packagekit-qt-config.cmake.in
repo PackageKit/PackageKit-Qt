@@ -1,0 +1,11 @@
+# - Config information for PackageKit-Qt5
+# This file defines:
+#
+#  PACKAGEKIT_QT5_INCLUDE_DIR - the PackageKitQt5 include directory
+#  PACKAGEKIT_QT5_LIBRARIES - Link these to use PackageKitQt5
+
+SET(prefix "@CMAKE_INSTALL_PREFIX@")
+SET(exec_prefix "@CMAKE_INSTALL_PREFIX@")
+SET(PACKAGEKIT_QT5_LIBRARIES "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libpackagekit-qt5.so" CACHE FILEPATH "Libraries for PackageKit-Qt5")
+SET(PACKAGEKIT_QT5_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include/PackageKit/packagekit-qt5" CACHE PATH "Include path for PackageKit-Qt5")
+SET(PACKAGEKIT_QT5_FOUND "TRUE")

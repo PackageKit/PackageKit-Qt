@@ -1,6 +1,6 @@
 # CMakeLists for PackageKit-Qt lib extra modules
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${LIBNAME}-config.cmake.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekit-qt-config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}-config.cmake
   @ONLY
 )
