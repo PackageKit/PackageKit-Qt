@@ -113,74 +113,74 @@ public:
     /**
      * Returns all the actions supported by the current backend
      */
-    Transaction::Roles actions();
+    Transaction::Roles actions() const;
 
     /**
      * Returns all the actions supported by the current backend
      */
-    Transaction::ProvidesFlag provides();
+    Transaction::ProvidesFlag provides() const;
 
     /**
      * The backend name, e.g. "yum".
      */
-    QString backendName();
+    QString backendName() const;
 
     /**
      * The backend description, e.g. "Yellow Dog Update Modifier".
      */
-    QString backendDescription();
+    QString backendDescription() const;
 
     /**
      * The backend author, e.g. "Joe Bloggs <joe@blogs.com>"
      */
-    QString backendAuthor();
+    QString backendAuthor() const;
 
     /**
      * Returns the package filters supported by the current backend
      */
-    Transaction::Filters filters();
+    Transaction::Filters filters() const;
 
     /**
      * Returns the package groups supported by the current backend
      */
-    Transaction::Groups groups();
+    Transaction::Groups groups() const;
 
     /**
      * Set when the backend is locked and native tools would fail.
      */
-    bool locked();
+    bool locked() const;
 
     /**
      * Returns a list containing the MIME types supported by the current backend
      */
-    QStringList mimeTypes();
+    QStringList mimeTypes() const;
 
     /**
      * Returns the current network state
      */
-    Daemon::Network networkState();
+    Daemon::Network networkState() const;
 
     /**
      * The distribution identifier in the
      * distro;version;arch form,
      * e.g. "debian;squeeze/sid;x86_64".
      */
-    QString distroID();
+    QString distroID() const;
 
     /**
      * Returns the major version number.
      */
-    uint versionMajor();
+    uint versionMajor() const;
 
     /**
      * The minor version number.
      */
-    uint versionMinor();
+    uint versionMinor() const;
 
     /**
      * The micro version number.
      */
-    uint versionMicro();
+    uint versionMicro() const;
 
     /**
      * Allows a client to find out if it would be allowed to authorize an action.
@@ -188,12 +188,12 @@ public:
      * specified in \p actionId
      * Returm might be either yes, no or interactive \sa Authorize.
      */
-    Q_INVOKABLE Authorize canAuthorize(const QString &actionId);
+    QDBusPendingReply<Authorize> canAuthorize(const QString &actionId);
 
     /**
      * Returns the time (in seconds) since the specified \p action
      */
-    Q_INVOKABLE uint getTimeSinceAction(PackageKit::Transaction::Role action);
+    QDBusPendingReply<uint> getTimeSinceAction(PackageKit::Transaction::Role action);
 
     /**
      * \brief creates a new transaction path
@@ -211,7 +211,7 @@ public:
     /**
      * Returns the list of current transactions
      */
-    Q_INVOKABLE QList<QDBusObjectPath> getTransactionList();
+    QDBusPendingReply<QList<QDBusObjectPath> > getTransactionList();
 
     /**
      * Convenience function
@@ -220,7 +220,7 @@ public:
      * You must delete these yourself or pass a
      * \p parent for these comming transactions
      */
-    Q_INVOKABLE QList<Transaction*> getTransactionObjects(QObject *parent = 0);
+    QList<Transaction*> getTransactionObjects(QObject *parent = 0);
 
     /**
      * \brief Sets a global hints for all the transactions to be created
@@ -240,40 +240,40 @@ public:
      *
      * \sa Transaction::setHints
      */
-    Q_INVOKABLE void setHints(const QStringList &hints);
+    void setHints(const QStringList &hints);
 
     /**
      * Convenience function to set global hints
      * \sa setHints(const QStringList &hints)
      */
-    Q_INVOKABLE void setHints(const QString &hints);
+    void setHints(const QString &hints);
 
     /**
      * This method returns the current hints
      */
-    Q_INVOKABLE QStringList hints();
+    QStringList hints() const;
 
     /**
      * Sets a proxy to be used for all the network operations
      */
-    Q_INVOKABLE Transaction::InternalError setProxy(const QString &http_proxy, const QString &https_proxy, const QString &ftp_proxy, const QString &socks_proxy, const QString &no_proxy, const QString &pac);
+    QDBusPendingReply<> setProxy(const QString &http_proxy, const QString &https_proxy, const QString &ftp_proxy, const QString &socks_proxy, const QString &no_proxy, const QString &pac);
 
     /**
      * \brief Tells the daemon that the system state has changed, to make it reload its cache
      *
      * \p reason can be resume or posttrans
      */
-    Q_INVOKABLE void stateHasChanged(const QString &reason);
+    QDBusPendingReply<> stateHasChanged(const QString &reason);
 
     /**
      * Asks PackageKit to quit, for example to let a native package manager operate
      */
-    Q_INVOKABLE void suggestDaemonQuit();
+    QDBusPendingReply<> suggestDaemonQuit();
 
     /**
      * Get the last call status
      */
-    Q_INVOKABLE QDBusError lastError() const;
+    QDBusError lastError() const;
 
     /**
      * Returns the package name from the \p packageID
@@ -375,6 +375,436 @@ public:
         }
         return enumValue;
     }
+
+    /**
+     * \brief Accepts an EULA
+     *
+     * The EULA is identified by the \sa Eula structure \p info
+     *
+     * \note You need to manually restart the transaction which triggered the EULA.
+     * \sa eulaRequired()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *acceptEula(const QString &eulaID);
+
+    /**
+     * Download the given \p packages to a temp dir, if \p storeInCache is true
+     * the download will be stored in the package manager cache
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *downloadPackages(const QStringList &packageIDs, bool storeInCache = false);
+
+    /**
+     * This is a convenience function to download this \p package
+     * \sa downloadPackages(const QStringList &packageIDs, bool storeInCache = false)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *downloadPackage(const QString &packageID, bool storeInCache = false);
+
+    /**
+     * Returns the collection categories
+     *
+     * \sa category
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getCategories();
+
+    /**
+     * \brief Gets the list of dependencies for the given \p packages
+     *
+     * You can use the \p filters to limit the results to certain packages.
+     * The \p recursive flag indicates if the package manager should also
+     * fetch the dependencies's dependencies.
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getDepends(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+
+    /**
+     * Convenience function to get the dependencies of this \p package
+     * \sa getDetails(const QStringList &packageIDs, Filters filters, bool recursive = false)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getDepends(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+
+    /**
+     * Gets more details about the given \p packages
+     *
+     * \sa Transaction::details
+     * \note This method emits \sa package()
+     * with details set
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getDetails(const QStringList &packageIDs);
+
+    /**
+     * Convenience function to get the details about this \p package
+     * \sa getDetails(const QStringList &packageIDs)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getDetails(const QString &packageID);
+
+    /**
+     * Gets the files contained in the given \p packages
+     *
+     * \note This method emits \sa files()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getFiles(const QStringList &packageIDs);
+
+    /**
+     * Convenience function to get the files contained in this \p package
+     * \sa getRequires(const QStringList &packageIDs)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getFiles(const QString &packageIDs);
+
+    /**
+     * \brief Gets the last \p number finished transactions
+     *
+     * \note You must delete these transactions yourself
+     * \note This method emits \sa transaction()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getOldTransactions(uint number);
+
+    /**
+     * Gets all the packages matching the given \p filters
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getPackages(Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Gets the list of software repositories matching the given \p filters
+     *
+     * \note This method emits \sa repository()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getRepoList(Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * \brief Searches for the packages requiring the given \p packages
+     *
+     * The search can be limited using the \p filters parameter.
+     * The \p recursive flag is used to tell if the package manager should
+     * also search for the package requiring the resulting packages.
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getRequires(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+
+    /**
+     * Convenience function to get packages requiring this package
+     * \sa getRequires(const QStringList &packageIDs, Filters filters, bool recursive = false)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getRequires(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+
+    /**
+     * Retrieves more details about the update for the given \p packageIDs
+     *
+     * \note This method emits \sa updateDetail()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getUpdatesDetails(const QStringList &packageIDs);
+
+    /**
+     * Convenience function to get update details
+     * \sa getUpdateDetail(const QStringList &packageIDs)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getUpdateDetail(const QString &packageID);
+
+    /**
+     * \p Gets the available updates
+     *
+     * The \p filters parameters can be used to restrict the updates returned
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getUpdates(Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Retrieves the available distribution upgrades
+     *
+     * \note This method emits \sa distroUpgrade()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getDistroUpgrades();
+
+    /**
+     * \brief Installs the local packages \p files
+     *
+     * \p onlyTrusted indicate if the packages are signed by a trusted authority
+     *
+     * \note This method emits \sa package() and \sa changed()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *installFiles(const QStringList &files, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Convenience function to install a file
+     * \sa installFiles(const QStringList &files, TransactionFlags flags)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *installFile(const QString &file, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Install the given \p packages
+     *
+     * \p only_trusted indicates if we should allow installation of untrusted packages (requires a different authorization)
+     *
+     * \note This method emits \sa package() and \sa changed()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *installPackages(const QStringList &packageIDs, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Convenience function to install a package
+     * \sa installPackages(const QStringList &packageIDs, TransactionFlags flags)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *installPackage(const QString &packageID, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * \brief Installs a signature
+     *
+     * \p type, \p keyId and \p package generally come from the Transaction::repoSignatureRequired
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *installSignature(Transaction::SigType type, const QString &keyID, const QString &packageID);
+
+    /**
+     * Refreshes the package manager's cache
+     *
+     * \note This method emits \sa changed()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *refreshCache(bool force);
+
+    /**
+     * \brief Removes the given \p packages
+     *
+     * \p allowDeps if the package manager has the right to remove other packages which depend on the
+     * packages to be removed. \p autoRemove tells the package manager to remove all the package which
+     * won't be needed anymore after the packages are uninstalled.
+     *
+     * \note This method emits \sa package() and \sa changed()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *removePackages(const QStringList &packageIDs, bool allowDeps = false, bool autoRemove = false, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Convenience function to remove a package
+     *
+     * \sa removePackages(const PackageList  &packages, bool allowDeps = false, bool autoRemove = false, TransactionFlags flags)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *removePackage(const QString &packageID, bool allowDeps = false, bool autoRemove = false, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Repairs a broken system
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *repairSystem(Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Activates or disables a repository
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *repoEnable(const QString &repoId, bool enable = true);
+
+    /**
+     * Sets a repository's parameter
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *repoSetData(const QString &repoId, const QString &parameter, const QString &value);
+
+    /**
+     * \brief Tries to create a Package object from the package's name
+     *
+     * The \p filters can be used to restrict the search
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *resolve(const QStringList &packageNames, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Convenience function to remove a package name
+     * \sa resolve(const QStringList &packageNames, Transaction::Filters filters = Transaction::FilterNone)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *resolve(const QString &packageName, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * \brief Search in the packages files
+     *
+     * \p filters can be used to restrict the returned packages
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchFiles(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Convenience function to search for a file
+     * \sa searchFiles(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchFiles(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * \brief Search in the packages details
+     *
+     * \p filters can be used to restrict the returned packages
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchDetails(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Convenience function to search by details
+     * \sa searchDetails(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchDetails(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * \brief Lists all the packages in the given \p group
+     *
+     * \p groups is the name of the group that you want, when searching for
+     * categories prefix it with '@'
+     * \p filters can be used to restrict the returned packages
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchGroups(const QStringList &groups, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Convenience function to search by group string
+     * \sa searchGroups(const QStringList &groups, Transaction::Filters filters = Transaction::FilterNone)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchGroup(const QString &group, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Convenience function to search by group enum
+     * \sa searchGroups(const QStringList &groups, Transaction::Filters filters = Transaction::FilterNone)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchGroup(Transaction::Group group, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * \brief Lists all the packages in the given \p group
+     *
+     * \p filters can be used to restrict the returned packages
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchGroups(Transaction::Groups group, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * \brief Search in the packages names
+     *
+     * \p filters can be used to restrict the returned packages
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchNames(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Convenience function to search by names
+     * \sa searchNames(const QStringList &search, Filters filters)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *searchNames(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Update the given \p packages
+     *
+     * \p onlyTrusted indicates if this transaction is only allowed to install trusted packages
+     * \note This method emits \sa package() and \sa changed()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *updatePackages(const QStringList &packageIDs, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Convenience function to update a package
+     * \sa updatePackages(const QStringList &packageIDs, TransactionFlags flags)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *updatePackage(const QString &packageID, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
+     * Searchs for a package providing a file/a mimetype
+     *
+     * \note This method emits \sa package()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *whatProvides(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Convenience function to search for what provides
+     * \sa whatProvides(Provides type, const QStringList &search, Transaction::Filters filters = Transaction::FilterNone)
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *whatProvides(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
 
 Q_SIGNALS:
     void isRunningChanged();

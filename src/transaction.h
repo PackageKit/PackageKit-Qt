@@ -25,6 +25,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QDateTime>
 #include <QtDBus/QDBusObjectPath>
+#include <QtDBus/QDBusPendingReply>
 
 #include "bitfield.h"
 
@@ -40,8 +41,7 @@ namespace PackageKit {
 * A Transaction is created whenever you do an asynchronous action (for example a Search, Install...).
 * This class allows you to monitor and control the flow of the action.
 *
-* You should delete the transaction after finished() is emitted,
-* or use the reset() method to reuse it
+* You should delete the transaction after finished() is emitted
 *
 * \sa Daemon
 */
@@ -536,14 +536,6 @@ public:
      * \return A value from TransactionError describing the state of the transaction
      * or 0 in case of not having an error
      */
-    Q_DECL_DEPRECATED InternalError error() const;
-
-    /**
-     * \brief Returns the error status of the Transaction
-     *
-     * \return A value from TransactionError describing the state of the transaction
-     * or 0 in case of not having an error
-     */
     InternalError internalError() const;
 
     /**
@@ -691,455 +683,20 @@ public:
      *
      * \sa Daemon::setHints
      */
-    Q_INVOKABLE void setHints(const QStringList &hints);
+    QDBusPendingReply<> setHints(const QStringList &hints);
 
     /**
      * Convenience function to set this transaction \p hints
      * \sa getDetails(const QStringList &hints)
      */
-    Q_INVOKABLE void setHints(const QString &hints);
-
-    /**
-     * Reset the transaction for reuse
-     */
-    Q_INVOKABLE void reset();
-
-    /**
-     * \brief Accepts an EULA
-     *
-     * The EULA is identified by the \sa Eula structure \p info
-     *
-     * \note You need to manually restart the transaction which triggered the EULA.
-     * \sa eulaRequired()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void acceptEula(const QString &eulaID);
-
-    /**
-     * Download the given \p packages to a temp dir, if \p storeInCache is true
-     * the download will be stored in the package manager cache
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void downloadPackages(const QStringList &packageIDs, bool storeInCache = false);
-
-    /**
-     * This is a convenience function to download this \p package
-     * \sa downloadPackages(const QStringList &packageIDs, bool storeInCache = false)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void downloadPackage(const QString &packageID, bool storeInCache = false);
-
-    /**
-     * Returns the collection categories
-     *
-     * \sa category
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getCategories();
-
-    /**
-     * \brief Gets the list of dependencies for the given \p packages
-     *
-     * You can use the \p filters to limit the results to certain packages.
-     * The \p recursive flag indicates if the package manager should also
-     * fetch the dependencies's dependencies.
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getDepends(const QStringList &packageIDs, Filters filters, bool recursive = false);
-
-    /**
-     * Convenience function to get the dependencies of this \p package
-     * \sa getDetails(const QStringList &packageIDs, Filters filters, bool recursive = false)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getDepends(const QString &packageID, Filters filters , bool recursive = false);
-
-    /**
-     * Gets more details about the given \p packages
-     *
-     * \sa Transaction::details
-     * \note This method emits \sa package()
-     * with details set
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getDetails(const QStringList &packageIDs);
-
-    /**
-     * Convenience function to get the details about this \p package
-     * \sa getDetails(const QStringList &packageIDs)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getDetails(const QString &packageID);
-
-    /**
-     * Gets the files contained in the given \p packages
-     *
-     * \note This method emits \sa files()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getFiles(const QStringList &packageIDs);
-
-    /**
-     * Convenience function to get the files contained in this \p package
-     * \sa getRequires(const QStringList &packageIDs)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getFiles(const QString &packageIDs);
-
-    /**
-     * \brief Gets the last \p number finished transactions
-     *
-     * \note You must delete these transactions yourself
-     * \note This method emits \sa transaction()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getOldTransactions(uint number);
-
-    /**
-     * Gets all the packages matching the given \p filters
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getPackages(Filters filters = FilterNone);
-
-    /**
-     * Gets the list of software repositories matching the given \p filters
-     *
-     * \note This method emits \sa repository()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getRepoList(Filters filter = FilterNone);
-
-    /**
-     * \brief Searches for the packages requiring the given \p packages
-     *
-     * The search can be limited using the \p filters parameter.
-     * The \p recursive flag is used to tell if the package manager should
-     * also search for the package requiring the resulting packages.
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getRequires(const QStringList &packageIDs, Filters filters, bool recursive = false);
-
-    /**
-     * Convenience function to get packages requiring this package
-     * \sa getRequires(const QStringList &packageIDs, Filters filters, bool recursive = false)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getRequires(const QString &packageID, Filters filters, bool recursive = false);
-
-    /**
-     * Retrieves more details about the update for the given \p packageIDs
-     *
-     * \note This method emits \sa updateDetail()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getUpdatesDetails(const QStringList &packageIDs);
-
-    /**
-     * Convenience function to get update details
-     * \sa getUpdateDetail(const QStringList &packageIDs)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getUpdateDetail(const QString &packageID);
-
-    /**
-     * \p Gets the available updates
-     *
-     * The \p filters parameters can be used to restrict the updates returned
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getUpdates(Filters filters = FilterNone);
-
-    /**
-     * Retrieves the available distribution upgrades
-     *
-     * \note This method emits \sa distroUpgrade()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void getDistroUpgrades();
-
-    /**
-     * \brief Installs the local packages \p files
-     *
-     * \p onlyTrusted indicate if the packages are signed by a trusted authority
-     *
-     * \note This method emits \sa package() and \sa changed()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void installFiles(const QStringList &files, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Convenience function to install a file
-     * \sa installFiles(const QStringList &files, TransactionFlags flags)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void installFile(const QString &file, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Install the given \p packages
-     *
-     * \p only_trusted indicates if we should allow installation of untrusted packages (requires a different authorization)
-     *
-     * \note This method emits \sa package() and \sa changed()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void installPackages(const QStringList &packageIDs, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Convenience function to install a package
-     * \sa installPackages(const QStringList &packageIDs, TransactionFlags flags)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void installPackage(const QString &packageID, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * \brief Installs a signature
-     *
-     * \p type, \p keyId and \p package generally come from the Transaction::repoSignatureRequired
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void installSignature(SigType type, const QString &keyID, const QString &packageID);
-
-    /**
-     * Refreshes the package manager's cache
-     *
-     * \note This method emits \sa changed()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void refreshCache(bool force);
-
-    /**
-     * \brief Removes the given \p packages
-     *
-     * \p allowDeps if the package manager has the right to remove other packages which depend on the
-     * packages to be removed. \p autoRemove tells the package manager to remove all the package which
-     * won't be needed anymore after the packages are uninstalled.
-     *
-     * \note This method emits \sa package() and \sa changed()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void removePackages(const QStringList &packageIDs, bool allowDeps = false, bool autoRemove = false, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Convenience function to remove a package
-     *
-     * \sa removePackages(const PackageList  &packages, bool allowDeps = false, bool autoRemove = false, TransactionFlags flags)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void removePackage(const QString &packageID, bool allowDeps = false, bool autoRemove = false, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Repairs a broken system
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void repairSystem(TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Activates or disables a repository
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void repoEnable(const QString &repoId, bool enable = true);
-
-    /**
-     * Sets a repository's parameter
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void repoSetData(const QString &repoId, const QString &parameter, const QString &value);
-
-    /**
-     * \brief Tries to create a Package object from the package's name
-     *
-     * The \p filters can be used to restrict the search
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void resolve(const QStringList &packageNames, Filters filters = FilterNone);
-
-    /**
-     * Convenience function to remove a package name
-     * \sa resolve(const QStringList &packageNames, Filters filters = FilterNone)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void resolve(const QString &packageName, Filters filters = FilterNone);
-
-    /**
-     * \brief Search in the packages files
-     *
-     * \p filters can be used to restrict the returned packages
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchFiles(const QStringList &search, Filters filters = FilterNone);
-
-    /**
-     * Convenience function to search for a file
-     * \sa searchFiles(const QStringList &search, Filters filters = FilterNone)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchFiles(const QString &search, Filters filters = FilterNone);
-
-    /**
-     * \brief Search in the packages details
-     *
-     * \p filters can be used to restrict the returned packages
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchDetails(const QStringList &search, Filters filters = FilterNone);
-
-    /**
-     * Convenience function to search by details
-     * \sa searchDetails(const QStringList &search, Filters filters = FilterNone)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchDetails(const QString &search, Filters filters = FilterNone);
-
-    /**
-     * \brief Lists all the packages in the given \p group
-     *
-     * \p groups is the name of the group that you want, when searching for
-     * categories prefix it with '@'
-     * \p filters can be used to restrict the returned packages
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchGroups(const QStringList &groups, Filters filters = FilterNone);
-
-    /**
-     * Convenience function to search by group string
-     * \sa searchGroups(const QStringList &groups, Filters filters = FilterNone)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchGroup(const QString &group, Filters filters = FilterNone);
-    
-    /**
-     * Convenience function to search by group enum
-     * \sa searchGroups(const QStringList &groups, Filters filters = FilterNone)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchGroup(Group group, Filters filters = FilterNone);
-
-    /**
-     * \brief Lists all the packages in the given \p group
-     *
-     * \p filters can be used to restrict the returned packages
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchGroups(Groups group, Filters filters = FilterNone);
-
-    /**
-     * \brief Search in the packages names
-     *
-     * \p filters can be used to restrict the returned packages
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchNames(const QStringList &search, Filters filters = FilterNone);
-
-    /**
-     * Convenience function to search by names
-     * \sa searchNames(const QStringList &search, Filters filters)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void searchNames(const QString &search, Filters filters = FilterNone);
-
-    /**
-     * Update the given \p packages
-     *
-     * \p onlyTrusted indicates if this transaction is only allowed to install trusted packages
-     * \note This method emits \sa package() and \sa changed()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void updatePackages(const QStringList &packageIDs, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Convenience function to update a package
-     * \sa updatePackages(const QStringList &packageIDs, TransactionFlags flags)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void updatePackage(const QString &packageID, TransactionFlags flags = TransactionFlagOnlyTrusted);
-
-    /**
-     * Searchs for a package providing a file/a mimetype
-     *
-     * \note This method emits \sa package()
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void whatProvides(const QStringList &search, Filters filters = FilterNone);
-
-    /**
-     * Convenience function to search for what provides
-     * \sa whatProvides(Provides type, const QStringList &search, Filters filters = FilterNone)
-     *
-     * \warning check \sa error() to know if it the call has any error
-     */
-    Q_INVOKABLE void whatProvides(const QString &search, Filters filters = FilterNone);
+    QDBusPendingReply<> setHints(const QString &hints);
 
     /**
      * Cancels the transaction
      *
      * \warning check \sa error() to know if it the call has any error
      */
-    Q_INVOKABLE void cancel();
+    Q_INVOKABLE QDBusPendingReply<> cancel();
 
     /**
      * Returns the package name from the \p packageID
@@ -1194,7 +751,7 @@ Q_SIGNALS:
     /**
      * The transaction has changed one of it's properties
      */
-    Q_DECL_DEPRECATED void changed();
+    void changed();
 
     /**
      * \brief Sends a category
@@ -1274,12 +831,7 @@ Q_SIGNALS:
     /**
      * Emitted when the transaction sends details of a package
      */
-    void details(const QString &packageID,
-                 const QString &license,
-                 PackageKit::Transaction::Group group,
-                 const QString &detail,
-                 const QString &url,
-                 qulonglong size);
+    void details(const QVariantMap &values);
 
     /**
      * Emitted when the transaction sends details of an update
@@ -1375,7 +927,7 @@ private:
     Q_DECLARE_PRIVATE(Transaction)
     Q_DISABLE_COPY(Transaction)
     Q_PRIVATE_SLOT(d_func(), void createTransactionFinished(QDBusPendingCallWatcher*))
-    Q_PRIVATE_SLOT(d_func(), void Details(const QString &pid, const QString &license, uint group, const QString &detail, const QString &url, qulonglong size))
+    Q_PRIVATE_SLOT(d_func(), void methodCallFinished(QDBusPendingCallWatcher*))
     Q_PRIVATE_SLOT(d_func(), void distroUpgrade(uint type, const QString &name, const QString &description))
     Q_PRIVATE_SLOT(d_func(), void errorCode(uint error, const QString &details))
     Q_PRIVATE_SLOT(d_func(), void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText))

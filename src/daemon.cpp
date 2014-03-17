@@ -24,15 +24,10 @@
 
 #include "daemon.h"
 #include "daemonprivate.h"
+#include "transactionprivate.h"
 #include "daemonproxy.h"
 
 #include "common.h"
-
-#define PENDING_CALL(blurb)                      \
-       Q_D(Daemon);                              \
-       QDBusPendingReply<> r = d->daemon->blurb; \
-       r.waitForFinished();                      \
-       d->lastError = r.error();                 \
 
 using namespace PackageKit;
 
@@ -153,85 +148,80 @@ Daemon::~Daemon()
 
 bool Daemon::isRunning() const
 {
-
+    Q_D(const Daemon);
+    return d->running;
 }
 
-Transaction::Roles Daemon::actions()
+Transaction::Roles Daemon::actions() const
 {
     Q_D(const Daemon);
     return d->roles;
 }
 
-Transaction::ProvidesFlag Daemon::provides()
+Transaction::ProvidesFlag Daemon::provides() const
 {
     Q_D(const Daemon);
     return d->provides;
 }
 
-QString Daemon::backendName()
+QString Daemon::backendName() const
 {
     Q_D(const Daemon);
     return d->backendName;
 }
 
-QString Daemon::backendDescription()
+QString Daemon::backendDescription() const
 {
     Q_D(const Daemon);
     return d->backendDescription;
 }
 
-QString Daemon::backendAuthor()
+QString Daemon::backendAuthor() const
 {
     Q_D(const Daemon);
     return d->backendAuthor;
 }
 
-Transaction::Filters Daemon::filters()
+Transaction::Filters Daemon::filters() const
 {
     Q_D(const Daemon);
     return d->filters;
 }
 
-Transaction::Groups Daemon::groups()
+Transaction::Groups Daemon::groups() const
 {
     Q_D(const Daemon);
     return d->groups;
 }
 
-bool Daemon::locked()
+bool Daemon::locked() const
 {
     Q_D(const Daemon);
     return d->locked;
 }
 
-QStringList Daemon::mimeTypes()
+QStringList Daemon::mimeTypes() const
 {
     Q_D(const Daemon);
     return d->mimeTypes;
 }
 
-Daemon::Network Daemon::networkState()
+Daemon::Network Daemon::networkState() const
 {
     Q_D(const Daemon);
     return d->networkState;
 }
 
-QString Daemon::distroID()
+QString Daemon::distroID() const
 {
     Q_D(const Daemon);
     return d->distroId;
 }
 
-Daemon::Authorize Daemon::canAuthorize(const QString &actionId)
+QDBusPendingReply<Daemon::Authorize> Daemon::canAuthorize(const QString &actionId)
 {
     Q_D(Daemon);
-    QDBusPendingReply<uint> reply = d->daemon->CanAuthorize(actionId);
-    reply.waitForFinished();
-    d->lastError = reply.error();
-    if (reply.isValid()) {
-        return static_cast<Daemon::Authorize>(reply.value());
-    }
-    return Daemon::AuthorizeUnknown;
+    return d->daemon->CanAuthorize(actionId);
 }
 
 QDBusPendingReply<QDBusObjectPath> Daemon::createTransaction() const
@@ -240,28 +230,16 @@ QDBusPendingReply<QDBusObjectPath> Daemon::createTransaction() const
     return d->daemon->CreateTransaction();
 }
 
-uint Daemon::getTimeSinceAction(Transaction::Role role)
+QDBusPendingReply<uint> Daemon::getTimeSinceAction(Transaction::Role role)
 {
     Q_D(Daemon);
-    QDBusPendingReply<uint> reply = d->daemon->GetTimeSinceAction(role);
-    reply.waitForFinished();
-    d->lastError = reply.error();
-    if (reply.isValid()) {
-        return reply.value();
-    }
-    return 0u;
+    return d->daemon->GetTimeSinceAction(role);
 }
 
-QList<QDBusObjectPath> Daemon::getTransactionList()
+QDBusPendingReply<QList<QDBusObjectPath> > Daemon::getTransactionList()
 {
     Q_D(Daemon);
-    QDBusPendingReply<QList<QDBusObjectPath> > reply = d->daemon->GetTransactionList();
-    reply.waitForFinished();
-    d->lastError = reply.error();
-    if (reply.isValid()) {
-        return reply.value();
-    }
-    return QList<QDBusObjectPath>();
+    return d->daemon->GetTransactionList();
 }
 
 QList<Transaction*> Daemon::getTransactionObjects(QObject *parent)
@@ -282,33 +260,28 @@ void Daemon::setHints(const QString &hints)
     d->hints = QStringList() << hints;
 }
 
-QStringList Daemon::hints()
+QStringList Daemon::hints() const
 {
     Q_D(const Daemon);
     return d->hints;
 }
 
-Transaction::InternalError Daemon::setProxy(const QString& http_proxy, const QString& https_proxy, const QString& ftp_proxy, const QString& socks_proxy, const QString& no_proxy, const QString& pac)
+QDBusPendingReply<> Daemon::setProxy(const QString& http_proxy, const QString& https_proxy, const QString& ftp_proxy, const QString& socks_proxy, const QString& no_proxy, const QString& pac)
 {
     Q_D(Daemon);
-    QDBusPendingReply<> r = d->daemon->SetProxy(http_proxy, https_proxy, ftp_proxy, socks_proxy, no_proxy, pac);
-    r.waitForFinished();
-    d->lastError = r.error();
-    if (r.isError()) {
-        return Transaction::parseError(r.error().name());
-    } else {
-        return Transaction::InternalErrorNone;
-    }
+    return d->daemon->SetProxy(http_proxy, https_proxy, ftp_proxy, socks_proxy, no_proxy, pac);
 }
 
-void Daemon::stateHasChanged(const QString& reason)
+QDBusPendingReply<> Daemon::stateHasChanged(const QString& reason)
 {
-    PENDING_CALL(StateHasChanged(reason))
+    Q_D(Daemon);
+    return d->daemon->StateHasChanged(reason);
 }
 
-void Daemon::suggestDaemonQuit()
+QDBusPendingReply<> Daemon::suggestDaemonQuit()
 {
-    PENDING_CALL(SuggestDaemonQuit())
+    Q_D(Daemon);
+    return d->daemon->SuggestDaemonQuit();
 }
 
 QDBusError Daemon::lastError() const
@@ -317,19 +290,19 @@ QDBusError Daemon::lastError() const
     return d->lastError;
 }
 
-uint Daemon::versionMajor()
+uint Daemon::versionMajor() const
 {
     Q_D(const Daemon);
     return d->versionMajor;
 }
 
-uint Daemon::versionMinor()
+uint Daemon::versionMinor() const
 {
     Q_D(const Daemon);
     return d->versionMinor;
 }
 
-uint Daemon::versionMicro()
+uint Daemon::versionMicro() const
 {
     Q_D(const Daemon);
     return d->versionMicro;
@@ -358,6 +331,350 @@ QString Daemon::packageData(const QString &packageID)
 QString Daemon::packageIcon(const QString &packageID)
 {
     return Transaction::packageIcon(packageID);
+}
+
+Transaction *Daemon::acceptEula(const QString &eulaId)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleAcceptEula;
+    ret->d_ptr->eulaId = eulaId;
+    return ret;
+}
+
+Transaction *Daemon::downloadPackages(const QStringList &packageIDs, bool storeInCache)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleDownloadPackages;
+    ret->d_ptr->search = packageIDs;
+    ret->d_ptr->storeInCache = storeInCache;
+    return ret;
+}
+
+Transaction *Daemon::downloadPackage(const QString &packageID, bool storeInCache)
+{
+    downloadPackages(QStringList() << packageID, storeInCache);
+}
+
+Transaction *Daemon::getCategories()
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetCategories;
+    return ret;
+}
+
+Transaction *Daemon::getDepends(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetDepends;
+    ret->d_ptr->search = packageIDs;
+    ret->d_ptr->filters = filters;
+    ret->d_ptr->recursive = recursive;
+    return ret;
+}
+
+Transaction *Daemon::getDepends(const QString &packageID, Transaction::Filters filters, bool recursive)
+{
+    getDepends(QStringList() << packageID, filters, recursive);
+}
+
+Transaction *Daemon::getDetails(const QStringList &packageIDs)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetDetails;
+    ret->d_ptr->search = packageIDs;
+    return ret;
+}
+
+Transaction *Daemon::getDetails(const QString &packageID)
+{
+    getDetails(QStringList() << packageID);
+}
+
+Transaction *Daemon::getFiles(const QStringList &packageIDs)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetFiles;
+    ret->d_ptr->search = packageIDs;
+    return ret;
+}
+
+Transaction *Daemon::getFiles(const QString &packageID)
+{
+    getFiles(QStringList() << packageID);
+}
+
+Transaction *Daemon::getOldTransactions(uint number)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetOldTransactions;
+    ret->d_ptr->numberOfOldTransactions = number;
+    return ret;
+}
+
+Transaction *Daemon::getPackages(Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetPackages;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::getRepoList(Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetRepoList;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::getRequires(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetRequires;
+    ret->d_ptr->search = packageIDs;
+    ret->d_ptr->filters = filters;
+    ret->d_ptr->recursive = recursive;
+    return ret;
+}
+
+Transaction *Daemon::getRequires(const QString &packageID, Transaction::Filters filters, bool recursive)
+{
+    getRequires(QStringList() << packageID, filters, recursive);
+}
+
+Transaction *Daemon::getUpdatesDetails(const QStringList &packageIDs)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetUpdateDetail;
+    ret->d_ptr->search = packageIDs;
+    return ret;
+}
+
+Transaction *Daemon::getUpdateDetail(const QString &packageID)
+{
+    getUpdatesDetails(QStringList() << packageID);
+}
+
+Transaction *Daemon::getUpdates(Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetUpdates;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::getDistroUpgrades()
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetDistroUpgrades;
+    return ret;
+}
+
+Transaction *Daemon::installFiles(const QStringList &files, Transaction::TransactionFlags flags)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleInstallFiles;
+    ret->d_ptr->search = files;
+    ret->d_ptr->flags = flags;
+    return ret;
+}
+
+Transaction *Daemon::installFile(const QString &file, Transaction::TransactionFlags flags)
+{
+    installFiles(QStringList() << file, flags);
+}
+
+Transaction *Daemon::installPackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleInstallPackages;
+    ret->d_ptr->search = packageIDs;
+    ret->d_ptr->flags = flags;
+    return ret;
+}
+
+Transaction *Daemon::installPackage(const QString &packageID, Transaction::TransactionFlags flags)
+{
+    installPackages(QStringList() << packageID, flags);
+}
+
+Transaction *Daemon::installSignature(Transaction::SigType type, const QString &keyID, const QString &packageID)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleInstallSignature;
+    ret->d_ptr->signatureType = type;
+    ret->d_ptr->signatureKey = keyID;
+    ret->d_ptr->signaturePackage = packageID;
+    return ret;
+}
+
+Transaction *Daemon::refreshCache(bool force)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleRefreshCache;
+    ret->d_ptr->refreshCacheForce = force;
+    return ret;
+}
+
+Transaction *Daemon::removePackages(const QStringList &packageIDs, bool allowDeps, bool autoremove, Transaction::TransactionFlags flags)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleRemovePackages;
+    ret->d_ptr->search = packageIDs;
+    ret->d_ptr->allowDeps = allowDeps;
+    ret->d_ptr->autoremove = autoremove;
+    ret->d_ptr->flags = flags;
+    return ret;
+}
+
+Transaction *Daemon::removePackage(const QString &packageID, bool allowDeps, bool autoremove, Transaction::TransactionFlags flags)
+{
+    removePackages(QStringList() << packageID, allowDeps, autoremove, flags);
+}
+
+Transaction *Daemon::repairSystem(Transaction::TransactionFlags flags)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleRepairSystem;
+    ret->d_ptr->flags = flags;
+    return ret;
+}
+
+Transaction *Daemon::repoEnable(const QString &repoId, bool enable)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleRepoEnable;
+    ret->d_ptr->repoId = repoId;
+    ret->d_ptr->repoEnable = enable;
+    return ret;
+}
+
+Transaction *Daemon::repoSetData(const QString &repoId, const QString &parameter, const QString &value)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleRepoSetData;
+    ret->d_ptr->repoId = repoId;
+    ret->d_ptr->repoParameter = parameter;
+    ret->d_ptr->repoValue = value;
+    return ret;
+}
+
+Transaction *Daemon::resolve(const QStringList &packageNames, Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleResolve;
+    ret->d_ptr->search = packageNames;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::resolve(const QString &packageName, Transaction::Filters filters)
+{
+    resolve(QStringList() << packageName, filters);
+}
+
+Transaction *Daemon::searchFiles(const QStringList &search, Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleSearchFile;
+    ret->d_ptr->search = search;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::searchFiles(const QString &search, Transaction::Filters filters)
+{
+    searchFiles(QStringList() << search, filters);
+}
+
+Transaction *Daemon::searchDetails(const QStringList &search, Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleSearchDetails;
+    ret->d_ptr->search = search;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::searchDetails(const QString &search, Transaction::Filters filters)
+{
+    searchDetails(QStringList() << search, filters);
+}
+
+Transaction *Daemon::searchGroups(const QStringList &groups, Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleSearchGroup;
+    ret->d_ptr->search = groups;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::searchGroup(const QString &group, Transaction::Filters filters)
+{
+    searchGroups(QStringList() << group, filters);
+}
+
+Transaction *Daemon::searchGroup(Transaction::Group group, Transaction::Filters filters)
+{
+    QString groupString = Daemon::enumToString<Transaction>(group, "Group");
+    searchGroup(groupString, filters);
+}
+
+Transaction *Daemon::searchGroups(Transaction::Groups groups, Transaction::Filters filters)
+{
+    QStringList groupsStringList;
+    for (int i = 1; i < 64; ++i) {
+        if (groups & i) {
+            Transaction::Group group = static_cast<Transaction::Group>(i);
+            if (group != Transaction::GroupUnknown) {
+                groupsStringList << Daemon::enumToString<Transaction>(group, "Group");
+            }
+        }
+    }
+    searchGroups(groupsStringList, filters);
+}
+
+Transaction *Daemon::searchNames(const QStringList &search, Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleSearchName;
+    ret->d_ptr->search = search;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::searchNames(const QString &search, Transaction::Filters filters)
+{
+    searchNames(QStringList() << search, filters);
+}
+
+Transaction *Daemon::updatePackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleUpdatePackages;
+    ret->d_ptr->search = packageIDs;
+    ret->d_ptr->flags = flags;
+    return ret;
+}
+
+Transaction *Daemon::updatePackage(const QString &packageID, Transaction::TransactionFlags flags)
+{
+    updatePackages(QStringList() << packageID, flags);
+}
+
+Transaction *Daemon::whatProvides(const QStringList &search, Transaction::Filters filters)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleWhatProvides;
+    ret->d_ptr->search = search;
+    ret->d_ptr->filters = filters;
+    return ret;
+}
+
+Transaction *Daemon::whatProvides(const QString &search, Transaction::Filters filters)
+{
+    whatProvides(QStringList() << search, filters);
 }
 
 #include "daemon.moc"

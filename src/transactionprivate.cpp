@@ -80,10 +80,15 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
     foreach (const QString &signal, currentSignals) {
         setupSignal(signal, true);
     }
+
+    // Execute pending call
+    runQueuedTransaction();
 }
 
 void TransactionPrivate::runQueuedTransaction()
 {
+    Q_Q(Transaction);
+
     QDBusPendingReply<> reply;
     switch (role) {
     case Transaction::RoleAcceptEula:
@@ -174,36 +179,36 @@ void TransactionPrivate::runQueuedTransaction()
         break;
     }
 
-
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, q);
+    q->connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+               q, SLOT(methodCallFinished(QDBusPendingCallWatcher*)));
 }
 
 void TransactionPrivate::createTransactionFinished(QDBusPendingCallWatcher *call)
 {
+    Q_Q(Transaction);
     QDBusPendingReply<QDBusObjectPath> reply = *call;
     if (reply.isError()) {
         error = Transaction::InternalErrorFailed;
         errorMessage = reply.error().message();
+        q->finished(Transaction::ExitFailed, 0);
     } else {
-        QDBusObjectPath tid = reply.argumentAt<0>();
-        setup(tid);
+        // Setup our new Transaction ID
+        setup(reply.argumentAt<0>());
     }
     call->deleteLater();
 }
 
-void TransactionPrivate::Details(const QString &pid,
-                                 const QString &license,
-                                 uint group,
-                                 const QString &detail,
-                                 const QString &url,
-                                 qulonglong size)
+void TransactionPrivate::methodCallFinished(QDBusPendingCallWatcher *call)
 {
     Q_Q(Transaction);
-    q->details(pid,
-               license,
-               static_cast<Transaction::Group>(group),
-               detail,
-               url,
-               size);
+    QDBusPendingReply<QDBusObjectPath> reply = *call;
+    if (reply.isError()) {
+        error = Transaction::InternalErrorFailed;
+        errorMessage = reply.error().message();
+        q->finished(Transaction::ExitFailed, 0);
+    }
+    call->deleteLater();
 }
 
 void TransactionPrivate::distroUpgrade(uint type, const QString &name, const QString &description)

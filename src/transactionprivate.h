@@ -36,6 +36,7 @@ namespace PackageKit {
 class TransactionPrivate
 {
     Q_DECLARE_PUBLIC(Transaction)
+    friend class Daemon;
 protected:
     TransactionPrivate(Transaction *parent);
     virtual ~TransactionPrivate() {}
@@ -94,7 +95,7 @@ protected:
 
 protected Q_SLOTS:
     void createTransactionFinished(QDBusPendingCallWatcher *call);
-    void Details(const QString &pid, const QString &license, uint group, const QString &detail, const QString &url, qulonglong size);
+    void methodCallFinished(QDBusPendingCallWatcher *call);
     void distroUpgrade(uint type, const QString &name, const QString &description);
     void errorCode(uint error, const QString &details);
     void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText);
