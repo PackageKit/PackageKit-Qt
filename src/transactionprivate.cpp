@@ -24,6 +24,7 @@
 #include "transactionproxy.h"
 #include "daemon.h"
 #include "common.h"
+#include "details.h"
 
 #include <QStringList>
 #include <QDebug>
@@ -209,6 +210,12 @@ void TransactionPrivate::methodCallFinished(QDBusPendingCallWatcher *call)
         q->finished(Transaction::ExitFailed, 0);
     }
     call->deleteLater();
+}
+
+void TransactionPrivate::details(const QVariantMap &values)
+{
+    Q_Q(Transaction);
+    q->details(PackageKit::Details(values));
 }
 
 void TransactionPrivate::distroUpgrade(uint type, const QString &name, const QString &description)

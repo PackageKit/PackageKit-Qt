@@ -31,6 +31,8 @@
 
 namespace PackageKit {
 
+class Details;
+
 /**
 * \class Transaction transaction.h Transaction
 * \author Adrien Bustany \e <madcat@mymadcat.com>
@@ -831,7 +833,7 @@ Q_SIGNALS:
     /**
      * Emitted when the transaction sends details of a package
      */
-    void details(const QVariantMap &values);
+    void details(const PackageKit::Details &values);
 
     /**
      * Emitted when the transaction sends details of an update
@@ -928,6 +930,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void createTransactionFinished(QDBusPendingCallWatcher*))
     Q_PRIVATE_SLOT(d_func(), void methodCallFinished(QDBusPendingCallWatcher*))
     Q_PRIVATE_SLOT(d_func(), void distroUpgrade(uint type, const QString &name, const QString &description))
+    Q_PRIVATE_SLOT(d_func(), void details(const QVariantMap &values))
     Q_PRIVATE_SLOT(d_func(), void errorCode(uint error, const QString &details))
     Q_PRIVATE_SLOT(d_func(), void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText))
     Q_PRIVATE_SLOT(d_func(), void finished(uint exitCode, uint runtime))

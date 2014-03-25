@@ -97,6 +97,7 @@ void TransactionPrivate::setupSignal(const QString &signal, bool connect)
 
     const char *signalToConnect = 0;
     const char *memberToConnect = 0;
+    qDebug() << signal;
 
     if (signal == SIGNAL(changed())) {
         signalToConnect = SIGNAL(Changed());
@@ -104,9 +105,9 @@ void TransactionPrivate::setupSignal(const QString &signal, bool connect)
     } else if (signal == SIGNAL(category(QString,QString,QString,QString,QString))) {
         signalToConnect = SIGNAL(Category(QString,QString,QString,QString,QString));
         memberToConnect = SIGNAL(category(QString,QString,QString,QString,QString));
-    } else if (signal == SIGNAL(details(QVariantMap))) {
+    } else if (signal == SIGNAL(details(PackageKit::Details))) {
         signalToConnect = SIGNAL(Details(QVariantMap));
-        memberToConnect = SIGNAL(details(QVariantMap));
+        memberToConnect = SLOT(details(QVariantMap));
     } else if (signal == SIGNAL(distroUpgrade(PackageKit::Transaction::DistroUpgrade,QString,QString))) {
         signalToConnect = SIGNAL(DistroUpgrade(uint,QString,QString));
         memberToConnect = SLOT(distroUpgrade(uint,QString,QString));

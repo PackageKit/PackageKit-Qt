@@ -36,6 +36,8 @@ set(packagekitqt_HEADERS
     common.h
     daemon.h
     transaction.h
+    Details
+    details.h
     bitfield.h
 )
 
@@ -45,11 +47,12 @@ set(packagekitqt_HEADERS_PRIVATE
 )
 
 set(packagekitqt_SRC
-		bitfield.cpp
-		daemon.cpp
-                daemonprivate.cpp
-		transaction.cpp
-		transactionprivate.cpp
+    bitfield.cpp
+    daemon.cpp
+    daemonprivate.cpp
+    transaction.cpp
+    transactionprivate.cpp
+    details.cpp
 )
 
 find_file(PK_INTERFACE_XML org.freedesktop.PackageKit.xml

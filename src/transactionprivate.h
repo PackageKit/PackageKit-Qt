@@ -96,6 +96,7 @@ protected:
 protected Q_SLOTS:
     void createTransactionFinished(QDBusPendingCallWatcher *call);
     void methodCallFinished(QDBusPendingCallWatcher *call);
+    void details(const QVariantMap &values);
     void distroUpgrade(uint type, const QString &name, const QString &description);
     void errorCode(uint error, const QString &details);
     void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText);
