@@ -97,7 +97,6 @@ void TransactionPrivate::setupSignal(const QString &signal, bool connect)
 
     const char *signalToConnect = 0;
     const char *memberToConnect = 0;
-    qDebug() << signal;
 
     if (signal == SIGNAL(changed())) {
         signalToConnect = SIGNAL(Changed());
