@@ -162,6 +162,7 @@ void Daemon::disconnectNotify(const QMetaMethod &signal)
 
 Daemon::~Daemon()
 {
+    delete d_ptr;
 }
 
 bool Daemon::isRunning() const
