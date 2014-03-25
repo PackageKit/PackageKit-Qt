@@ -914,7 +914,6 @@ protected:
 
 private:
     friend class Daemon;
-    bool init(const QDBusObjectPath &tid = QDBusObjectPath());
     Transaction(const QDBusObjectPath &tid,
                 const QString &timespec,
                 bool succeeded,

@@ -36,14 +36,21 @@ Transaction::Transaction(QObject *parent) :
     d_ptr(new TransactionPrivate(this))
 {
     connect(Daemon::global(), SIGNAL(daemonQuit()), SLOT(daemonQuit()));
+
+    QDBusPendingReply<QDBusObjectPath> reply = Daemon::global()->createTransaction();
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
+    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+            this, SLOT(createTransactionFinished(QDBusPendingCallWatcher*)));
 }
 
 Transaction::Transaction(const QDBusObjectPath &tid, QObject *parent) :
     QObject(parent),
     d_ptr(new TransactionPrivate(this))
 {
+    Q_D(Transaction);
+
     connect(Daemon::global(), SIGNAL(daemonQuit()), SLOT(daemonQuit()));
-    init(tid);
+    d->setup(tid);
 }
 
 void Transaction::connectNotify(const char *signal)
@@ -151,26 +158,6 @@ void TransactionPrivate::setupSignal(const QString &signal, bool connect)
             p->disconnect(signalToConnect, q, memberToConnect);
         }
     }
-}
-
-bool Transaction::init(const QDBusObjectPath &tid)
-{
-    Q_D(Transaction);
-
-    if (d->p) {
-        return true;
-    }
-
-    if (!tid.path().isNull()) {
-        d->setup(tid);
-    } else {
-        QDBusPendingReply<QDBusObjectPath> reply = Daemon::global()->createTransaction();
-        QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
-        connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                this, SLOT(createTransactionFinished(QDBusPendingCallWatcher*)));
-    }
-
-    return false;
 }
 
 Transaction::Transaction(const QDBusObjectPath &tid,

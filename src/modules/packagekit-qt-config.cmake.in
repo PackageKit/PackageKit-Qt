@@ -6,6 +6,6 @@
 
 SET(prefix "@CMAKE_INSTALL_PREFIX@")
 SET(exec_prefix "@CMAKE_INSTALL_PREFIX@")
-SET(PackageKitQt5_LIBRARIES "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/libpackagekit-qt5.so" CACHE FILEPATH "Libraries for PackageKitQt5")
-SET(PackageKitQt5_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include/PackageKit/packagekit-qt5" CACHE PATH "Include path for PackageKitQt5")
+SET(PackageKitQt5_LIBRARIES "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/lib@LIBNAME@.so" CACHE FILEPATH "Libraries for PackageKitQt5")
+SET(PackageKitQt5_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include/PackageKit/@LIBNAME@" CACHE PATH "Include path for PackageKitQt5")
 SET(PackageKitQt5_FOUND "TRUE")
