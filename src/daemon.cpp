@@ -152,7 +152,7 @@ void Daemon::disconnectNotify(const char *signal)
 }
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-void Transaction::disconnectNotify(const QMetaMethod &signal)
+void Daemon::disconnectNotify(const QMetaMethod &signal)
 {
     // ugly but recommended way to convert a methodSignature to a SIGNAL
     disconnectNotify(QString("2%1")
