@@ -202,7 +202,7 @@ void TransactionPrivate::createTransactionFinished(QDBusPendingCallWatcher *call
 void TransactionPrivate::methodCallFinished(QDBusPendingCallWatcher *call)
 {
     Q_Q(Transaction);
-    QDBusPendingReply<QDBusObjectPath> reply = *call;
+    QDBusPendingReply<> reply = *call;
     if (reply.isError()) {
         error = Transaction::InternalErrorFailed;
         errorMessage = reply.error().message();
