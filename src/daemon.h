@@ -454,6 +454,28 @@ public:
     static Transaction *getDetails(const QString &packageID);
 
     /**
+     * Gets more details about the given \p files
+     *
+     * \sa Transaction::details
+     * \note This method emits \sa package()
+     * with details set
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getDetailsLocal(const QStringList &files);
+
+    /**
+     * Gets more details about the given \p file
+     *
+     * \sa Transaction::details
+     * \note This method emits \sa package()
+     * with details set
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getDetailsLocal(const QString &file);
+
+    /**
      * Gets the files contained in the given \p packages
      *
      * \note This method emits \sa files()
@@ -469,6 +491,24 @@ public:
      * \warning check \sa error() to know if it the call has any error
      */
     static Transaction *getFiles(const QString &packageIDs);
+
+    /**
+     * Gets the files contained in the given \p files
+     *
+     * \note This method emits \sa files()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getFilesLocal(const QStringList &files);
+
+    /**
+     * Gets the files contained in the given \p file
+     *
+     * \note This method emits \sa files()
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *getFilesLocal(const QString &file);
 
     /**
      * \brief Gets the last \p number finished transactions
@@ -647,6 +687,15 @@ public:
      * \warning check \sa error() to know if it the call has any error
      */
     static Transaction *repoEnable(const QString &repoId, bool enable = true);
+
+    /**
+     * Removes a repository
+     *
+     * \p autoremove packages from this repository
+     *
+     * \warning check \sa error() to know if it the call has any error
+     */
+    static Transaction *repoRemove(const QString &repoId, bool autoremove, Transaction::TransactionFlags flags = Transaction::TransactionFlagNone);
 
     /**
      * Sets a repository's parameter

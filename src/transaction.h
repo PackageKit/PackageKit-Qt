@@ -144,8 +144,11 @@ public:
         RoleGetDistroUpgrades,
         RoleGetCategories,
         RoleGetOldTransactions,
-        RoleUpgradeSystem, // Since 0.6.11
-        RoleRepairSystem   // Since 0.7.2
+        RoleUpgradeSystem,      // Since 0.6.11
+        RoleRepairSystem,       // Since 0.7.2
+        RoleGetDetailsLocal,    // Since 0.8.17
+        RoleGetFilesLocal,      // Since 0.9.1
+        RoleRepoRemove          // Since 0.9.1
     };
     typedef Bitfield Roles;
 

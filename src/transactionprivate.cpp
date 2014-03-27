@@ -176,6 +176,15 @@ void TransactionPrivate::runQueuedTransaction()
     case Transaction::RoleWhatProvides:
         reply = p->WhatProvides(filters, search);
         break;
+    case Transaction::RoleGetDetailsLocal:
+        reply = p->GetDetailsLocal(search);
+        break;
+    case Transaction::RoleGetFilesLocal:
+        reply = p->GetFilesLocal(search);
+        break;
+    case Transaction::RoleRepoRemove:
+        reply = p->RepoRemove(flags, repoId, autoremove);
+        break;
     default:
         break;
     }

@@ -371,7 +371,7 @@ Transaction *Daemon::downloadPackages(const QStringList &packageIDs, bool storeI
 
 Transaction *Daemon::downloadPackage(const QString &packageID, bool storeInCache)
 {
-    downloadPackages(QStringList() << packageID, storeInCache);
+    return downloadPackages(QStringList() << packageID, storeInCache);
 }
 
 Transaction *Daemon::getCategories()
@@ -393,7 +393,7 @@ Transaction *Daemon::getDepends(const QStringList &packageIDs, Transaction::Filt
 
 Transaction *Daemon::getDepends(const QString &packageID, Transaction::Filters filters, bool recursive)
 {
-    getDepends(QStringList() << packageID, filters, recursive);
+    return getDepends(QStringList() << packageID, filters, recursive);
 }
 
 Transaction *Daemon::getDetails(const QStringList &packageIDs)
@@ -406,7 +406,20 @@ Transaction *Daemon::getDetails(const QStringList &packageIDs)
 
 Transaction *Daemon::getDetails(const QString &packageID)
 {
-    getDetails(QStringList() << packageID);
+    return getDetails(QStringList() << packageID);
+}
+
+Transaction *Daemon::getDetailsLocal(const QStringList &files)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetDetailsLocal;
+    ret->d_ptr->search = files;
+    return ret;
+}
+
+Transaction *Daemon::getDetailsLocal(const QString &file)
+{
+    return getDetailsLocal(QStringList() << file);
 }
 
 Transaction *Daemon::getFiles(const QStringList &packageIDs)
@@ -419,7 +432,20 @@ Transaction *Daemon::getFiles(const QStringList &packageIDs)
 
 Transaction *Daemon::getFiles(const QString &packageID)
 {
-    getFiles(QStringList() << packageID);
+    return getFiles(QStringList() << packageID);
+}
+
+Transaction *Daemon::getFilesLocal(const QStringList &files)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleGetFilesLocal;
+    ret->d_ptr->search = files;
+    return ret;
+}
+
+Transaction *Daemon::getFilesLocal(const QString &file)
+{
+    return getFilesLocal(QStringList() << file);
 }
 
 Transaction *Daemon::getOldTransactions(uint number)
@@ -458,7 +484,7 @@ Transaction *Daemon::getRequires(const QStringList &packageIDs, Transaction::Fil
 
 Transaction *Daemon::getRequires(const QString &packageID, Transaction::Filters filters, bool recursive)
 {
-    getRequires(QStringList() << packageID, filters, recursive);
+    return getRequires(QStringList() << packageID, filters, recursive);
 }
 
 Transaction *Daemon::getUpdatesDetails(const QStringList &packageIDs)
@@ -471,7 +497,7 @@ Transaction *Daemon::getUpdatesDetails(const QStringList &packageIDs)
 
 Transaction *Daemon::getUpdateDetail(const QString &packageID)
 {
-    getUpdatesDetails(QStringList() << packageID);
+    return getUpdatesDetails(QStringList() << packageID);
 }
 
 Transaction *Daemon::getUpdates(Transaction::Filters filters)
@@ -500,7 +526,7 @@ Transaction *Daemon::installFiles(const QStringList &files, Transaction::Transac
 
 Transaction *Daemon::installFile(const QString &file, Transaction::TransactionFlags flags)
 {
-    installFiles(QStringList() << file, flags);
+    return installFiles(QStringList() << file, flags);
 }
 
 Transaction *Daemon::installPackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
@@ -514,7 +540,7 @@ Transaction *Daemon::installPackages(const QStringList &packageIDs, Transaction:
 
 Transaction *Daemon::installPackage(const QString &packageID, Transaction::TransactionFlags flags)
 {
-    installPackages(QStringList() << packageID, flags);
+    return installPackages(QStringList() << packageID, flags);
 }
 
 Transaction *Daemon::installSignature(Transaction::SigType type, const QString &keyID, const QString &packageID)
@@ -548,7 +574,7 @@ Transaction *Daemon::removePackages(const QStringList &packageIDs, bool allowDep
 
 Transaction *Daemon::removePackage(const QString &packageID, bool allowDeps, bool autoremove, Transaction::TransactionFlags flags)
 {
-    removePackages(QStringList() << packageID, allowDeps, autoremove, flags);
+    return removePackages(QStringList() << packageID, allowDeps, autoremove, flags);
 }
 
 Transaction *Daemon::repairSystem(Transaction::TransactionFlags flags)
@@ -565,6 +591,16 @@ Transaction *Daemon::repoEnable(const QString &repoId, bool enable)
     ret->d_ptr->role = Transaction::RoleRepoEnable;
     ret->d_ptr->repoId = repoId;
     ret->d_ptr->repoEnable = enable;
+    return ret;
+}
+
+Transaction *Daemon::repoRemove(const QString &repoId, bool autoremove, Transaction::TransactionFlags flags)
+{
+    Transaction *ret = new Transaction(Daemon::global());
+    ret->d_ptr->role = Transaction::RoleRepoRemove;
+    ret->d_ptr->repoId = repoId;
+    ret->d_ptr->autoremove = autoremove;
+    ret->d_ptr->flags = flags;
     return ret;
 }
 
@@ -589,7 +625,7 @@ Transaction *Daemon::resolve(const QStringList &packageNames, Transaction::Filte
 
 Transaction *Daemon::resolve(const QString &packageName, Transaction::Filters filters)
 {
-    resolve(QStringList() << packageName, filters);
+    return resolve(QStringList() << packageName, filters);
 }
 
 Transaction *Daemon::searchFiles(const QStringList &search, Transaction::Filters filters)
@@ -603,7 +639,7 @@ Transaction *Daemon::searchFiles(const QStringList &search, Transaction::Filters
 
 Transaction *Daemon::searchFiles(const QString &search, Transaction::Filters filters)
 {
-    searchFiles(QStringList() << search, filters);
+    return searchFiles(QStringList() << search, filters);
 }
 
 Transaction *Daemon::searchDetails(const QStringList &search, Transaction::Filters filters)
@@ -617,7 +653,7 @@ Transaction *Daemon::searchDetails(const QStringList &search, Transaction::Filte
 
 Transaction *Daemon::searchDetails(const QString &search, Transaction::Filters filters)
 {
-    searchDetails(QStringList() << search, filters);
+    return searchDetails(QStringList() << search, filters);
 }
 
 Transaction *Daemon::searchGroups(const QStringList &groups, Transaction::Filters filters)
@@ -631,13 +667,13 @@ Transaction *Daemon::searchGroups(const QStringList &groups, Transaction::Filter
 
 Transaction *Daemon::searchGroup(const QString &group, Transaction::Filters filters)
 {
-    searchGroups(QStringList() << group, filters);
+    return searchGroups(QStringList() << group, filters);
 }
 
 Transaction *Daemon::searchGroup(Transaction::Group group, Transaction::Filters filters)
 {
     QString groupString = Daemon::enumToString<Transaction>(group, "Group");
-    searchGroup(groupString, filters);
+    return searchGroup(groupString, filters);
 }
 
 Transaction *Daemon::searchGroups(Transaction::Groups groups, Transaction::Filters filters)
@@ -651,7 +687,7 @@ Transaction *Daemon::searchGroups(Transaction::Groups groups, Transaction::Filte
             }
         }
     }
-    searchGroups(groupsStringList, filters);
+    return searchGroups(groupsStringList, filters);
 }
 
 Transaction *Daemon::searchNames(const QStringList &search, Transaction::Filters filters)
@@ -665,7 +701,7 @@ Transaction *Daemon::searchNames(const QStringList &search, Transaction::Filters
 
 Transaction *Daemon::searchNames(const QString &search, Transaction::Filters filters)
 {
-    searchNames(QStringList() << search, filters);
+    return searchNames(QStringList() << search, filters);
 }
 
 Transaction *Daemon::updatePackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
@@ -679,7 +715,7 @@ Transaction *Daemon::updatePackages(const QStringList &packageIDs, Transaction::
 
 Transaction *Daemon::updatePackage(const QString &packageID, Transaction::TransactionFlags flags)
 {
-    updatePackages(QStringList() << packageID, flags);
+    return updatePackages(QStringList() << packageID, flags);
 }
 
 Transaction *Daemon::whatProvides(const QStringList &search, Transaction::Filters filters)
@@ -693,7 +729,7 @@ Transaction *Daemon::whatProvides(const QStringList &search, Transaction::Filter
 
 Transaction *Daemon::whatProvides(const QString &search, Transaction::Filters filters)
 {
-    whatProvides(QStringList() << search, filters);
+    return whatProvides(QStringList() << search, filters);
 }
 
 #include "daemon.moc"
