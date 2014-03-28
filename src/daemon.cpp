@@ -77,8 +77,6 @@ Daemon::Daemon(QObject *parent) :
     qRegisterMetaType<PackageKit::Transaction::Message>("PackageKit::Transaction::Message");
     qRegisterMetaType<PackageKit::Transaction::Status>("PackageKit::Transaction::Status");
     qRegisterMetaType<PackageKit::Transaction::MediaType>("PackageKit::Transaction::MediaType");
-    qRegisterMetaType<PackageKit::Transaction::Provides>("PackageKit::Transaction::Provides");
-    qRegisterMetaType<PackageKit::Transaction::ProvidesFlag>("PackageKit::Transaction::ProvidesFlag");
     qRegisterMetaType<PackageKit::Transaction::DistroUpgrade>("PackageKit::Transaction::DistroUpgrade");
     qRegisterMetaType<PackageKit::Transaction::TransactionFlag>("PackageKit::Transaction::TransactionFlag");
     qRegisterMetaType<PackageKit::Transaction::TransactionFlags>("PackageKit::Transaction::TransactionFlags");
@@ -171,16 +169,10 @@ bool Daemon::isRunning() const
     return d->running;
 }
 
-Transaction::Roles Daemon::actions() const
+Transaction::Roles Daemon::roles() const
 {
     Q_D(const Daemon);
     return d->roles;
-}
-
-Transaction::ProvidesFlag Daemon::provides() const
-{
-    Q_D(const Daemon);
-    return d->provides;
 }
 
 QString Daemon::backendName() const
@@ -381,19 +373,19 @@ Transaction *Daemon::getCategories()
     return ret;
 }
 
-Transaction *Daemon::getDepends(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
+Transaction *Daemon::dependsOn(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
     Transaction *ret = new Transaction(Daemon::global());
-    ret->d_ptr->role = Transaction::RoleGetDepends;
+    ret->d_ptr->role = Transaction::RoleDependsOn;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->filters = filters;
     ret->d_ptr->recursive = recursive;
     return ret;
 }
 
-Transaction *Daemon::getDepends(const QString &packageID, Transaction::Filters filters, bool recursive)
+Transaction *Daemon::dependsOn(const QString &packageID, Transaction::Filters filters, bool recursive)
 {
-    return getDepends(QStringList() << packageID, filters, recursive);
+    return dependsOn(QStringList() << packageID, filters, recursive);
 }
 
 Transaction *Daemon::getDetails(const QStringList &packageIDs)
@@ -472,19 +464,19 @@ Transaction *Daemon::getRepoList(Transaction::Filters filters)
     return ret;
 }
 
-Transaction *Daemon::getRequires(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
+Transaction *Daemon::requiredBy(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
     Transaction *ret = new Transaction(Daemon::global());
-    ret->d_ptr->role = Transaction::RoleGetRequires;
+    ret->d_ptr->role = Transaction::RoleRequiredBy;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->filters = filters;
     ret->d_ptr->recursive = recursive;
     return ret;
 }
 
-Transaction *Daemon::getRequires(const QString &packageID, Transaction::Filters filters, bool recursive)
+Transaction *Daemon::requiredBy(const QString &packageID, Transaction::Filters filters, bool recursive)
 {
-    return getRequires(QStringList() << packageID, filters, recursive);
+    return requiredBy(QStringList() << packageID, filters, recursive);
 }
 
 Transaction *Daemon::getUpdatesDetails(const QStringList &packageIDs)

@@ -117,12 +117,12 @@ public:
     enum Role {
         RoleUnknown,
         RoleCancel,
-        RoleGetDepends,
+        RoleDependsOn,
         RoleGetDetails,
         RoleGetFiles,
         RoleGetPackages,
         RoleGetRepoList,
-        RoleGetRequires,
+        RoleRequiredBy,
         RoleGetUpdateDetail,
         RoleGetUpdates,
         RoleInstallFiles,
@@ -353,26 +353,6 @@ public:
         MediaTypeDvd,
         MediaTypeDisc
     };
-
-    /**
-     * Enum used to describe a "provides" request
-     * \sa whatProvides
-     */
-    enum Provides {
-        ProvidesUnknown,
-        ProvidesAny,
-        ProvidesModalias,
-        ProvidesCodec,
-        ProvidesMimetype,
-        ProvidesFont,
-        ProvidesHardwareDriver,
-        ProvidesPostscriptDriver,
-        ProvidesPlasmaService,
-        ProvidesSharedLib,
-        ProvidesPythonModule,
-        ProvidesLanguageSupport
-    };
-    Q_DECLARE_FLAGS(ProvidesFlag, Provides)
 
     /**
      * Describes an distro upgrade state
@@ -951,7 +931,6 @@ private:
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::TransactionFlags)
-Q_DECLARE_OPERATORS_FOR_FLAGS(Transaction::ProvidesFlag)
 
 } // End namespace PackageKit
 Q_DECLARE_METATYPE(PackageKit::Transaction::InternalError)
@@ -961,7 +940,6 @@ Q_DECLARE_METATYPE(PackageKit::Transaction::Exit)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Message)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Status)
 Q_DECLARE_METATYPE(PackageKit::Transaction::MediaType)
-Q_DECLARE_METATYPE(PackageKit::Transaction::Provides)
 Q_DECLARE_METATYPE(PackageKit::Transaction::DistroUpgrade)
 Q_DECLARE_METATYPE(PackageKit::Transaction::TransactionFlag)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Restart)
@@ -972,6 +950,5 @@ Q_DECLARE_METATYPE(PackageKit::Transaction::SigType)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Filter)
 Q_DECLARE_METATYPE(PackageKit::Transaction::TransactionFlags)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Filters)
-Q_DECLARE_METATYPE(PackageKit::Transaction::ProvidesFlag)
 
 #endif

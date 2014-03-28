@@ -53,8 +53,7 @@ class Daemon : public QObject
     Q_ENUMS(Network)
     Q_ENUMS(Authorize)
     Q_PROPERTY(bool isRunning READ isRunning NOTIFY isRunningChanged)
-    Q_PROPERTY(Transaction::Roles actions READ actions NOTIFY changed)
-    Q_PROPERTY(Transaction::ProvidesFlag provides READ provides NOTIFY changed)
+    Q_PROPERTY(Transaction::Roles roles READ roles NOTIFY changed)
     Q_PROPERTY(QString backendName READ backendName NOTIFY changed)
     Q_PROPERTY(QString backendDescription READ backendDescription NOTIFY changed)
     Q_PROPERTY(QString backendAuthor READ backendAuthor NOTIFY changed)
@@ -111,14 +110,9 @@ public:
     bool isRunning() const;
 
     /**
-     * Returns all the actions supported by the current backend
+     * Returns all the roles supported by the current backend
      */
-    Transaction::Roles actions() const;
-
-    /**
-     * Returns all the actions supported by the current backend
-     */
-    Transaction::ProvidesFlag provides() const;
+    Transaction::Roles roles() const;
 
     /**
      * The backend name, e.g. "yum".
@@ -424,15 +418,15 @@ public:
      *
      * \warning check \sa error() to know if it the call has any error
      */
-    static Transaction *getDepends(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+    static Transaction *dependsOn(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
     /**
      * Convenience function to get the dependencies of this \p package
-     * \sa getDetails(const QStringList &packageIDs, Filters filters, bool recursive = false)
+     * \sa dependsOn(const QStringList &packageIDs, Filters filters, bool recursive = false)
      *
      * \warning check \sa error() to know if it the call has any error
      */
-    static Transaction *getDepends(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+    static Transaction *dependsOn(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
     /**
      * Gets more details about the given \p packages
@@ -486,7 +480,7 @@ public:
 
     /**
      * Convenience function to get the files contained in this \p package
-     * \sa getRequires(const QStringList &packageIDs)
+     * \sa getFiles(const QStringList &packageIDs)
      *
      * \warning check \sa error() to know if it the call has any error
      */
@@ -549,15 +543,15 @@ public:
      *
      * \warning check \sa error() to know if it the call has any error
      */
-    static Transaction *getRequires(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+    static Transaction *requiredBy(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
     /**
      * Convenience function to get packages requiring this package
-     * \sa getRequires(const QStringList &packageIDs, Filters filters, bool recursive = false)
+     * \sa requiredBy(const QStringList &packageIDs, Filters filters, bool recursive = false)
      *
      * \warning check \sa error() to know if it the call has any error
      */
-    static Transaction *getRequires(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
+    static Transaction *requiredBy(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
     /**
      * Retrieves more details about the update for the given \p packageIDs

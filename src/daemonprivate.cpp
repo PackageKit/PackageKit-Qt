@@ -37,7 +37,6 @@ DaemonPrivate::DaemonPrivate(Daemon* parent) :
     groups(Transaction::GroupUnknown),
     locked(false),
     networkState(Daemon::NetworkUnknown),
-    provides(Transaction::ProvidesUnknown),
     roles(0),
     versionMajor(0),
     versionMicro(0),
@@ -154,8 +153,6 @@ void DaemonPrivate::updateProperties(const QVariantMap &properties)
         } else if (property == QLatin1String("NetworkState")) {
             networkState = static_cast<Daemon::Network>(value.toUInt());
             q->networkStateChanged();
-        } else if (property == QLatin1String("Provides")) {
-            provides = static_cast<Transaction::ProvidesFlag>(value.toULongLong());
         } else if (property == QLatin1String("Roles")) {
             roles = value.toULongLong();
         } else if (property == QLatin1String("VersionMajor")) {

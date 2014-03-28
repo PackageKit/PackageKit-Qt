@@ -57,7 +57,6 @@ protected:
     bool locked;
     QStringList mimeTypes;
     Daemon::Network networkState;
-    Transaction::ProvidesFlag provides;
     Transaction::Roles roles;
     uint versionMajor;
     uint versionMicro;

@@ -101,7 +101,7 @@ void TransactionPrivate::runQueuedTransaction()
     case Transaction::RoleGetCategories:
         reply = p->GetCategories();
         break;
-    case Transaction::RoleGetDepends:
+    case Transaction::RoleDependsOn:
         reply = p->DependsOn(filters, search, recursive);
         break;
     case Transaction::RoleGetDetails:
@@ -119,7 +119,7 @@ void TransactionPrivate::runQueuedTransaction()
     case Transaction::RoleGetRepoList:
         reply = p->GetRepoList(filters);
         break;
-    case Transaction::RoleGetRequires:
+    case Transaction::RoleRequiredBy:
         reply = p->RequiredBy(filters, search, recursive);
         break;
     case Transaction::RoleGetUpdateDetail:

@@ -16,7 +16,7 @@ Bitfield::~Bitfield ()
 
 qulonglong Bitfield::operator& (qulonglong mask) const
 {
-	return m_val & (1ULL << mask);
+    return m_val & (1ULL << mask);
 }
 
 qulonglong Bitfield::operator&= (qulonglong mask)
