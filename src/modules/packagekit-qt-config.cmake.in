@@ -1,11 +1,11 @@
-# - Config information for PackageKit-Qt5
+# - Config information for PackageKit-Qt@QT_VERSION@
 # This file defines:
 #
-#  PackageKitQt5_INCLUDE_DIR - the PackageKitQt5 include directory
-#  PackageKitQt5_LIBRARIES - Link these to use PackageKitQt5
+#  PackageKitQt@QT_VERSION@_INCLUDE_DIR - the PackageKitQt@QT_VERSION@ include directory
+#  PackageKitQt@QT_VERSION@_LIBRARIES - Link these to use PackageKitQt@QT_VERSION@
 
 SET(prefix "@CMAKE_INSTALL_PREFIX@")
 SET(exec_prefix "@CMAKE_INSTALL_PREFIX@")
-SET(PackageKitQt5_LIBRARIES "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/lib@LIBNAME@.so" CACHE FILEPATH "Libraries for PackageKitQt5")
-SET(PackageKitQt5_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include/PackageKit/@LIBNAME@" CACHE PATH "Include path for PackageKitQt5")
-SET(PackageKitQt5_FOUND "TRUE")
+SET(PackageKitQt@QT_VERSION@_LIBRARIES "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@/lib@LIBNAME@.so" CACHE FILEPATH "Libraries for PackageKitQt@QT_VERSION@")
+SET(PackageKitQt@QT_VERSION@_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include/PackageKit/@LIBNAME@" CACHE PATH "Include path for PackageKitQt@QT_VERSION@")
+SET(PackageKitQt@QT_VERSION@_FOUND "TRUE")
