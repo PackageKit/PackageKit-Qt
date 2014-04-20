@@ -249,8 +249,7 @@ QDBusPendingReply<uint> Daemon::getTimeSinceAction(Transaction::Role role)
 
 QDBusPendingReply<QList<QDBusObjectPath> > Daemon::getTransactionList()
 {
-    Q_D(Daemon);
-    return d->daemon->GetTransactionList();
+    return global()->d_ptr->daemon->GetTransactionList();
 }
 
 QList<Transaction*> Daemon::getTransactionObjects(QObject *parent)

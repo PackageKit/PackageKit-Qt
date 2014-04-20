@@ -205,7 +205,7 @@ public:
     /**
      * Returns the list of current transactions
      */
-    QDBusPendingReply<QList<QDBusObjectPath> > getTransactionList();
+    static QDBusPendingReply<QList<QDBusObjectPath> > getTransactionList();
 
     /**
      * Convenience function

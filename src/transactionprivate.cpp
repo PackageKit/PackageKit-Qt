@@ -332,10 +332,6 @@ void TransactionPrivate::updateProperties(const QVariantMap &properties)
 
         ++it;
     }
-
-    if (!properties.isEmpty()) {
-        q->changed();
-    }
 }
 
 void TransactionPrivate::message(uint type, const QString &message)

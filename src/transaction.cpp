@@ -98,10 +98,7 @@ void TransactionPrivate::setupSignal(const QString &signal, bool connect)
     const char *signalToConnect = 0;
     const char *memberToConnect = 0;
 
-    if (signal == SIGNAL(changed())) {
-        signalToConnect = SIGNAL(Changed());
-        memberToConnect = SIGNAL(changed());
-    } else if (signal == SIGNAL(category(QString,QString,QString,QString,QString))) {
+    if (signal == SIGNAL(category(QString,QString,QString,QString,QString))) {
         signalToConnect = SIGNAL(Category(QString,QString,QString,QString,QString));
         memberToConnect = SIGNAL(category(QString,QString,QString,QString,QString));
     } else if (signal == SIGNAL(details(PackageKit::Details))) {

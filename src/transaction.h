@@ -69,10 +69,10 @@ class Transaction : public QObject
     Q_ENUMS(Filter)
     Q_FLAGS(TransactionFlag TransactionFlags)
     Q_FLAGS(Filter Filters)
-    Q_PROPERTY(QDBusObjectPath tid READ tid NOTIFY changed)
-    Q_PROPERTY(InternalError error READ internalError NOTIFY changed)
-    Q_PROPERTY(InternalError internalError READ internalError NOTIFY changed)
-    Q_PROPERTY(QString internalErrorMessage READ internalErrorMessage NOTIFY changed)
+    Q_PROPERTY(QDBusObjectPath tid READ tid)
+    Q_PROPERTY(InternalError error READ internalError)
+    Q_PROPERTY(InternalError internalError READ internalError)
+    Q_PROPERTY(QString internalErrorMessage READ internalErrorMessage)
     Q_PROPERTY(bool allowCancel READ allowCancel NOTIFY allowCancelChanged)
     Q_PROPERTY(bool isCallerActive READ isCallerActive NOTIFY isCallerActiveChanged)
     Q_PROPERTY(QString lastPackage READ lastPackage NOTIFY lastPackageChanged)
@@ -84,12 +84,12 @@ class Transaction : public QObject
     Q_PROPERTY(Role role READ role NOTIFY roleChanged)
     Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(TransactionFlags transactionFlags READ transactionFlags NOTIFY transactionFlagsChanged)
-    Q_PROPERTY(QDateTime timespec READ timespec NOTIFY changed)
-    Q_PROPERTY(bool succeeded READ succeeded NOTIFY changed)
-    Q_PROPERTY(uint duration READ duration NOTIFY changed)
-    Q_PROPERTY(QString data READ data NOTIFY changed)
+    Q_PROPERTY(QDateTime timespec READ timespec)
+    Q_PROPERTY(bool succeeded READ succeeded)
+    Q_PROPERTY(uint duration READ duration)
+    Q_PROPERTY(QString data READ data)
     Q_PROPERTY(uint uid READ uid NOTIFY uidChanged)
-    Q_PROPERTY(QString cmdline READ cmdline NOTIFY changed)
+    Q_PROPERTY(QString cmdline READ cmdline)
 public:
     /**
      * Describes an error at the daemon level (for example, PackageKit crashes or is unreachable)
@@ -732,11 +732,6 @@ Q_SIGNALS:
     void transactionFlagsChanged();
 
     void uidChanged();
-
-    /**
-     * The transaction has changed one of it's properties
-     */
-    void changed();
 
     /**
      * \brief Sends a category
