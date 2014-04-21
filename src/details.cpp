@@ -22,6 +22,11 @@
 
 #include <QVariant>
 
+PackageKit::Details::Details()
+{
+
+}
+
 PackageKit::Details::Details(const QVariantMap &other) :
     QVariantMap(other)
 {

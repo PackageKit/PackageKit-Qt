@@ -30,6 +30,8 @@ namespace PackageKit {
 class Details : public QVariantMap
 {
 public:
+    Details();
+
     Details(const QVariantMap &other);
 
     QString packageId() const;
