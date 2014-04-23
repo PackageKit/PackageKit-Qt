@@ -51,17 +51,17 @@ protected:
     QString backendDescription;
     QString backendName;
     QString distroId;
-    Transaction::Filters filters;
-    Transaction::Groups groups;
-    bool locked;
+    Transaction::Filters filters = Transaction::FilterNone;
+    Transaction::Groups groups = Transaction::GroupUnknown;
+    bool locked = false;
     QStringList mimeTypes;
-    Daemon::Network networkState;
-    Transaction::Roles roles;
-    uint versionMajor;
-    uint versionMicro;
-    uint versionMinor;
+    Daemon::Network networkState = Daemon::NetworkUnknown;
+    Transaction::Roles roles = Transaction::RoleUnknown;
+    uint versionMajor = 0;
+    uint versionMicro = 0;
+    uint versionMinor = 0;
 
-    bool running;
+    bool running = false;
 
 protected Q_SLOTS:
     void serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner);

@@ -31,17 +31,8 @@
 
 using namespace PackageKit;
 
-DaemonPrivate::DaemonPrivate(Daemon* parent) :
-    q_ptr(parent),
-    filters(Transaction::FilterUnknown),
-    groups(Transaction::GroupUnknown),
-    locked(false),
-    networkState(Daemon::NetworkUnknown),
-    roles(0),
-    versionMajor(0),
-    versionMicro(0),
-    versionMinor(0),
-    running(false)
+DaemonPrivate::DaemonPrivate(Daemon* parent)
+    : q_ptr(parent)
 {
     m_watcher = new QDBusServiceWatcher(QLatin1String(PK_NAME),
                                         QDBusConnection::systemBus(),
