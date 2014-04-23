@@ -45,30 +45,30 @@ protected:
     void runQueuedTransaction();
 
     QDBusObjectPath tid;
-    ::TransactionProxy* p;
+    ::TransactionProxy* p = 0;
     Transaction *q_ptr;
     QStringList connectedSignals;
 
-    bool allowCancel;
-    bool callerActive;
-    qulonglong downloadSizeRemaining;
-    uint elapsedTime;
+    bool allowCancel = false;
+    bool callerActive = false;
+    qulonglong downloadSizeRemaining = 0;
+    uint elapsedTime = 0;
     QString lastPackage;
-    uint percentage;
-    uint remainingTime;
-    Transaction::Role role;
-    uint speed;
-    Transaction::Status status;
-    uint uid;
+    uint percentage = 0;
+    uint remainingTime = 0;
+    Transaction::Role role = Transaction::RoleUnknown;
+    uint speed = 0;
+    Transaction::Status status = Transaction::StatusUnknown;
+    uint uid = 0;
 
     // Queue params
     QString eulaId;
     bool storeInCache;
     Transaction::Filters filters;
-    bool recursive;
-    uint numberOfOldTransactions;
-    Transaction::TransactionFlags transactionFlags;
-    Transaction::SigType signatureType;
+    bool recursive = false;
+    uint numberOfOldTransactions = 0;
+    Transaction::TransactionFlags transactionFlags = Transaction::TransactionFlagNone;
+    Transaction::SigType signatureType = Transaction::SigTypeUnknown;
     QString signatureKey;
     QString signaturePackage;
     bool refreshCacheForce;

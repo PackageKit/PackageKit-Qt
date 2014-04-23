@@ -53,6 +53,7 @@ set (BUILDDIR "${CMAKE_BINARY_DIR}")
 set (LOCALSTATEDIR "/var")
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
+add_definitions("-std=gnu++11")
 
 set(CMAKE_INSTALL_LIBDIR "lib/${CMAKE_LIBRARY_ARCHITECTURE}" CACHE PATH "Output directory for libraries")
 if (IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})

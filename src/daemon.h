@@ -107,74 +107,74 @@ public:
     /**
      * Returns true if the daemon is running (ie registered to DBus)
      */
-    bool isRunning() const;
+    static bool isRunning();
 
     /**
      * Returns all the roles supported by the current backend
      */
-    Transaction::Roles roles() const;
+    static Transaction::Roles roles();
 
     /**
      * The backend name, e.g. "yum".
      */
-    QString backendName() const;
+    static QString backendName();
 
     /**
      * The backend description, e.g. "Yellow Dog Update Modifier".
      */
-    QString backendDescription() const;
+    static QString backendDescription();
 
     /**
      * The backend author, e.g. "Joe Bloggs <joe@blogs.com>"
      */
-    QString backendAuthor() const;
+    static QString backendAuthor();
 
     /**
      * Returns the package filters supported by the current backend
      */
-    Transaction::Filters filters() const;
+    static Transaction::Filters filters();
 
     /**
      * Returns the package groups supported by the current backend
      */
-    Transaction::Groups groups() const;
+    static Transaction::Groups groups();
 
     /**
      * Set when the backend is locked and native tools would fail.
      */
-    bool locked() const;
+    static bool locked();
 
     /**
      * Returns a list containing the MIME types supported by the current backend
      */
-    QStringList mimeTypes() const;
+    static QStringList mimeTypes();
 
     /**
      * Returns the current network state
      */
-    Daemon::Network networkState() const;
+    static Daemon::Network networkState();
 
     /**
      * The distribution identifier in the
      * distro;version;arch form,
      * e.g. "debian;squeeze/sid;x86_64".
      */
-    QString distroID() const;
+    static QString distroID();
 
     /**
      * Returns the major version number.
      */
-    uint versionMajor() const;
+    static uint versionMajor();
 
     /**
      * The minor version number.
      */
-    uint versionMinor() const;
+    static uint versionMinor();
 
     /**
      * The micro version number.
      */
-    uint versionMicro() const;
+    static uint versionMicro();
 
     /**
      * Allows a client to find out if it would be allowed to authorize an action.
@@ -182,12 +182,12 @@ public:
      * specified in \p actionId
      * Returm might be either yes, no or interactive \sa Authorize.
      */
-    QDBusPendingReply<Authorize> canAuthorize(const QString &actionId);
+    static QDBusPendingReply<Authorize> canAuthorize(const QString &actionId);
 
     /**
      * Returns the time (in seconds) since the specified \p action
      */
-    QDBusPendingReply<uint> getTimeSinceAction(PackageKit::Transaction::Role action);
+    static QDBusPendingReply<uint> getTimeSinceAction(PackageKit::Transaction::Role action);
 
     /**
      * \brief creates a new transaction path
@@ -200,7 +200,7 @@ public:
      * is not useful as simply creating a \c Transaction object will
      * automatically create this path.
      */
-    QDBusPendingReply<QDBusObjectPath> createTransaction() const;
+    static QDBusPendingReply<QDBusObjectPath> createTransaction();
 
     /**
      * Returns the list of current transactions
@@ -214,7 +214,7 @@ public:
      * You must delete these yourself or pass a
      * \p parent for these comming transactions
      */
-    QList<Transaction*> getTransactionObjects(QObject *parent = 0);
+    static QList<Transaction*> getTransactionObjects(QObject *parent = 0);
 
     /**
      * \brief Sets a global hints for all the transactions to be created
@@ -234,40 +234,35 @@ public:
      *
      * \sa Transaction::setHints
      */
-    void setHints(const QStringList &hints);
+    static void setHints(const QStringList &hints);
 
     /**
      * Convenience function to set global hints
      * \sa setHints(const QStringList &hints)
      */
-    void setHints(const QString &hints);
+    static void setHints(const QString &hints);
 
     /**
      * This method returns the current hints
      */
-    QStringList hints() const;
+    static QStringList hints();
 
     /**
      * Sets a proxy to be used for all the network operations
      */
-    QDBusPendingReply<> setProxy(const QString &http_proxy, const QString &https_proxy, const QString &ftp_proxy, const QString &socks_proxy, const QString &no_proxy, const QString &pac);
+    static QDBusPendingReply<> setProxy(const QString &http_proxy, const QString &https_proxy, const QString &ftp_proxy, const QString &socks_proxy, const QString &no_proxy, const QString &pac);
 
     /**
      * \brief Tells the daemon that the system state has changed, to make it reload its cache
      *
      * \p reason can be resume or posttrans
      */
-    QDBusPendingReply<> stateHasChanged(const QString &reason);
+    static QDBusPendingReply<> stateHasChanged(const QString &reason);
 
     /**
      * Asks PackageKit to quit, for example to let a native package manager operate
      */
-    QDBusPendingReply<> suggestDaemonQuit();
-
-    /**
-     * Get the last call status
-     */
-    QDBusError lastError() const;
+    static QDBusPendingReply<> suggestDaemonQuit();
 
     /**
      * Returns the package name from the \p packageID

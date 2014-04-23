@@ -163,88 +163,74 @@ Daemon::~Daemon()
     delete d_ptr;
 }
 
-bool Daemon::isRunning() const
+bool Daemon::isRunning()
 {
-    Q_D(const Daemon);
-    return d->running;
+    return global()->d_ptr->running;
 }
 
-Transaction::Roles Daemon::roles() const
+Transaction::Roles Daemon::roles()
 {
-    Q_D(const Daemon);
-    return d->roles;
+    return global()->d_ptr->roles;
 }
 
-QString Daemon::backendName() const
+QString Daemon::backendName()
 {
-    Q_D(const Daemon);
-    return d->backendName;
+    return global()->d_ptr->backendName;
 }
 
-QString Daemon::backendDescription() const
+QString Daemon::backendDescription()
 {
-    Q_D(const Daemon);
-    return d->backendDescription;
+    return global()->d_ptr->backendDescription;
 }
 
-QString Daemon::backendAuthor() const
+QString Daemon::backendAuthor()
 {
-    Q_D(const Daemon);
-    return d->backendAuthor;
+    return global()->d_ptr->backendAuthor;
 }
 
-Transaction::Filters Daemon::filters() const
+Transaction::Filters Daemon::filters()
 {
-    Q_D(const Daemon);
-    return d->filters;
+    return global()->d_ptr->filters;
 }
 
-Transaction::Groups Daemon::groups() const
+Transaction::Groups Daemon::groups()
 {
-    Q_D(const Daemon);
-    return d->groups;
+    return global()->d_ptr->groups;
 }
 
-bool Daemon::locked() const
+bool Daemon::locked()
 {
-    Q_D(const Daemon);
-    return d->locked;
+    return global()->d_ptr->locked;
 }
 
-QStringList Daemon::mimeTypes() const
+QStringList Daemon::mimeTypes()
 {
-    Q_D(const Daemon);
-    return d->mimeTypes;
+    return global()->d_ptr->mimeTypes;
 }
 
-Daemon::Network Daemon::networkState() const
+Daemon::Network Daemon::networkState()
 {
-    Q_D(const Daemon);
-    return d->networkState;
+    return global()->d_ptr->networkState;
 }
 
-QString Daemon::distroID() const
+QString Daemon::distroID()
 {
-    Q_D(const Daemon);
-    return d->distroId;
+    return global()->d_ptr->distroId;
 }
 
 QDBusPendingReply<Daemon::Authorize> Daemon::canAuthorize(const QString &actionId)
 {
-    Q_D(Daemon);
-    return d->daemon->CanAuthorize(actionId);
+    return global()->d_ptr->daemon->CanAuthorize(actionId);
 }
 
-QDBusPendingReply<QDBusObjectPath> Daemon::createTransaction() const
+QDBusPendingReply<QDBusObjectPath> Daemon::createTransaction()
 {
-    Q_D(const Daemon);
-    return d->daemon->CreateTransaction();
+    return global()->d_ptr->daemon->CreateTransaction();
 }
 
 QDBusPendingReply<uint> Daemon::getTimeSinceAction(Transaction::Role role)
 {
-    Q_D(Daemon);
-    return d->daemon->GetTimeSinceAction(role);
+    return global()->d_ptr->daemon->GetTimeSinceAction(role);
 }
 
 QDBusPendingReply<QList<QDBusObjectPath> > Daemon::getTransactionList()
@@ -254,68 +240,52 @@ QDBusPendingReply<QList<QDBusObjectPath> > Daemon::getTransactionList()
 
 QList<Transaction*> Daemon::getTransactionObjects(QObject *parent)
 {
-    Q_D(Daemon);
-    return d->transactions(getTransactionList(), parent);
+    return global()->d_ptr->transactions(getTransactionList(), parent);
 }
 
 void Daemon::setHints(const QStringList &hints)
 {
-    Q_D(Daemon);
-    d->hints = hints;
+    global()->d_ptr->hints = hints;
 }
 
 void Daemon::setHints(const QString &hints)
 {
-    Q_D(Daemon);
-    d->hints = QStringList() << hints;
+    global()->d_ptr->hints = QStringList() << hints;
 }
 
-QStringList Daemon::hints() const
+QStringList Daemon::hints()
 {
-    Q_D(const Daemon);
-    return d->hints;
+    return global()->d_ptr->hints;
 }
 
 QDBusPendingReply<> Daemon::setProxy(const QString& http_proxy, const QString& https_proxy, const QString& ftp_proxy, const QString& socks_proxy, const QString& no_proxy, const QString& pac)
 {
-    Q_D(Daemon);
-    return d->daemon->SetProxy(http_proxy, https_proxy, ftp_proxy, socks_proxy, no_proxy, pac);
+    return global()->d_ptr->daemon->SetProxy(http_proxy, https_proxy, ftp_proxy, socks_proxy, no_proxy, pac);
 }
 
 QDBusPendingReply<> Daemon::stateHasChanged(const QString& reason)
 {
-    Q_D(Daemon);
-    return d->daemon->StateHasChanged(reason);
+    return global()->d_ptr->daemon->StateHasChanged(reason);
 }
 
 QDBusPendingReply<> Daemon::suggestDaemonQuit()
 {
-    Q_D(Daemon);
-    return d->daemon->SuggestDaemonQuit();
+    return global()->d_ptr->daemon->SuggestDaemonQuit();
 }
 
-QDBusError Daemon::lastError() const
+uint Daemon::versionMajor()
 {
-    Q_D(const Daemon);
-    return d->lastError;
+    return global()->d_ptr->versionMajor;
 }
 
-uint Daemon::versionMajor() const
+uint Daemon::versionMinor()
 {
-    Q_D(const Daemon);
-    return d->versionMajor;
+    return global()->d_ptr->versionMinor;
 }
 
-uint Daemon::versionMinor() const
+uint Daemon::versionMicro()
 {
-    Q_D(const Daemon);
-    return d->versionMinor;
-}
-
-uint Daemon::versionMicro() const
-{
-    Q_D(const Daemon);
-    return d->versionMicro;
+    return global()->d_ptr->versionMicro;
 }
 
 QString Daemon::packageName(const QString &packageID)

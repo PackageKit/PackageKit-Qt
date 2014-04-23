@@ -41,7 +41,6 @@ protected:
     Daemon *q_ptr;
     ::DaemonProxy *daemon;
     QStringList hints;
-    QDBusError lastError;
     QStringList connectedSignals;
 
     QList<Transaction*> transactions(const QList<QDBusObjectPath> &tids, QObject *parent);

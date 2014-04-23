@@ -31,12 +31,8 @@
 
 using namespace PackageKit;
 
-TransactionPrivate::TransactionPrivate(Transaction* parent) :
-    q_ptr(parent),
-    p(0),
-    role(Transaction::RoleUnknown),
-    status(Transaction::StatusUnknown),
-    transactionFlags(Transaction::TransactionFlagNone)
+TransactionPrivate::TransactionPrivate(Transaction* parent)
+    : q_ptr(parent)
 {
 }
 
