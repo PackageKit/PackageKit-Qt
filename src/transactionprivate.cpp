@@ -132,10 +132,10 @@ void TransactionPrivate::runQueuedTransaction()
         reply = p->GetDistroUpgrades();
         break;
     case Transaction::RoleInstallFiles:
-        reply = p->InstallFiles(flags, search);
+        reply = p->InstallFiles(transactionFlags, search);
         break;
     case Transaction::RoleInstallPackages:
-        reply = p->InstallPackages(flags, search);
+        reply = p->InstallPackages(transactionFlags, search);
         break;
     case Transaction::RoleInstallSignature:
         reply = p->InstallSignature(signatureType, signatureKey, signaturePackage);
@@ -144,10 +144,10 @@ void TransactionPrivate::runQueuedTransaction()
         reply = p->RefreshCache(refreshCacheForce);
         break;
     case Transaction::RoleRemovePackages:
-        reply = p->RemovePackages(flags, search, allowDeps, autoremove);
+        reply = p->RemovePackages(transactionFlags, search, allowDeps, autoremove);
         break;
     case Transaction::RoleRepairSystem:
-        reply = p->RepairSystem(flags);
+        reply = p->RepairSystem(transactionFlags);
         break;
     case Transaction::RoleRepoEnable:
         reply = p->RepoEnable(repoId, repoEnable);
@@ -171,7 +171,7 @@ void TransactionPrivate::runQueuedTransaction()
         reply = p->SearchNames(filters, search);
         break;
     case Transaction::RoleUpdatePackages:
-        reply = p->UpdatePackages(flags, search);
+        reply = p->UpdatePackages(transactionFlags, search);
         break;
     case Transaction::RoleWhatProvides:
         reply = p->WhatProvides(filters, search);
@@ -183,7 +183,7 @@ void TransactionPrivate::runQueuedTransaction()
         reply = p->GetFilesLocal(search);
         break;
     case Transaction::RoleRepoRemove:
-        reply = p->RepoRemove(flags, repoId, autoremove);
+        reply = p->RepoRemove(transactionFlags, repoId, autoremove);
         break;
     default:
         break;

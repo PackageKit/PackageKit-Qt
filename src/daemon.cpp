@@ -511,7 +511,7 @@ Transaction *Daemon::installFiles(const QStringList &files, Transaction::Transac
     Transaction *ret = new Transaction(Daemon::global());
     ret->d_ptr->role = Transaction::RoleInstallFiles;
     ret->d_ptr->search = files;
-    ret->d_ptr->flags = flags;
+    ret->d_ptr->transactionFlags = flags;
     return ret;
 }
 
@@ -525,7 +525,7 @@ Transaction *Daemon::installPackages(const QStringList &packageIDs, Transaction:
     Transaction *ret = new Transaction(Daemon::global());
     ret->d_ptr->role = Transaction::RoleInstallPackages;
     ret->d_ptr->search = packageIDs;
-    ret->d_ptr->flags = flags;
+    ret->d_ptr->transactionFlags = flags;
     return ret;
 }
 
@@ -559,7 +559,7 @@ Transaction *Daemon::removePackages(const QStringList &packageIDs, bool allowDep
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->allowDeps = allowDeps;
     ret->d_ptr->autoremove = autoremove;
-    ret->d_ptr->flags = flags;
+    ret->d_ptr->transactionFlags = flags;
     return ret;
 }
 
@@ -572,7 +572,7 @@ Transaction *Daemon::repairSystem(Transaction::TransactionFlags flags)
 {
     Transaction *ret = new Transaction(Daemon::global());
     ret->d_ptr->role = Transaction::RoleRepairSystem;
-    ret->d_ptr->flags = flags;
+    ret->d_ptr->transactionFlags = flags;
     return ret;
 }
 
@@ -591,7 +591,7 @@ Transaction *Daemon::repoRemove(const QString &repoId, bool autoremove, Transact
     ret->d_ptr->role = Transaction::RoleRepoRemove;
     ret->d_ptr->repoId = repoId;
     ret->d_ptr->autoremove = autoremove;
-    ret->d_ptr->flags = flags;
+    ret->d_ptr->transactionFlags = flags;
     return ret;
 }
 
@@ -700,7 +700,7 @@ Transaction *Daemon::updatePackages(const QStringList &packageIDs, Transaction::
     Transaction *ret = new Transaction(Daemon::global());
     ret->d_ptr->role = Transaction::RoleUpdatePackages;
     ret->d_ptr->search = packageIDs;
-    ret->d_ptr->flags = flags;
+    ret->d_ptr->transactionFlags = flags;
     return ret;
 }
 

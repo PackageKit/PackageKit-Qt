@@ -59,7 +59,6 @@ protected:
     Transaction::Role role;
     uint speed;
     Transaction::Status status;
-    Transaction::TransactionFlags transactionFlags;
     uint uid;
 
     // Queue params
@@ -68,7 +67,7 @@ protected:
     Transaction::Filters filters;
     bool recursive;
     uint numberOfOldTransactions;
-    Transaction::TransactionFlags flags;
+    Transaction::TransactionFlags transactionFlags;
     Transaction::SigType signatureType;
     QString signatureKey;
     QString signaturePackage;
