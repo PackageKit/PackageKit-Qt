@@ -49,6 +49,7 @@ protected:
     Transaction *q_ptr;
     QStringList connectedSignals;
 
+    bool sentFinished = false;
     bool allowCancel = false;
     bool callerActive = false;
     qulonglong downloadSizeRemaining = 0;

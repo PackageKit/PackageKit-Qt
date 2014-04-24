@@ -476,24 +476,15 @@ public:
     };
 
     /**
-     * Create a transaction object with a new transaction id
-     *
-     * The transaction object \b cannot be reused
-     * (i.e. removePackages then installPackages)
-     *
-     */
-    Transaction();
-
-    /**
      * Create a transaction object with transaction id \p tid
-     * \note The if \p tid is a NULL string then it will automatically
-     * asks PackageKit for a tid
      *
-     * The transaction object \b cannot be reused
-     * (i.e. removePackages then installPackages)
+     * Before using any members wait for roleChanged() signal
+     * to be emitted, this is because we ask for the Transaction
+     * properties in async mode.
      *
-     * \warning after creating the transaction object be sure
-     * to verify if it doesn't have any error()
+     * The transaction is automatically deleted once finished()
+     * is emitted.
+     *
      */
     Transaction(const QDBusObjectPath &tid);
 
@@ -866,6 +857,15 @@ protected:
 #endif
 
     TransactionPrivate * const d_ptr;
+
+    /**
+     * Creates a new transaction object
+     * asking PackageKit for a new TID
+     *
+     * This constructor is used by Daemon
+     *
+     */
+    Transaction();
 
     Transaction(TransactionPrivate *d);
 
