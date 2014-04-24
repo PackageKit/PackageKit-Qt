@@ -42,7 +42,7 @@ DaemonPrivate::DaemonPrivate(Daemon* parent)
                    SLOT(serviceOwnerChanged(QString,QString,QString)));
 
     // On PK 0.9 this will always be async
-    getAllProperties(true);
+    getAllProperties(false);
 }
 
 void DaemonPrivate::serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner)
