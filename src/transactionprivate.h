@@ -39,7 +39,7 @@ class TransactionPrivate
     friend class Daemon;
 protected:
     TransactionPrivate(Transaction *parent);
-    virtual ~TransactionPrivate() {}
+    virtual ~TransactionPrivate();
 
     void setup(const QDBusObjectPath &transactionId);
     void runQueuedTransaction();
@@ -86,9 +86,6 @@ protected:
     uint duration;
     QString data;
     QString cmdline;
-
-    Transaction::InternalError error;
-    QString errorMessage;
 
     void setupSignal(const QString &signal, bool connect);
 

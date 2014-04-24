@@ -31,9 +31,8 @@
 
 using namespace PackageKit;
 
-Transaction::Transaction(QObject *parent) :
-    QObject(parent),
-    d_ptr(new TransactionPrivate(this))
+Transaction::Transaction()
+    : d_ptr(new TransactionPrivate(this))
 {
     connect(Daemon::global(), SIGNAL(daemonQuit()), SLOT(daemonQuit()));
 
@@ -43,9 +42,8 @@ Transaction::Transaction(QObject *parent) :
             this, SLOT(createTransactionFinished(QDBusPendingCallWatcher*)));
 }
 
-Transaction::Transaction(const QDBusObjectPath &tid, QObject *parent) :
-    QObject(parent),
-    d_ptr(new TransactionPrivate(this))
+Transaction::Transaction(const QDBusObjectPath &tid)
+    : d_ptr(new TransactionPrivate(this))
 {
     Q_D(Transaction);
 
@@ -90,6 +88,11 @@ void Transaction::disconnectNotify(const QMetaMethod &signal)
                      .arg(QLatin1String(signal.methodSignature())).toLatin1());
 }
 #endif
+
+Transaction::Transaction(TransactionPrivate *d)
+    : d_ptr(d)
+{
+}
 
 void TransactionPrivate::setupSignal(const QString &signal, bool connect)
 {
@@ -157,53 +160,16 @@ void TransactionPrivate::setupSignal(const QString &signal, bool connect)
     }
 }
 
-Transaction::Transaction(const QDBusObjectPath &tid,
-                         const QString &timespec,
-                         bool succeeded,
-                         Role role,
-                         uint duration,
-                         const QString &data,
-                         uint uid,
-                         const QString &cmdline,
-                         QObject *parent) :
-    QObject(parent),
-    d_ptr(new TransactionPrivate(this))
-{
-    Q_D(Transaction);
-    d->tid = tid;
-    d->timespec = QDateTime::fromString(timespec, Qt::ISODate);
-    d->succeeded = succeeded;
-    d->role = role;
-    d->duration = duration;
-    d->data = data;
-    d->uid = uid;
-    d->cmdline = cmdline;
-    d->error = InternalErrorNone;
-}
-
 Transaction::~Transaction()
 {
-    Q_D(Transaction);
-//     qDebug() << "Destroying transaction with tid" << d->tid;
-    delete d;
+//    qDebug() << "Destroying transaction with tid" << d_ptr->tid.path();
+    delete d_ptr;
 }
 
 QDBusObjectPath Transaction::tid() const
 {
     Q_D(const Transaction);
     return d->tid;
-}
-
-Transaction::InternalError Transaction::internalError() const
-{
-    Q_D(const Transaction);
-    return d->error;
-}
-
-QString Transaction::internalErrorMessage() const
-{
-    Q_D(const Transaction);
-    return d->errorMessage;
 }
 
 bool Transaction::allowCancel() const

@@ -238,11 +238,6 @@ QDBusPendingReply<QList<QDBusObjectPath> > Daemon::getTransactionList()
     return global()->d_ptr->daemon->GetTransactionList();
 }
 
-QList<Transaction*> Daemon::getTransactionObjects(QObject *parent)
-{
-    return global()->d_ptr->transactions(getTransactionList(), parent);
-}
-
 void Daemon::setHints(const QStringList &hints)
 {
     global()->d_ptr->hints = hints;
@@ -315,7 +310,7 @@ QString Daemon::packageIcon(const QString &packageID)
 
 Transaction *Daemon::acceptEula(const QString &eulaId)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleAcceptEula;
     ret->d_ptr->eulaId = eulaId;
     return ret;
@@ -323,7 +318,7 @@ Transaction *Daemon::acceptEula(const QString &eulaId)
 
 Transaction *Daemon::downloadPackages(const QStringList &packageIDs, bool storeInCache)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleDownloadPackages;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->storeInCache = storeInCache;
@@ -337,14 +332,14 @@ Transaction *Daemon::downloadPackage(const QString &packageID, bool storeInCache
 
 Transaction *Daemon::getCategories()
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetCategories;
     return ret;
 }
 
 Transaction *Daemon::dependsOn(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleDependsOn;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->filters = filters;
@@ -359,7 +354,7 @@ Transaction *Daemon::dependsOn(const QString &packageID, Transaction::Filters fi
 
 Transaction *Daemon::getDetails(const QStringList &packageIDs)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetDetails;
     ret->d_ptr->search = packageIDs;
     return ret;
@@ -372,7 +367,7 @@ Transaction *Daemon::getDetails(const QString &packageID)
 
 Transaction *Daemon::getDetailsLocal(const QStringList &files)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetDetailsLocal;
     ret->d_ptr->search = files;
     return ret;
@@ -385,7 +380,7 @@ Transaction *Daemon::getDetailsLocal(const QString &file)
 
 Transaction *Daemon::getFiles(const QStringList &packageIDs)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetFiles;
     ret->d_ptr->search = packageIDs;
     return ret;
@@ -398,7 +393,7 @@ Transaction *Daemon::getFiles(const QString &packageID)
 
 Transaction *Daemon::getFilesLocal(const QStringList &files)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetFilesLocal;
     ret->d_ptr->search = files;
     return ret;
@@ -411,7 +406,7 @@ Transaction *Daemon::getFilesLocal(const QString &file)
 
 Transaction *Daemon::getOldTransactions(uint number)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetOldTransactions;
     ret->d_ptr->numberOfOldTransactions = number;
     return ret;
@@ -419,7 +414,7 @@ Transaction *Daemon::getOldTransactions(uint number)
 
 Transaction *Daemon::getPackages(Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetPackages;
     ret->d_ptr->filters = filters;
     return ret;
@@ -427,7 +422,7 @@ Transaction *Daemon::getPackages(Transaction::Filters filters)
 
 Transaction *Daemon::getRepoList(Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetRepoList;
     ret->d_ptr->filters = filters;
     return ret;
@@ -435,7 +430,7 @@ Transaction *Daemon::getRepoList(Transaction::Filters filters)
 
 Transaction *Daemon::requiredBy(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleRequiredBy;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->filters = filters;
@@ -450,7 +445,7 @@ Transaction *Daemon::requiredBy(const QString &packageID, Transaction::Filters f
 
 Transaction *Daemon::getUpdatesDetails(const QStringList &packageIDs)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetUpdateDetail;
     ret->d_ptr->search = packageIDs;
     return ret;
@@ -463,7 +458,7 @@ Transaction *Daemon::getUpdateDetail(const QString &packageID)
 
 Transaction *Daemon::getUpdates(Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetUpdates;
     ret->d_ptr->filters = filters;
     return ret;
@@ -471,14 +466,14 @@ Transaction *Daemon::getUpdates(Transaction::Filters filters)
 
 Transaction *Daemon::getDistroUpgrades()
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetDistroUpgrades;
     return ret;
 }
 
 Transaction *Daemon::installFiles(const QStringList &files, Transaction::TransactionFlags flags)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleInstallFiles;
     ret->d_ptr->search = files;
     ret->d_ptr->transactionFlags = flags;
@@ -492,7 +487,7 @@ Transaction *Daemon::installFile(const QString &file, Transaction::TransactionFl
 
 Transaction *Daemon::installPackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleInstallPackages;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->transactionFlags = flags;
@@ -506,7 +501,7 @@ Transaction *Daemon::installPackage(const QString &packageID, Transaction::Trans
 
 Transaction *Daemon::installSignature(Transaction::SigType type, const QString &keyID, const QString &packageID)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleInstallSignature;
     ret->d_ptr->signatureType = type;
     ret->d_ptr->signatureKey = keyID;
@@ -516,7 +511,7 @@ Transaction *Daemon::installSignature(Transaction::SigType type, const QString &
 
 Transaction *Daemon::refreshCache(bool force)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleRefreshCache;
     ret->d_ptr->refreshCacheForce = force;
     return ret;
@@ -524,7 +519,7 @@ Transaction *Daemon::refreshCache(bool force)
 
 Transaction *Daemon::removePackages(const QStringList &packageIDs, bool allowDeps, bool autoremove, Transaction::TransactionFlags flags)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleRemovePackages;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->allowDeps = allowDeps;
@@ -540,7 +535,7 @@ Transaction *Daemon::removePackage(const QString &packageID, bool allowDeps, boo
 
 Transaction *Daemon::repairSystem(Transaction::TransactionFlags flags)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleRepairSystem;
     ret->d_ptr->transactionFlags = flags;
     return ret;
@@ -548,7 +543,7 @@ Transaction *Daemon::repairSystem(Transaction::TransactionFlags flags)
 
 Transaction *Daemon::repoEnable(const QString &repoId, bool enable)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleRepoEnable;
     ret->d_ptr->repoId = repoId;
     ret->d_ptr->repoEnable = enable;
@@ -557,7 +552,7 @@ Transaction *Daemon::repoEnable(const QString &repoId, bool enable)
 
 Transaction *Daemon::repoRemove(const QString &repoId, bool autoremove, Transaction::TransactionFlags flags)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleRepoRemove;
     ret->d_ptr->repoId = repoId;
     ret->d_ptr->autoremove = autoremove;
@@ -567,7 +562,7 @@ Transaction *Daemon::repoRemove(const QString &repoId, bool autoremove, Transact
 
 Transaction *Daemon::repoSetData(const QString &repoId, const QString &parameter, const QString &value)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleRepoSetData;
     ret->d_ptr->repoId = repoId;
     ret->d_ptr->repoParameter = parameter;
@@ -577,7 +572,7 @@ Transaction *Daemon::repoSetData(const QString &repoId, const QString &parameter
 
 Transaction *Daemon::resolve(const QStringList &packageNames, Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleResolve;
     ret->d_ptr->search = packageNames;
     ret->d_ptr->filters = filters;
@@ -591,7 +586,7 @@ Transaction *Daemon::resolve(const QString &packageName, Transaction::Filters fi
 
 Transaction *Daemon::searchFiles(const QStringList &search, Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleSearchFile;
     ret->d_ptr->search = search;
     ret->d_ptr->filters = filters;
@@ -605,7 +600,7 @@ Transaction *Daemon::searchFiles(const QString &search, Transaction::Filters fil
 
 Transaction *Daemon::searchDetails(const QStringList &search, Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleSearchDetails;
     ret->d_ptr->search = search;
     ret->d_ptr->filters = filters;
@@ -619,7 +614,7 @@ Transaction *Daemon::searchDetails(const QString &search, Transaction::Filters f
 
 Transaction *Daemon::searchGroups(const QStringList &groups, Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleSearchGroup;
     ret->d_ptr->search = groups;
     ret->d_ptr->filters = filters;
@@ -653,7 +648,7 @@ Transaction *Daemon::searchGroups(Transaction::Groups groups, Transaction::Filte
 
 Transaction *Daemon::searchNames(const QStringList &search, Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleSearchName;
     ret->d_ptr->search = search;
     ret->d_ptr->filters = filters;
@@ -667,7 +662,7 @@ Transaction *Daemon::searchNames(const QString &search, Transaction::Filters fil
 
 Transaction *Daemon::updatePackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleUpdatePackages;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->transactionFlags = flags;
@@ -681,7 +676,7 @@ Transaction *Daemon::updatePackage(const QString &packageID, Transaction::Transa
 
 Transaction *Daemon::whatProvides(const QStringList &search, Transaction::Filters filters)
 {
-    Transaction *ret = new Transaction(Daemon::global());
+    Transaction *ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleWhatProvides;
     ret->d_ptr->search = search;
     ret->d_ptr->filters = filters;

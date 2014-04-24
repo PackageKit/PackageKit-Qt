@@ -45,16 +45,6 @@ DaemonPrivate::DaemonPrivate(Daemon* parent)
     getAllProperties(true);
 }
 
-QList<Transaction*> DaemonPrivate::transactions(const QList<QDBusObjectPath> &tids, QObject *parent)
-{
-    QList<Transaction*> transactionList;
-    foreach (const QDBusObjectPath &tid, tids) {
-        Transaction *transaction = new Transaction(tid, parent);
-        transactionList << transaction;
-    }
-    return transactionList;
-}
-
 void DaemonPrivate::serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner)
 {
     Q_Q(Daemon);

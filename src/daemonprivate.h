@@ -43,7 +43,6 @@ protected:
     QStringList hints;
     QStringList connectedSignals;
 
-    QList<Transaction*> transactions(const QList<QDBusObjectPath> &tids, QObject *parent);
     void setupSignal(const QString &signal, bool connect);
     void getAllProperties(bool sync);
 

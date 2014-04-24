@@ -208,15 +208,6 @@ public:
     static QDBusPendingReply<QList<QDBusObjectPath> > getTransactionList();
 
     /**
-     * Convenience function
-     * Returns the list of current transactions as \c Transaction objects
-     *
-     * You must delete these yourself or pass a
-     * \p parent for these comming transactions
-     */
-    static QList<Transaction*> getTransactionObjects(QObject *parent = 0);
-
-    /**
      * \brief Sets a global hints for all the transactions to be created
      *
      * This method allows the calling session to set transaction \p hints for

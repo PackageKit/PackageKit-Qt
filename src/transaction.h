@@ -51,7 +51,6 @@ class TransactionPrivate;
 class Transaction : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(InternalError)
     Q_ENUMS(Role)
     Q_ENUMS(Error)
     Q_ENUMS(Exit)
@@ -70,9 +69,6 @@ class Transaction : public QObject
     Q_FLAGS(TransactionFlag TransactionFlags)
     Q_FLAGS(Filter Filters)
     Q_PROPERTY(QDBusObjectPath tid READ tid)
-    Q_PROPERTY(InternalError error READ internalError)
-    Q_PROPERTY(InternalError internalError READ internalError)
-    Q_PROPERTY(QString internalErrorMessage READ internalErrorMessage)
     Q_PROPERTY(bool allowCancel READ allowCancel NOTIFY allowCancelChanged)
     Q_PROPERTY(bool isCallerActive READ isCallerActive NOTIFY isCallerActiveChanged)
     Q_PROPERTY(QString lastPackage READ lastPackage NOTIFY lastPackageChanged)
@@ -486,7 +482,7 @@ public:
      * (i.e. removePackages then installPackages)
      *
      */
-    Transaction(QObject *parent = 0);
+    Transaction();
 
     /**
      * Create a transaction object with transaction id \p tid
@@ -499,7 +495,7 @@ public:
      * \warning after creating the transaction object be sure
      * to verify if it doesn't have any error()
      */
-    Transaction(const QDBusObjectPath &tid, QObject *parent = 0);
+    Transaction(const QDBusObjectPath &tid);
 
     /**
      * Destructor
@@ -514,22 +510,6 @@ public:
      * \return the TID of the current transaction
      */
     QDBusObjectPath tid() const;
-
-    /**
-     * \brief Returns the error status of the Transaction
-     *
-     * \return A value from TransactionError describing the state of the transaction
-     * or 0 in case of not having an error
-     */
-    InternalError internalError() const;
-
-    /**
-     * \brief Returns the error message of the Transaction startup
-     *
-     * \return a string in case an error was set when trying to
-     *         perform an action
-     */
-    QString internalErrorMessage() const;
 
     /**
      * Indicates whether you can cancel the transaction or not
@@ -857,15 +837,10 @@ Q_SIGNALS:
     /**
      * Sends an old transaction
      * \sa getOldTransactions()
+     *
+     * These objects must be manually deleted
      */
     void transaction(PackageKit::Transaction *transaction);
-    
-    /**
-     * Emitted a bit after a transaction has been finished
-     * It's useful when the transaction is too fast and emits
-     * finished before we finish connecting
-     */
-    void destroy();
 
 protected:
     static Transaction::InternalError parseError(const QString &errorName);
@@ -892,17 +867,10 @@ protected:
 
     TransactionPrivate * const d_ptr;
 
+    Transaction(TransactionPrivate *d);
+
 private:
     friend class Daemon;
-    Transaction(const QDBusObjectPath &tid,
-                const QString &timespec,
-                bool succeeded,
-                Role role,
-                uint duration,
-                const QString &data,
-                uint uid,
-                const QString &cmdline,
-                QObject *parent);
     Q_DECLARE_PRIVATE(Transaction)
     Q_DISABLE_COPY(Transaction)
     Q_PRIVATE_SLOT(d_func(), void createTransactionFinished(QDBusPendingCallWatcher*))

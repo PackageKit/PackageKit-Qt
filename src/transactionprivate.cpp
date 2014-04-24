@@ -36,6 +36,11 @@ TransactionPrivate::TransactionPrivate(Transaction* parent)
 {
 }
 
+TransactionPrivate::~TransactionPrivate()
+{
+    delete p;
+}
+
 void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
 {
     Q_Q(Transaction);
@@ -45,14 +50,11 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                              tid.path(),
                              QDBusConnection::systemBus(),
                              q);
-    error = Transaction::InternalErrorNone;
-    errorMessage.clear();
     if (!Daemon::global()->hints().isEmpty()) {
         q->setHints(Daemon::global()->hints());
     }
 
-    q->connect(p, SIGNAL(Destroy()),
-               SLOT(destroy()));
+    q->connect(p, SIGNAL(Destroy()), SLOT(destroy()));
 
     // Get current properties
     QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String(PK_NAME),
@@ -195,9 +197,9 @@ void TransactionPrivate::createTransactionFinished(QDBusPendingCallWatcher *call
     Q_Q(Transaction);
     QDBusPendingReply<QDBusObjectPath> reply = *call;
     if (reply.isError()) {
-        error = Transaction::InternalErrorFailed;
-        errorMessage = reply.error().message();
+        q->errorCode(Transaction::ErrorInternalError, reply.error().message());
         q->finished(Transaction::ExitFailed, 0);
+        destroy();
     } else {
         // Setup our new Transaction ID
         setup(reply.argumentAt<0>());
@@ -210,9 +212,9 @@ void TransactionPrivate::methodCallFinished(QDBusPendingCallWatcher *call)
     Q_Q(Transaction);
     QDBusPendingReply<> reply = *call;
     if (reply.isError()) {
-        error = Transaction::InternalErrorFailed;
-        errorMessage = reply.error().message();
+        q->errorCode(Transaction::ErrorInternalError, reply.error().message());
         q->finished(Transaction::ExitFailed, 0);
+        destroy();
     }
     call->deleteLater();
 }
@@ -249,6 +251,8 @@ void TransactionPrivate::finished(uint exitCode, uint runtime)
 {
     Q_Q(Transaction);
     q->finished(static_cast<Transaction::Exit>(exitCode), runtime);
+    delete p;
+    p = 0;
 }
 
 void TransactionPrivate::destroy()
@@ -258,14 +262,15 @@ void TransactionPrivate::destroy()
        delete p;
        p = 0;
     }
-    q->destroy();
+    q->deleteLater();
 }
 
 void TransactionPrivate::daemonQuit()
 {
     Q_Q(Transaction);
     if (p) {
-        q->finished(Transaction::ExitFailed, 0);
+        q->errorCode(Transaction::ErrorProcessKill, QObject::tr("The PackageKit daemon has crashed"));
+        q->finished(Transaction::ExitKilled, 0);
         destroy();
     }
 }
@@ -388,7 +393,21 @@ void TransactionPrivate::transaction(const QDBusObjectPath &oldTid,
                                      const QString &cmdline)
 {
     Q_Q(Transaction);
-    q->transaction(new Transaction(oldTid, timespec, succeeded, static_cast<Transaction::Role>(role), duration, data, uid, cmdline, q->parent()));
+
+    TransactionPrivate *priv = new TransactionPrivate(q);
+    priv->tid = tid;
+    priv->timespec = QDateTime::fromString(timespec, Qt::ISODate);
+    priv->succeeded = succeeded;
+    priv->role = static_cast<Transaction::Role>(role);
+    priv->duration = duration;
+    priv->data = data;
+    priv->uid = uid;
+    priv->cmdline = cmdline;
+
+    Transaction *transaction = new Transaction(priv);
+    priv->q_ptr = transaction;
+
+    q->transaction(transaction);
 }
 
 void TransactionPrivate::UpdateDetail(const QString &package_id,
