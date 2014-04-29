@@ -1,3 +1,33 @@
+Version 0.9.2
+~~~~~~~~~~~~~
+Released: 2013-04-29
+
+Notes:
+ - Update to new PK API 0.9 (Daniel Nicoletti)
+ - Applied a series of patches to port to Qt5 (Martin Grimme)
+
+New Features:
+ - Add GetDetailsLocal, GetFilesLocal and RepoRemove (Daniel Nicoletti)
+ - Make use of DBus Properties changed to make less blocking calls (Daniel Nicoletti)
+
+Bugfixes:
+ - Allow for Details to be empty constructed (Daniel Nicoletti)
+ - Cleaned include directive (Martin Grimme)
+ - Finish the API changes to get rid of blocking calls (Daniel Nicoletti)
+ - Fix CMake var names for both Qt versions (Daniel Nicoletti)
+ - Fix libdir path (Daniel Nicoletti)
+ - Fix reply signature for Transaction methods (Daniel Nicoletti)
+ - Improve object handlying (Daniel Nicoletti)
+ - I think the API level should be hidden from libname (Daniel Nicoletti)
+ - Keep only one transaction flags, which is unlikely to change (Daniel Nicoletti)
+ - PackageKit doesn't has a changed signal anymore (Daniel Nicoletti)
+ - Properly delete private data on daemon as DaemonPrivate is not a QObject (Daniel Nicoletti)
+ - Properly handle new Details signal (Daniel Nicoletti)
+ - Properly init some Daemon values (Daniel Nicoletti)
+ - Queue signals so that all transaction properties are available when needed (Daniel Nicoletti)
+ - Remove debug info (Daniel Nicoletti)
+ - Update Roles enum, remove Provides enum, and fix some docs typos (Daniel Nicoletti)
+
 Version 0.8.8
 ~~~~~~~~~~~~~
 Released: 2013-05-09
