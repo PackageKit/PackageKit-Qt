@@ -2,7 +2,7 @@
 
 using namespace PackageKit;
 
-Bitfield::Bitfield () : m_val (0)
+Bitfield::Bitfield ()
 {
 }
 
@@ -61,10 +61,15 @@ Bitfield Bitfield::operator|= (Bitfield mask)
 
 Bitfield& Bitfield::operator= (const Bitfield& other)
 {
-	if (this == &other)
-		return *this;
+    if (this == &other)
+        return *this;
 
-	m_val = other.m_val;
+    m_val = other.m_val;
 
-	return *this;
+    return *this;
+}
+
+bool Bitfield::operator==(const Bitfield &other)
+{
+    return m_val == other.m_val;
 }

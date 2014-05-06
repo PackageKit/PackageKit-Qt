@@ -2,6 +2,7 @@
 #define PACKAGEKIT_BITFIELD_H
 
 #include <QtGlobal>
+#include <QMetaType>
 
 namespace PackageKit {
 
@@ -23,11 +24,14 @@ public:
     Bitfield operator|= (Bitfield mask);
 
     Bitfield& operator= (const Bitfield& other);
+    bool operator==(const Bitfield &other);
 
 private:
-    qulonglong m_val;
+    qulonglong m_val = 0;
 };
 
 } // End namespace PackageKit
+
+Q_DECLARE_METATYPE(PackageKit::Bitfield)
 
 #endif
