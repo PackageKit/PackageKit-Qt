@@ -94,10 +94,7 @@ void DaemonPrivate::setupSignal(const QString &signal, bool connect)
     const char *signalToConnect = 0;
     const char *memberToConnect = 0;
 
-    if (signal == SIGNAL(changed())) {
-        signalToConnect = SIGNAL(Changed());
-        memberToConnect = SIGNAL(changed());
-    } else if (signal == SIGNAL(repoListChanged())) {
+    if (signal == SIGNAL(repoListChanged())) {
         signalToConnect = SIGNAL(RepoListChanged());
         memberToConnect = SIGNAL(repoListChanged());
     } else if (signal == SIGNAL(restartScheduled())) {
