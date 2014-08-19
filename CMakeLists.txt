@@ -51,6 +51,7 @@ set (LOCALE_DIR "${DATADIR}/locale")
 set (VERSION "${QPACKAGEKIT_VERSION}")
 set (BUILDDIR "${CMAKE_BINARY_DIR}")
 set (LOCALSTATEDIR "/var")
+set (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/${LIBNAME}/")
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
 add_definitions("-std=gnu++11")
@@ -75,3 +76,9 @@ endif (DISABLE_MAINTAINER_CFLAGS)
 add_definitions(${MAINTAINER_CFLAGS})
 
 add_subdirectory(src)
+
+install(EXPORT PackageKitQtTargets
+        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        FILE PackageKitQtTargets.cmake
+        NAMESPACE PK::
+        COMPONENT Devel)

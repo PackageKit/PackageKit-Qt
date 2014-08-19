@@ -55,13 +55,14 @@ set(packagekitqt_SRC
     details.cpp
 )
 
-find_file(PK_INTERFACE_XML org.freedesktop.PackageKit.xml
-	PATHS ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/
+find_path(PK_INTERFACES_DIR org.freedesktop.PackageKit.xml
+	HINTS ${CMAKE_INSTALL_PREFIX} /usr
+	PATH_SUFFIXES share/dbus-1/interfaces/
 )
-find_file(PK_TRANSACTION_INTERFACE_XML org.freedesktop.PackageKit.Transaction.xml
-	PATHS ${CMAKE_INSTALL_PREFIX}/share/dbus-1/interfaces/
-)
-if (PK_INTERFACE_XML STREQUAL "PK_INTERFACE_XML-NOTFOUND" OR PK_TRANSACTION_INTERFACE_XML STREQUAL "PK_TRANSACTION_INTERFACE_XML-NOTFOUND")
+set(PK_INTERFACE_XML "${PK_INTERFACES_DIR}/org.freedesktop.PackageKit.xml")
+set(PK_TRANSACTION_INTERFACE_XML "${PK_INTERFACES_DIR}/org.freedesktop.PackageKit.Transaction.xml")
+
+if (NOT PK_INTERFACE_XML OR NOT PK_TRANSACTION_INTERFACE_XML)
 	message (FATAL_ERROR "Unable to find PackageKit DBus specifications! Please install PackageKit to continue!")
 endif ()
 
@@ -87,7 +88,8 @@ set_target_properties(${LIBNAME} PROPERTIES VERSION ${QPACKAGEKIT_VERSION} SOVER
 if (Qt5_FOUND)
   add_dependencies(${LIBNAME} mocs)
   target_link_libraries(${LIBNAME}
-		${Qt5DBus_LIBRARIES} ${Qt5Sql_LIBRARIES}
+		LINK_PUBLIC Qt5::DBus
+		LINK_PRIVATE Qt5::Sql
   )
 elseif (Qt4_FOUND)
   target_link_libraries(${LIBNAME}
@@ -99,8 +101,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${LIBNAME}.pc.in
   ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
   @ONLY
 )
-
-install(TARGETS ${LIBNAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+target_include_directories(${LIBNAME} INTERFACE "$<INSTALL_INTERFACE:include/PackageKit/>")
+install(TARGETS ${LIBNAME} EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
