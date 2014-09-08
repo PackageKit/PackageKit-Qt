@@ -101,7 +101,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${LIBNAME}.pc.in
   ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
   @ONLY
 )
-target_include_directories(${LIBNAME} INTERFACE "$<INSTALL_INTERFACE:include/PackageKit/>")
+target_include_directories(${LIBNAME} INTERFACE "$<INSTALL_INTERFACE:include/PackageKit/${LIBNAME}/>")
 install(TARGETS ${LIBNAME} EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
