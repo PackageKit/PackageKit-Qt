@@ -29,7 +29,7 @@
 
 #include "transaction.h"
 
-class TransactionProxy;
+class OrgFreedesktopPackageKitTransactionInterface;
 
 namespace PackageKit {
 
@@ -45,7 +45,7 @@ protected:
     void runQueuedTransaction();
 
     QDBusObjectPath tid;
-    ::TransactionProxy* p = 0;
+    ::OrgFreedesktopPackageKitTransactionInterface* p = 0;
     Transaction *q_ptr;
     QStringList connectedSignals;
 

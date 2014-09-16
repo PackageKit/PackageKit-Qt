@@ -66,8 +66,8 @@ if (NOT PK_INTERFACE_XML OR NOT PK_TRANSACTION_INTERFACE_XML)
 	message (FATAL_ERROR "Unable to find PackageKit DBus specifications! Please install PackageKit to continue!")
 endif ()
 
-set_source_files_properties(${PK_INTERFACE_XML} PROPERTIES CLASSNAME DaemonProxy)
-set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES CLASSNAME TransactionProxy)
+set_source_files_properties(${PK_INTERFACE_XML} PROPERTIES NO_NAMESPACE true)
+set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES NO_NAMESPACE true)
 
 if (Qt5_FOUND)
   qt5_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)

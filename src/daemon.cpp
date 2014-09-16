@@ -47,10 +47,10 @@ Daemon::Daemon(QObject *parent) :
     d_ptr(new DaemonPrivate(this))
 {
     Q_D(Daemon);
-    d->daemon = new ::DaemonProxy(QLatin1String(PK_NAME),
-                                  QLatin1String(PK_PATH),
-                                  QDBusConnection::systemBus(),
-                                  this);
+    d->daemon = new ::OrgFreedesktopPackageKitInterface(QLatin1String(PK_NAME),
+                                                        QLatin1String(PK_PATH),
+                                                        QDBusConnection::systemBus(),
+                                                        this);
 
     QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
                                          QLatin1String(PK_PATH),

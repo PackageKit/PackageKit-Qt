@@ -124,7 +124,7 @@ void DaemonPrivate::updateProperties(const QVariantMap &properties)
         } else if (property == QLatin1String("DistroId")) {
             distroId = value.toString();
         } else if (property == QLatin1String("Filters")) {
-            filters = static_cast<Transaction::Filters>(value.toULongLong());
+            filters = static_cast<Transaction::Filters>(value.toUInt());
         } else if (property == QLatin1String("Groups")) {
             groups =  static_cast<Transaction::Groups>(value.toULongLong());
         } else if (property == QLatin1String("Locked")) {

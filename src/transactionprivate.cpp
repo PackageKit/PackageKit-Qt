@@ -46,10 +46,10 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
     Q_Q(Transaction);
 
     tid = transactionId;
-    p = new TransactionProxy(QLatin1String(PK_NAME),
-                             tid.path(),
-                             QDBusConnection::systemBus(),
-                             q);
+    p = new OrgFreedesktopPackageKitTransactionInterface(QLatin1String(PK_NAME),
+                                                         tid.path(),
+                                                         QDBusConnection::systemBus(),
+                                                         q);
     if (!Daemon::global()->hints().isEmpty()) {
         q->setHints(Daemon::global()->hints());
     }
@@ -329,7 +329,7 @@ void TransactionPrivate::updateProperties(const QVariantMap &properties)
             status = static_cast<Transaction::Status>(value.toUInt());
             QMetaObject::invokeMethod(q, "statusChanged", Qt::QueuedConnection);
         } else if (property == QLatin1String("TransactionFlags")) {
-            transactionFlags = static_cast<Transaction::TransactionFlags>(value.toULongLong());           
+            transactionFlags = static_cast<Transaction::TransactionFlags>(value.toUInt());
             QMetaObject::invokeMethod(q, "transactionFlagsChanged", Qt::QueuedConnection);
         } else if (property == QLatin1String("Uid")) {
             uid = value.toUInt();

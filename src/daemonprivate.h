@@ -27,7 +27,7 @@
 
 #include "daemon.h"
 
-class DaemonProxy;
+class OrgFreedesktopPackageKitInterface;
 
 namespace PackageKit {
 
@@ -39,7 +39,7 @@ protected:
     virtual ~DaemonPrivate() {}
 
     Daemon *q_ptr;
-    ::DaemonProxy *daemon;
+    ::OrgFreedesktopPackageKitInterface *daemon;
     QStringList hints;
     QStringList connectedSignals;
 
