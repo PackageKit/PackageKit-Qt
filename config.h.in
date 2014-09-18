@@ -8,13 +8,6 @@
 #define GETTEXT_PACKAGE "@GETTEXT_PACKAGE@"
 
 /* Paths */
-#define LOCALEDIR "@LOCALE_DIR@"
-#define PKGDATADIR "@PKGDATADIR@"
-#define PKGLIBDIR "@PKGLIBDIR@"
-#define PREFIXDIR "@PREFIXDIR@"
-#define DATADIR "@DATADIR@"
-#define LIBDIR "@LIBDIR@"
-#define BUILDDIR "@BUILDDIR@"
 
 /* Name of package */
 #define PACKAGE_NAME "packagekit-qt"
