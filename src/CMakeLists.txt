@@ -101,13 +101,13 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/${LIBNAME}.pc.in
   ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
   @ONLY
 )
-target_include_directories(${LIBNAME} INTERFACE "$<INSTALL_INTERFACE:include/${LIBNAME}/PackageKit/;include/${LIBNAME}>")
+target_include_directories(${LIBNAME} INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/${LIBNAME}/PackageKit/;${CMAKE_INSTALL_INCLUDEDIR}/${LIBNAME}>")
 install(TARGETS ${LIBNAME} EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${LIBNAME}.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 install(FILES ${packagekitqt_HEADERS}
-        DESTINATION include/${LIBNAME}/PackageKit/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIBNAME}/PackageKit/
 )
 
 add_subdirectory(modules)
