@@ -7,8 +7,6 @@
 /* Gettext Package */
 #define GETTEXT_PACKAGE "@GETTEXT_PACKAGE@"
 
-/* Paths */
-
 /* Name of package */
 #define PACKAGE_NAME "packagekit-qt"
 
