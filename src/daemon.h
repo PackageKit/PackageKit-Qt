@@ -364,7 +364,7 @@ public:
      * \note You need to manually restart the transaction which triggered the EULA.
      * \sa eulaRequired()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *acceptEula(const QString &eulaID);
 
@@ -372,7 +372,7 @@ public:
      * Download the given \p packages to a temp dir, if \p storeInCache is true
      * the download will be stored in the package manager cache
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *downloadPackages(const QStringList &packageIDs, bool storeInCache = false);
 
@@ -380,7 +380,7 @@ public:
      * This is a convenience function to download this \p package
      * \sa downloadPackages(const QStringList &packageIDs, bool storeInCache = false)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *downloadPackage(const QString &packageID, bool storeInCache = false);
 
@@ -389,7 +389,7 @@ public:
      *
      * \sa category
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getCategories();
 
@@ -402,7 +402,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *dependsOn(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
@@ -410,7 +410,7 @@ public:
      * Convenience function to get the dependencies of this \p package
      * \sa dependsOn(const QStringList &packageIDs, Filters filters, bool recursive = false)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *dependsOn(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
@@ -421,7 +421,7 @@ public:
      * \note This method emits \sa package()
      * with details set
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getDetails(const QStringList &packageIDs);
 
@@ -429,7 +429,7 @@ public:
      * Convenience function to get the details about this \p package
      * \sa getDetails(const QStringList &packageIDs)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getDetails(const QString &packageID);
 
@@ -440,7 +440,7 @@ public:
      * \note This method emits \sa package()
      * with details set
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getDetailsLocal(const QStringList &files);
 
@@ -451,7 +451,7 @@ public:
      * \note This method emits \sa package()
      * with details set
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getDetailsLocal(const QString &file);
 
@@ -460,7 +460,7 @@ public:
      *
      * \note This method emits \sa files()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getFiles(const QStringList &packageIDs);
 
@@ -468,7 +468,7 @@ public:
      * Convenience function to get the files contained in this \p package
      * \sa getFiles(const QStringList &packageIDs)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getFiles(const QString &packageIDs);
 
@@ -477,7 +477,7 @@ public:
      *
      * \note This method emits \sa files()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getFilesLocal(const QStringList &files);
 
@@ -486,7 +486,7 @@ public:
      *
      * \note This method emits \sa files()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getFilesLocal(const QString &file);
 
@@ -496,7 +496,7 @@ public:
      * \note You must delete these transactions yourself
      * \note This method emits \sa transaction()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getOldTransactions(uint number);
 
@@ -505,7 +505,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getPackages(Transaction::Filters filters = Transaction::FilterNone);
 
@@ -514,7 +514,7 @@ public:
      *
      * \note This method emits \sa repository()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getRepoList(Transaction::Filters filters = Transaction::FilterNone);
 
@@ -527,7 +527,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *requiredBy(const QStringList &packageIDs, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
@@ -535,7 +535,7 @@ public:
      * Convenience function to get packages requiring this package
      * \sa requiredBy(const QStringList &packageIDs, Filters filters, bool recursive = false)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *requiredBy(const QString &packageID, Transaction::Filters filters = Transaction::FilterNone, bool recursive = false);
 
@@ -544,7 +544,7 @@ public:
      *
      * \note This method emits \sa updateDetail()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getUpdatesDetails(const QStringList &packageIDs);
 
@@ -552,7 +552,7 @@ public:
      * Convenience function to get update details
      * \sa getUpdateDetail(const QStringList &packageIDs)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getUpdateDetail(const QString &packageID);
 
@@ -563,7 +563,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getUpdates(Transaction::Filters filters = Transaction::FilterNone);
 
@@ -572,7 +572,7 @@ public:
      *
      * \note This method emits \sa distroUpgrade()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *getDistroUpgrades();
 
@@ -583,7 +583,7 @@ public:
      *
      * \note This method emits \sa package() and \sa changed()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *installFiles(const QStringList &files, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
@@ -591,7 +591,7 @@ public:
      * Convenience function to install a file
      * \sa installFiles(const QStringList &files, TransactionFlags flags)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *installFile(const QString &file, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
@@ -602,7 +602,7 @@ public:
      *
      * \note This method emits \sa package() and \sa changed()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *installPackages(const QStringList &packageIDs, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
@@ -610,7 +610,7 @@ public:
      * Convenience function to install a package
      * \sa installPackages(const QStringList &packageIDs, TransactionFlags flags)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *installPackage(const QString &packageID, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
@@ -619,7 +619,7 @@ public:
      *
      * \p type, \p keyId and \p package generally come from the Transaction::repoSignatureRequired
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *installSignature(Transaction::SigType type, const QString &keyID, const QString &packageID);
 
@@ -628,7 +628,7 @@ public:
      *
      * \note This method emits \sa changed()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *refreshCache(bool force);
 
@@ -641,7 +641,7 @@ public:
      *
      * \note This method emits \sa package() and \sa changed()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *removePackages(const QStringList &packageIDs, bool allowDeps = false, bool autoRemove = false, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
@@ -650,21 +650,21 @@ public:
      *
      * \sa removePackages(const PackageList  &packages, bool allowDeps = false, bool autoRemove = false, TransactionFlags flags)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *removePackage(const QString &packageID, bool allowDeps = false, bool autoRemove = false, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
     /**
      * Repairs a broken system
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *repairSystem(Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
     /**
      * Activates or disables a repository
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *repoEnable(const QString &repoId, bool enable = true);
 
@@ -673,14 +673,14 @@ public:
      *
      * \p autoremove packages from this repository
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *repoRemove(const QString &repoId, bool autoremove, Transaction::TransactionFlags flags = Transaction::TransactionFlagNone);
 
     /**
      * Sets a repository's parameter
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *repoSetData(const QString &repoId, const QString &parameter, const QString &value);
 
@@ -691,7 +691,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *resolve(const QStringList &packageNames, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -699,7 +699,7 @@ public:
      * Convenience function to remove a package name
      * \sa resolve(const QStringList &packageNames, Transaction::Filters filters = Transaction::FilterNone)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *resolve(const QString &packageName, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -710,7 +710,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchFiles(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -718,7 +718,7 @@ public:
      * Convenience function to search for a file
      * \sa searchFiles(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchFiles(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -729,7 +729,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchDetails(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -737,7 +737,7 @@ public:
      * Convenience function to search by details
      * \sa searchDetails(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchDetails(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -750,7 +750,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchGroups(const QStringList &groups, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -758,7 +758,7 @@ public:
      * Convenience function to search by group string
      * \sa searchGroups(const QStringList &groups, Transaction::Filters filters = Transaction::FilterNone)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchGroup(const QString &group, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -766,7 +766,7 @@ public:
      * Convenience function to search by group enum
      * \sa searchGroups(const QStringList &groups, Transaction::Filters filters = Transaction::FilterNone)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchGroup(Transaction::Group group, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -777,7 +777,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchGroups(Transaction::Groups group, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -788,7 +788,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchNames(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -796,7 +796,7 @@ public:
      * Convenience function to search by names
      * \sa searchNames(const QStringList &search, Filters filters)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *searchNames(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -806,7 +806,7 @@ public:
      * \p onlyTrusted indicates if this transaction is only allowed to install trusted packages
      * \note This method emits \sa package() and \sa changed()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *updatePackages(const QStringList &packageIDs, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
@@ -814,7 +814,7 @@ public:
      * Convenience function to update a package
      * \sa updatePackages(const QStringList &packageIDs, TransactionFlags flags)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *updatePackage(const QString &packageID, Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
 
@@ -823,7 +823,7 @@ public:
      *
      * \note This method emits \sa package()
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *whatProvides(const QStringList &search, Transaction::Filters filters = Transaction::FilterNone);
 
@@ -831,7 +831,7 @@ public:
      * Convenience function to search for what provides
      * \sa whatProvides(Provides type, const QStringList &search, Transaction::Filters filters = Transaction::FilterNone)
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *whatProvides(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
 

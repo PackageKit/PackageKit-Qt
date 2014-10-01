@@ -649,7 +649,7 @@ public:
     /**
      * Cancels the transaction
      *
-     * \warning check \sa error() to know if it the call has any error
+     * \warning check \sa errorCode() signal to know if it the call has any error
      */
     Q_INVOKABLE QDBusPendingReply<> cancel();
 
