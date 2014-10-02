@@ -19,9 +19,6 @@
 * Boston, MA 02110-1301, USA.
 */
 
-#include <QtSql>
-#include <QDebug>
-
 #include "daemon.h"
 #include "daemonprivate.h"
 #include "transactionprivate.h"
@@ -58,14 +55,6 @@ Daemon::Daemon(QObject *parent) :
                                          QLatin1String("PropertiesChanged"),
                                          this,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
-
-    // Set up database for desktop files
-    QSqlDatabase db;
-    db = QSqlDatabase::addDatabase("QSQLITE", PK_DESKTOP_DEFAULT_DATABASE);
-    db.setDatabaseName(PK_DESKTOP_DEFAULT_DATABASE);
-    if (!db.open()) {
-        qDebug() << "Failed to initialize the desktop files database";
-    }
 }
 
 void DaemonPrivate::setupSignal(const QString &signal, bool connect)

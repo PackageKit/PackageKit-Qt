@@ -26,7 +26,6 @@
 #include "daemon.h"
 #include "common.h"
 
-#include <QSqlQuery>
 #include <QDBusError>
 
 using namespace PackageKit;
@@ -215,37 +214,7 @@ QString Transaction::packageData(const QString &packageID)
 
 QString Transaction::packageIcon(const QString &packageID)
 {
-    QString path;
-    QSqlDatabase db = QSqlDatabase::database(PK_DESKTOP_DEFAULT_DATABASE);
-    if (!db.isOpen()) {
-        qDebug() << "Desktop files database is not open";
-        return path;
-    }
-
-    QSqlQuery q(db);
-    q.prepare("SELECT filename FROM cache WHERE package = :name");
-    q.bindValue(":name", Transaction::packageName(packageID));
-    if (q.exec()) {
-        if (q.next()) {
-            QFile desktopFile(q.value(0).toString());
-            if (desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                while (!desktopFile.atEnd()) {
-                    QByteArray line = desktopFile.readLine().trimmed();
-                    if (line.startsWith("Icon=")) {
-                        path = line.mid(5);
-                        break;
-                    }
-                }
-                desktopFile.close();
-            } else {
-                qDebug() << "Cannot open desktop file " << q.value(0).toString();
-            }
-        }
-    } else {
-        qDebug() << "Error while running query " << q.executedQuery();
-    }
-
-    return path;
+    return QString();
 }
 
 QString Transaction::lastPackage() const

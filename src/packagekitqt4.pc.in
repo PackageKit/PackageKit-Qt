@@ -6,6 +6,6 @@ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 Name: @LIBNAME@
 Description: PackageKit is a system daemon for installing stuff.
 Version: @VERSION@
-Requires: QtCore, QtDBus, QtSql, QtXml
+Requires: QtCore, QtDBus, QtXml
 Libs: -L${libdir} -l@LIBNAME@
 Cflags: -I${includedir}/PackageKit/@LIBNAME@

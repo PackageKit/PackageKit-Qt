@@ -277,8 +277,10 @@ public:
 
     /**
      * Returns the package icon from the \p packageID
+     *
+     * @deprecated use Appstream to fetch icons
      */
-    Q_INVOKABLE static QString packageIcon(const QString &packageID);
+    Q_INVOKABLE QT_DEPRECATED static QString packageIcon(const QString &packageID);
     
     /**
      * Returns the string representing the enum

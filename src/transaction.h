@@ -675,8 +675,10 @@ public:
 
     /**
      * Returns the package icon from the \p packageID
+     *
+     * @deprecated use Appstream to fetch icons
      */
-    static QString packageIcon(const QString &packageID);
+    static QT_DEPRECATED QString packageIcon(const QString &packageID);
 
 Q_SIGNALS:
     void allowCancelChanged();

@@ -11,16 +11,12 @@ endif ()
 # Set up Qt
 if (Qt5_FOUND)
   find_package(Qt5DBus REQUIRED)
-  find_package(Qt5Sql REQUIRED)
   include_directories(${Qt5Core_INCLUDE_DIRS}
                       ${Qt5DBus_INCLUDE_DIRS}
-                      ${Qt5Sql_INCLUDE_DIRS}
   )
   add_definitions(${Qt5DBus_DEFINITIONS})
-  add_definitions(${Qt5Sql_DEFINITIONS})
 elseif (Qt4_FOUND)
   set(QT_USE_QTDBUS TRUE)
-  set(QT_USE_QTSQL TRUE)
   set(QT_DONT_USE_QTGUI TRUE)
   include(${QT_USE_FILE})
 endif ()
@@ -89,7 +85,6 @@ if (Qt5_FOUND)
   add_dependencies(${LIBNAME} mocs)
   target_link_libraries(${LIBNAME}
 		LINK_PUBLIC Qt5::DBus
-		LINK_PRIVATE Qt5::Sql
   )
 elseif (Qt4_FOUND)
   target_link_libraries(${LIBNAME}
