@@ -5,9 +5,9 @@ PackageKit-Qt Release Notes
 git shortlog QPACKAGEKIT_0_9_2.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
 --------------------------------------------------------------------------------
-Version 0.9.3
+Version 0.9.5
 ~~~~~~~~~~~~~
-Released: 2013-xx-xx
+Released: 2014-xx-xx
 
 Notes:
 
@@ -20,19 +20,19 @@ Bugfixes:
 
 3. Commit changes in PackageKit-Qt git:
 
-git commit -a -m "Release version 0.9.3"
-git tag -s -f -m "Release 0.9.3" QPACKAGEKIT_0_9_3
+git commit -a -m "Release version 0.9.5"
+git tag -s -f -m "Release 0.9.5" QPACKAGEKIT_0_9_5
 <gpg password>
 git push --tags
 git push
 
-4. run './release.sh --version=0.9.3 --git-tag=QPACKAGEKIT_0_9_3 --sign'
+4. run './release.sh --version=0.9.5 --git-tag=QPACKAGEKIT_0_9_5 --sign'
 
 5. Upload tarball to:
 
-scp *.tar.* hughsient@annarchy.freedesktop.org:/srv/www.freedesktop.org/www/software/PackageKit/releases/
+scp *.tar.* annarchy.freedesktop.org:/srv/www.freedesktop.org/www/software/PackageKit/releases/
 
-6. Do post release version bump in CMakeLists.txt
+6. Do post release version bump in CMakeLists.txt, RELEASE
 
 7. Commit trivial changes:
 
@@ -42,7 +42,7 @@ git push
 8. Send an email to packagekit@lists.freedesktop.org
 
 =================================================
-PackageKit-Qt 0.9.3 released!
+PackageKit-Qt 0.9.5 released!
 
 Tarballs available here: http://www.packagekit.org/releases/
 
