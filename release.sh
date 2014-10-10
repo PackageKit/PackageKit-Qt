@@ -52,6 +52,7 @@ R_ROOT="./release-tar-tmp/PackageKit-Qt-$QPK_VERSION"
 # cleanup files which should not go to the release tarball
 find ./release-tar-tmp -name .gitignore -type f -delete
 rm $R_ROOT/release.sh
+rm $R_ROOT/RELEASE
 
 # create release tarball
 cd ./release-tar-tmp
