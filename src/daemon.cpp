@@ -26,6 +26,8 @@
 
 #include "common.h"
 
+Q_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION, "packagekitqt.daemon")
+
 using namespace PackageKit;
 
 Daemon* Daemon::m_global = 0;

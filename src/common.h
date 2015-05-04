@@ -17,6 +17,10 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#include <QtCore/QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION)
+Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON)
 
 #define PK_NAME					"org.freedesktop.PackageKit"
 #define PK_PATH					"/org/freedesktop/PackageKit"

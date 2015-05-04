@@ -335,7 +335,7 @@ void TransactionPrivate::updateProperties(const QVariantMap &properties)
             uid = value.toUInt();
             QMetaObject::invokeMethod(q, "uidChanged", Qt::QueuedConnection);
         } else {
-            qWarning() << "Unknown Transaction property:" << property << value;
+            qCWarning(PACKAGEKITQT_TRANSACTION) << "Unknown Transaction property:" << property << value;
         }
 
         ++it;

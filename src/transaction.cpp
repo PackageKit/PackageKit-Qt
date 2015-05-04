@@ -28,6 +28,8 @@
 
 #include <QDBusError>
 
+Q_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION, "packagekitqt.transaction")
+
 using namespace PackageKit;
 
 Transaction::Transaction()
@@ -353,7 +355,7 @@ Transaction::InternalError Transaction::parseError(const QString &errorName)
         return Transaction::InternalErrorFunctionNotSupported;
     }
 
-    qWarning() << "Transaction::parseError: unknown error" << errorName;
+    qCWarning(PACKAGEKITQT_TRANSACTION) << "Transaction::parseError: unknown error" << errorName;
     return Transaction::InternalErrorFailed;
 }
 

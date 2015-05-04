@@ -143,7 +143,7 @@ void DaemonPrivate::updateProperties(const QVariantMap &properties)
         } else if (property == QLatin1String("VersionMinor")) {
             versionMinor = value.toUInt();
         } else {
-            qWarning() << "Unknown Transaction property:" << property << value;
+            qCWarning(PACKAGEKITQT_DAEMON) << "Unknown Daemon property:" << property << value;
         }
 
         ++it;
