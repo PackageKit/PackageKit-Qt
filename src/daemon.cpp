@@ -657,5 +657,77 @@ Transaction *Daemon::whatProvides(const QString &search, Transaction::Filters fi
     return whatProvides(QStringList() << search, filters);
 }
 
+QString Daemon::enumToString(const QMetaObject &metaObject, int value, const char *enumName)
+{
+    QString prefix = QLatin1String(enumName);
+    int id = metaObject.indexOfEnumerator(enumName);
+    QMetaEnum e = metaObject.enumerator(id);
+    if (!e.isValid ()) {
+//         qDebug() << "Invalid enum " << prefix;
+        return QString();
+    }
+    QString enumString = QString::fromLatin1(e.valueToKey(value));
+    if (enumString.isNull()) {
+//         qDebug() << "Enum key not found while searching for value" << QString::number(value) << "in enum" << prefix;
+        return QString();
+    }
+
+    // Remove the prefix
+    if(!prefix.isNull() && enumString.indexOf(prefix) == 0) {
+        enumString.remove(0, prefix.length());
+    }
+
+    QString pkName;
+    for(int i = 0 ; i < enumString.length() - 1 ; ++i) {
+        pkName += enumString[i];
+        if(enumString[i+1].isUpper())
+            pkName += QLatin1Char('-');
+    }
+    pkName += enumString[enumString.length() - 1];
+
+    return pkName.toLower();
+}
+
+int Daemon::enumFromString(const QMetaObject& metaObject, const QString &str, const char *enumName)
+{
+    QString prefix = QLatin1String(enumName);
+    QString realName;
+    bool lastWasDash = false;
+    QChar buf;
+
+    for(int i = 0 ; i < str.length() ; ++i) {
+        buf = str[i].toLower();
+        if(i == 0 || lastWasDash) {
+            buf = buf.toUpper();
+        }
+
+        lastWasDash = false;
+        if(buf == QLatin1Char('-')) {
+            lastWasDash = true;
+        } else if(buf == QLatin1Char('~')) {
+            lastWasDash = true;
+            realName += QLatin1String("Not");
+        } else {
+            realName += buf;
+        }
+    };
+
+    if (!prefix.isNull()) {
+        realName = prefix + realName;
+    }
+
+    int id = metaObject.indexOfEnumerator(enumName);
+    QMetaEnum e = metaObject.enumerator(id);
+    int enumValue = e.keyToValue(realName.toLatin1().data());
+
+    if (enumValue == -1) {
+        enumValue = e.keyToValue(prefix.append(QLatin1String("Unknown")).toLatin1().constData());
+//         if (!QByteArray(enumName).isEmpty()) {
+//             qDebug() << "enumFromString (" << enumName << ") : converted" << str << "to" << QString("Unknown").append(enumName) << ", enum id" << id;
+//         }
+    }
+    return enumValue;
+}
+
 #include "daemon.moc"
 
