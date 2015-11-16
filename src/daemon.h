@@ -288,14 +288,14 @@ public:
      */
     template<class T> static QString enumToString(int value, const char *enumName)
     {
-        QString prefix = enumName;
+        QString prefix = QLatin1String(enumName);
         int id = T::staticMetaObject.indexOfEnumerator(enumName);
         QMetaEnum e = T::staticMetaObject.enumerator(id);
         if (!e.isValid ()) {
 //             qDebug() << "Invalid enum " << prefix;
             return QString();
         }
-        QString enumString = e.valueToKey(value);
+        QString enumString = QString::fromLatin1(e.valueToKey(value));
         if (enumString.isNull()) {
 //             qDebug() << "Enum key not found while searching for value" << QString::number(value) << "in enum" << prefix;
             return QString();
@@ -310,7 +310,7 @@ public:
         for(int i = 0 ; i < enumString.length() - 1 ; ++i) {
             pkName += enumString[i];
             if(enumString[i+1].isUpper())
-                pkName += QChar('-');
+                pkName += QLatin1Char('-');
         }
         pkName += enumString[enumString.length() - 1];
 
@@ -319,7 +319,7 @@ public:
     
     template<class T> static int enumFromString(const QString &str, const char *enumName)
     {
-        QString prefix = enumName;
+        QString prefix = QLatin1String(enumName);
         QString realName;
         bool lastWasDash = false;
         QChar buf;
@@ -335,7 +335,7 @@ public:
                 lastWasDash = true;
             } else if(buf == QLatin1Char('~')) {
                 lastWasDash = true;
-                realName += "Not";
+                realName += QLatin1String("Not");
             } else {
                 realName += buf;
             }
@@ -350,8 +350,8 @@ public:
         int enumValue = e.keyToValue(realName.toLatin1().data());
 
         if (enumValue == -1) {
-            enumValue = e.keyToValue(prefix.append("Unknown").toLatin1().data());
-            if (!QString(enumName).isEmpty()) {
+            enumValue = e.keyToValue(prefix.append(QLatin1String("Unknown")).toLatin1().constData());
+            if (!QByteArray(enumName).isEmpty()) {
 //                 qDebug() << "enumFromString (" << enumName << ") : converted" << str << "to" << QString("Unknown").append(enumName) << ", enum id" << id;
             }
         }
