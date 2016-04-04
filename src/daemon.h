@@ -290,14 +290,14 @@ public:
      */
     template<class T> static QString enumToString(int value, const char *enumName)
     {
-        enumToString(T::staticMetaObject, value, enumName);
+        return enumToString(T::staticMetaObject, value, enumName);
     }
 
     static int enumFromString(const QMetaObject &metaObject, const QString &str, const char *enumName);
     
     template<class T> static int enumFromString(const QString &str, const char *enumName)
     {
-        enumFromString(T::staticMetaObject, str, enumName);
+        return enumFromString(T::staticMetaObject, str, enumName);
     }
 
     /**
@@ -823,9 +823,7 @@ protected:
      * otherwise no signals will be emitted
      */
     virtual void connectNotify(const char *signal);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     virtual void connectNotify(const QMetaMethod &signal);
-#endif
 
     /**
      * This method disconnects from DBus signals
@@ -833,9 +831,7 @@ protected:
      * otherwise no signals will be disconnected
      */
     virtual void disconnectNotify(const char *signal);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     virtual void disconnectNotify(const QMetaMethod &signal);
-#endif
 
     DaemonPrivate * const d_ptr;
 
