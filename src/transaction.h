@@ -843,9 +843,7 @@ protected:
      * otherwise no signals will be emitted
      */
     virtual void connectNotify(const char *signal);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     virtual void connectNotify(const QMetaMethod &signal);
-#endif
 
     /**
      * This method disconnects from DBus signals
@@ -853,9 +851,7 @@ protected:
      * otherwise no signals will be disconnected
      */
     virtual void disconnectNotify(const char *signal);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     virtual void disconnectNotify(const QMetaMethod &signal);
-#endif
 
     TransactionPrivate * const d_ptr;
 

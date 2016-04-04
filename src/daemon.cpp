@@ -98,14 +98,12 @@ void Daemon::connectNotify(const char *signal)
     d->connectedSignals << signal;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 void Daemon::connectNotify(const QMetaMethod &signal)
 {
     // ugly but recommended way to convert a methodSignature to a SIGNAL
-    connectNotify(QString("2%1")
+    connectNotify(QStringLiteral("2%1")
                   .arg(QLatin1String(signal.methodSignature())).toLatin1());
 }
-#endif
 
 void Daemon::disconnectNotify(const char *signal)
 {
@@ -118,14 +116,12 @@ void Daemon::disconnectNotify(const char *signal)
     }
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 void Daemon::disconnectNotify(const QMetaMethod &signal)
 {
     // ugly but recommended way to convert a methodSignature to a SIGNAL
-    disconnectNotify(QString("2%1")
+    disconnectNotify(QStringLiteral("2%1")
                      .arg(QLatin1String(signal.methodSignature())).toLatin1());
 }
-#endif
 
 Daemon::~Daemon()
 {
@@ -729,5 +725,5 @@ int Daemon::enumFromString(const QMetaObject& metaObject, const QString &str, co
     return enumValue;
 }
 
-#include "daemon.moc"
+#include "moc_daemon.cpp"
 
