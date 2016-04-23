@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2012 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2016 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -10,7 +10,7 @@
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public License
@@ -26,6 +26,8 @@
 #include <QtCore/QMetaEnum>
 #include <QtDBus/QDBusError>
 #include <QtDBus/QDBusPendingReply>
+
+#include <packagekitqt_global.h>
 
 #include "transaction.h"
 
@@ -47,7 +49,7 @@ namespace PackageKit {
  * of this class.
  */
 class DaemonPrivate;
-class Daemon : public QObject
+class PACKAGEKITQT_LIBRARY Daemon : public QObject
 {
     Q_OBJECT
     Q_ENUMS(Network)

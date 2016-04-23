@@ -11,6 +11,7 @@ set(packagekitqt_HEADERS
     Details
     details.h
     bitfield.h
+    packagekitqt_global.h
 )
 
 set(packagekitqt_SRC

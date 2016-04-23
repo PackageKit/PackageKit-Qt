@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2012 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2016 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -27,6 +27,8 @@
 #include <QtDBus/QDBusObjectPath>
 #include <QtDBus/QDBusPendingReply>
 
+#include <packagekitqt_global.h>
+
 #include "bitfield.h"
 
 namespace PackageKit {
@@ -48,7 +50,7 @@ class Details;
 * \sa Daemon
 */
 class TransactionPrivate;
-class Transaction : public QObject
+class PACKAGEKITQT_LIBRARY Transaction : public QObject
 {
     Q_OBJECT
     Q_ENUMS(Role)
