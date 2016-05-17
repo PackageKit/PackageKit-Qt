@@ -59,7 +59,7 @@ Daemon::Daemon(QObject *parent) :
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
 }
 
-void DaemonPrivate::setupSignal(const QString &signal, bool connect)
+void DaemonPrivate::setupSignal(const QByteArray &signal, bool connect)
 {
     Q_Q(Daemon);
 
@@ -89,7 +89,7 @@ void DaemonPrivate::setupSignal(const QString &signal, bool connect)
     }
 }
 
-void Daemon::connectNotify(const char *signal)
+void Daemon::connectNotify(const QByteArray &signal)
 {
     Q_D(Daemon);
     if (!d->connectedSignals.contains(signal) && d->daemon) {
@@ -105,7 +105,7 @@ void Daemon::connectNotify(const QMetaMethod &signal)
                   .arg(QLatin1String(signal.methodSignature())).toLatin1());
 }
 
-void Daemon::disconnectNotify(const char *signal)
+void Daemon::disconnectNotify(const QByteArray &signal)
 {
     Q_D(Daemon);
     if (d->connectedSignals.contains(signal)) {

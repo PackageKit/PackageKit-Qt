@@ -52,7 +52,7 @@ Transaction::Transaction(const QDBusObjectPath &tid)
     d->setup(tid);
 }
 
-void Transaction::connectNotify(const char *signal)
+void Transaction::connectNotify(const QByteArray &signal)
 {
     Q_D(Transaction);
     if (!d->connectedSignals.contains(signal) && d->p) {
@@ -64,11 +64,10 @@ void Transaction::connectNotify(const char *signal)
 void Transaction::connectNotify(const QMetaMethod &signal)
 {
     // ugly but recommended way to convert a methodSignature to a SIGNAL
-    connectNotify(QStringLiteral("2%1")
-                  .arg(QLatin1String(signal.methodSignature())).toLatin1());
+    connectNotify('2'+signal.methodSignature());
 }
 
-void Transaction::disconnectNotify(const char *signal)
+void Transaction::disconnectNotify(const QByteArray &signal)
 {
     Q_D(Transaction);
     if (d->connectedSignals.contains(signal)) {
@@ -82,8 +81,7 @@ void Transaction::disconnectNotify(const char *signal)
 void Transaction::disconnectNotify(const QMetaMethod &signal)
 {
     // ugly but recommended way to convert a methodSignature to a SIGNAL
-    disconnectNotify(QStringLiteral("2%1")
-                     .arg(QLatin1String(signal.methodSignature())).toLatin1());
+    disconnectNotify('2'+signal.methodSignature());
 }
 
 Transaction::Transaction(TransactionPrivate *d)
@@ -91,7 +89,7 @@ Transaction::Transaction(TransactionPrivate *d)
 {
 }
 
-void TransactionPrivate::setupSignal(const QString &signal, bool connect)
+void TransactionPrivate::setupSignal(const QByteArray &signal, bool connect)
 {
     Q_Q(Transaction);
 
@@ -150,9 +148,9 @@ void TransactionPrivate::setupSignal(const QString &signal, bool connect)
 
     if (signalToConnect && memberToConnect) {
         if (connect) {
-            q->connect(p, signalToConnect, memberToConnect);
+            QObject::connect(p, signalToConnect, q, memberToConnect);
         } else {
-            p->disconnect(signalToConnect, q, memberToConnect);
+            QObject::disconnect(p, signalToConnect, q, memberToConnect);
         }
     }
 }
