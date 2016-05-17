@@ -81,7 +81,7 @@ void DaemonPrivate::getAllProperties(bool sync)
                                                           QLatin1String(PK_PATH),
                                                           QLatin1String(DBUS_PROPERTIES),
                                                           QLatin1String("GetAll"));
-    message << PK_NAME;
+    message << QLatin1String(PK_NAME);
     if (sync) {
         QDBusReply<QVariantMap> reply = QDBusConnection::systemBus().call(message);
         if (reply.isValid()) {

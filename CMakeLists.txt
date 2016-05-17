@@ -18,6 +18,15 @@ set(QPACKAGEKIT_VERSION_SUFFIX "${VERSION_SUFFIX}")
 set(QPACKAGEKIT_API_LEVEL "0")
 set(QPACKAGEKIT_VERSION "${QPACKAGEKIT_VERSION_MAJOR}.${QPACKAGEKIT_VERSION_MINOR}.${QPACKAGEKIT_VERSION_PATCH}")
 
+add_definitions(-DQT_NO_CAST_TO_ASCII
+                -DQT_NO_CAST_FROM_ASCII
+                -DQT_NO_URL_CAST_FROM_STRING
+                -DQT_NO_CAST_FROM_BYTEARRAY
+                -DQT_NO_SIGNALS_SLOTS_KEYWORDS
+                -DQT_USE_FAST_OPERATOR_PLUS
+                -DQT_USE_QSTRINGBUILDER
+               )
+
 # Forbid in-tree building
 if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
       message(STATUS "Please do an out-of-tree build:")
