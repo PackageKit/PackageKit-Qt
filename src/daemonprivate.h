@@ -41,9 +41,9 @@ protected:
     Daemon *q_ptr;
     ::OrgFreedesktopPackageKitInterface *daemon;
     QStringList hints;
-    QStringList connectedSignals;
+    QList<QMetaMethod> connectedSignals;
 
-    void setupSignal(const QString &signal, bool connect);
+    void setupSignal(const QMetaMethod &signal, bool connect);
     void getAllProperties(bool sync);
 
     QString backendAuthor;

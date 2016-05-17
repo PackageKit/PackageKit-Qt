@@ -59,37 +59,37 @@ Daemon::Daemon(QObject *parent) :
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
 }
 
-void DaemonPrivate::setupSignal(const QString &signal, bool connect)
+void DaemonPrivate::setupSignal(const QMetaMethod &signal, bool connect)
 {
     Q_Q(Daemon);
 
     const char *signalToConnect = 0;
     const char *memberToConnect = 0;
 
-    if (signal == SIGNAL(repoListChanged())) {
+    if (signal == QMetaMethod::fromSignal(&Daemon::repoListChanged)) {
         signalToConnect = SIGNAL(RepoListChanged());
         memberToConnect = SIGNAL(repoListChanged());
-    } else if (signal == SIGNAL(restartScheduled())) {
+    } else if (signal == QMetaMethod::fromSignal(&Daemon::restartScheduled)) {
         signalToConnect = SIGNAL(RestartSchedule());
         memberToConnect = SIGNAL(restartScheduled());
-    } else if (signal == SIGNAL(transactionListChanged(QStringList))) {
+    } else if (signal == QMetaMethod::fromSignal(&Daemon::transactionListChanged)) {
         signalToConnect = SIGNAL(TransactionListChanged(QStringList));
         memberToConnect = SIGNAL(transactionListChanged(QStringList));
-    } else if (signal == SIGNAL(updatesChanged())) {
+    } else if (signal == QMetaMethod::fromSignal(&Daemon::updatesChanged)) {
         signalToConnect = SIGNAL(UpdatesChanged());
         memberToConnect = SIGNAL(updatesChanged());
     }
 
     if (signalToConnect && memberToConnect) {
         if (connect) {
-            q->connect(daemon, signalToConnect, memberToConnect);
+            QObject::connect(daemon, signalToConnect, q, memberToConnect);
         } else {
-            daemon->disconnect(signalToConnect, q, memberToConnect);
+            QObject::disconnect(daemon, signalToConnect, q, memberToConnect);
         }
     }
 }
 
-void Daemon::connectNotify(const char *signal)
+void Daemon::connectNotify(const QMetaMethod &signal)
 {
     Q_D(Daemon);
     if (!d->connectedSignals.contains(signal) && d->daemon) {
@@ -98,14 +98,7 @@ void Daemon::connectNotify(const char *signal)
     d->connectedSignals << signal;
 }
 
-void Daemon::connectNotify(const QMetaMethod &signal)
-{
-    // ugly but recommended way to convert a methodSignature to a SIGNAL
-    connectNotify(QStringLiteral("2%1")
-                  .arg(QLatin1String(signal.methodSignature())).toLatin1());
-}
-
-void Daemon::disconnectNotify(const char *signal)
+void Daemon::disconnectNotify(const QMetaMethod &signal)
 {
     Q_D(Daemon);
     if (d->connectedSignals.contains(signal)) {
@@ -114,13 +107,6 @@ void Daemon::disconnectNotify(const char *signal)
             d->setupSignal(signal, false);
         }
     }
-}
-
-void Daemon::disconnectNotify(const QMetaMethod &signal)
-{
-    // ugly but recommended way to convert a methodSignature to a SIGNAL
-    disconnectNotify(QStringLiteral("2%1")
-                     .arg(QLatin1String(signal.methodSignature())).toLatin1());
 }
 
 Daemon::~Daemon()
