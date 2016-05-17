@@ -61,7 +61,7 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                                                           tid.path(),
                                                           QLatin1String(DBUS_PROPERTIES),
                                                           QLatin1String("GetAll"));
-    message << PK_TRANSACTION_INTERFACE;
+    message << QLatin1String(PK_TRANSACTION_INTERFACE);
     QDBusConnection::systemBus().callWithCallback(message,
                                                   q,
                                                   SLOT(updateProperties(QVariantMap)));
@@ -74,9 +74,8 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                                          q,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
 
-    QStringList currentSignals = connectedSignals;
-    currentSignals.removeDuplicates();
-    foreach (const QString &signal, currentSignals) {
+    const QSet<QByteArray> currentSignals = connectedSignals.toSet();
+    foreach (const QByteArray &signal, currentSignals) {
         setupSignal(signal, true);
     }
 

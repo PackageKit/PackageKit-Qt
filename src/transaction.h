@@ -844,7 +844,7 @@ protected:
      * \attention Make sure to call this method in inherited classes
      * otherwise no signals will be emitted
      */
-    virtual void connectNotify(const char *signal);
+    void connectNotify(const QByteArray& signal);
     virtual void connectNotify(const QMetaMethod &signal);
 
     /**
@@ -852,7 +852,7 @@ protected:
      * \attention Make sure to call this method in inherited classes
      * otherwise no signals will be disconnected
      */
-    virtual void disconnectNotify(const char *signal);
+    virtual void disconnectNotify(const QByteArray &signal);
     virtual void disconnectNotify(const QMetaMethod &signal);
 
     TransactionPrivate * const d_ptr;

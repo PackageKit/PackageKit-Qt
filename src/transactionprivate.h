@@ -47,7 +47,7 @@ protected:
     QDBusObjectPath tid;
     ::OrgFreedesktopPackageKitTransactionInterface* p = 0;
     Transaction *q_ptr;
-    QStringList connectedSignals;
+    QList<QByteArray> connectedSignals;
 
     bool sentFinished = false;
     bool allowCancel = false;
@@ -88,7 +88,11 @@ protected:
     QString data;
     QString cmdline;
 
-    void setupSignal(const QString &signal, bool connect);
+    void setupSignal(const QByteArray &signal, bool connect);
+
+private:
+    template <typename Func1, typename Func2>
+    void processConnect(bool connect, Func1 signal, Func2 slot);
 
 protected Q_SLOTS:
     void createTransactionFinished(QDBusPendingCallWatcher *call);
