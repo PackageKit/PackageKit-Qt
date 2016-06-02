@@ -52,8 +52,6 @@ class DaemonPrivate;
 class PACKAGEKITQT_LIBRARY Daemon : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(Network)
-    Q_ENUMS(Authorize)
     Q_PROPERTY(bool isRunning READ isRunning NOTIFY isRunningChanged)
     Q_PROPERTY(Transaction::Roles roles READ roles NOTIFY changed)
     Q_PROPERTY(QString backendName READ backendName NOTIFY changed)
@@ -80,6 +78,7 @@ public:
         NetworkWifi,
         NetworkMobile
     };
+    Q_ENUM(Network)
 
     /**
      * Describes the authorization result
@@ -91,6 +90,7 @@ public:
         AuthorizeNo,
         AuthorizeInteractive
     };
+    Q_ENUM(Authorize)
 
     /**
      * \brief Returns an instance of the Daemon
