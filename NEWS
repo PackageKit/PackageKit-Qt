@@ -1,3 +1,21 @@
+Version 0.9.6
+~~~~~~~~~~~~~
+Released: 2016-09-20
+
+Features:
+ * Use Qt 5 by default (Aleix Pol)
+ * Drop Qt4 support from PK-Qt (Aleix Pol)
+ * Make use of QLoggingCategory packagekitqt (Daniel Nicoletti)
+ * Change default visibility to hidden (Daniel Nicoletti)
+ * Require at least Qt 5.6 (Matthias Klumpp)
+
+Bugfixes:
+ * Fix compilation with strict QString() constructors on a host application (Aleix Pol)
+ * Move enumTo/FromString code from header to cpp file (Aleix Pol)
+ * No need to have random files marked as executable (Aleix Pol)
+ * Reduce changes between QString <-> QByteArray (Aleix Pol)
+ * Properly expose enums for introspection (Aleix Pol)
+
 Version 0.9.5
 ~~~~~~~~~~~~~
 Released: 2014-10-10
