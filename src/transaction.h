@@ -53,21 +53,6 @@ class TransactionPrivate;
 class PACKAGEKITQT_LIBRARY Transaction : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(Role)
-    Q_ENUMS(Error)
-    Q_ENUMS(Exit)
-    Q_ENUMS(Message)
-    Q_ENUMS(Status)
-    Q_ENUMS(MediaType)
-    Q_ENUMS(Provides)
-    Q_ENUMS(DistroUpgrade)
-    Q_ENUMS(TransactionFlag)
-    Q_ENUMS(Restart)
-    Q_ENUMS(UpdateState)
-    Q_ENUMS(Group)
-    Q_ENUMS(Info)
-    Q_ENUMS(SigType)
-    Q_ENUMS(Filter)
     Q_FLAGS(TransactionFlag TransactionFlags)
     Q_FLAGS(Filter Filters)
     Q_PROPERTY(QDBusObjectPath tid READ tid)
@@ -147,6 +132,7 @@ public:
         RoleGetFilesLocal,      // Since 0.9.1
         RoleRepoRemove          // Since 0.9.1
     };
+    Q_ENUM(Role)
     typedef Bitfield Roles;
 
     /**
@@ -222,6 +208,7 @@ public:
         ErrorUnfinishedTransaction,
         ErrorLockRequired
     };
+    Q_ENUM(Error)
 
     /**
      * Describes how the transaction finished
@@ -240,6 +227,7 @@ public:
         ExitCancelledPriority,
         ExitRepairRequired
     };
+    Q_ENUM(Exit)
 
     /**
      * Describes the different package filters
@@ -274,6 +262,7 @@ public:
         /* this always has to be at the end of the list */
         FilterLast           = 0x4000000
     };
+    Q_ENUM(Filter)
     Q_DECLARE_FLAGS(Filters, Filter)
 
     /**
@@ -298,6 +287,7 @@ public:
         MessageRepoForDevelopersOnly,
         MessageOtherUpdatesHeldBack
     };
+    Q_ENUM(Message)
 
     /**
      * Describes the current state of the transaction
@@ -340,6 +330,7 @@ public:
         StatusCheckLibraries,
         StatusCopyFiles
     };
+    Q_ENUM(Status)
 
     /**
      * Describes what kind of media is required
@@ -350,6 +341,7 @@ public:
         MediaTypeDvd,
         MediaTypeDisc
     };
+    Q_ENUM(MediaType)
 
     /**
      * Describes an distro upgrade state
@@ -359,6 +351,7 @@ public:
         DistroUpgradeStable,
         DistroUpgradeUnstable
     };
+    Q_ENUM(DistroUpgrade)
 
     /**
      * Describes the type of distribution upgrade to perform
@@ -371,6 +364,7 @@ public:
         TransactionFlagOnlyDownload = 1 << 3  // Since: 0.8.1
     };
     Q_DECLARE_FLAGS(TransactionFlags, TransactionFlag)
+    Q_ENUM(TransactionFlag)
 
     /**
      * Describes a restart type
@@ -384,6 +378,7 @@ public:
         RestartSecuritySession, /* a library that is being used by this package has been updated for security */
         RestartSecuritySystem
     };
+    Q_ENUM(Restart)
 
     /**
      * Describes an update's state
@@ -394,6 +389,7 @@ public:
         UpdateStateUnstable,
         UpdateStateTesting
     };
+    Q_ENUM(UpdateState)
 
     /**
      * Describes the different package groups
@@ -436,6 +432,7 @@ public:
         GroupNewest
     };
     typedef Bitfield Groups;
+    Q_ENUM(Group)
 
     /**
      * Describes the state of a package
@@ -467,6 +464,7 @@ public:
         InfoUntrusted,
         InfoTrusted
     };
+    Q_ENUM(Info)
 
     /**
      * Describes a signature type
@@ -475,6 +473,7 @@ public:
         SigTypeUnknown,
         SigTypeGpg
     };
+    Q_ENUM(SigType)
 
     /**
      * Create a transaction object with transaction id \p tid
