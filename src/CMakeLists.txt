@@ -1,6 +1,6 @@
 # CMakeLists for PackageKit-Qt library
 
-find_package(Qt5 REQUIRED COMPONENTS Core DBus)
+find_package(Qt5 5.6 REQUIRED COMPONENTS Core DBus)
 
 set(packagekitqt_HEADERS
     Daemon
