@@ -774,7 +774,7 @@ Q_SIGNALS:
      *
      * \p type is the type of the \p message
      */
-    void message(PackageKit::Transaction::Message type, const QString &message);
+    QT_DEPRECATED void message(PackageKit::Transaction::Message type, const QString &message);
 
     /**
      * Emitted when the transaction sends a new package
