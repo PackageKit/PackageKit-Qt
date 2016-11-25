@@ -1,7 +1,7 @@
 # CMakeLists for PackageKit-Qt
 project(packagekit-qt)
 
-cmake_minimum_required(VERSION 2.8.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 find_package(PkgConfig REQUIRED)
 
 # Used to set installation paths
