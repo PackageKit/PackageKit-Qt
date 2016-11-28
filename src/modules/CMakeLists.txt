@@ -1,13 +1,12 @@
-# CMakeLists for PackageKit-Qt lib extra modules
+include(CMakePackageConfigHelpers)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekit-qt-config.cmake.in
+configure_package_config_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/packagekit-qt-config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt5-config.cmake
-  @ONLY
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/packagekitqt5/
 )
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekit-qt-config-version.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt5-config-version.cmake
-  @ONLY
-)
+
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/packagekitqt5-config-version.cmake VERSION ${QPACKAGEKIT_VERSION} COMPATIBILITY SameMajorVersion)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt5-config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt5-config-version.cmake
