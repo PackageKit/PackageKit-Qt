@@ -28,8 +28,7 @@
 #include <QDBusPendingCallWatcher>
 
 #include "transaction.h"
-
-class OrgFreedesktopPackageKitTransactionInterface;
+#include "transactionproxy.h"
 
 namespace PackageKit {
 
@@ -45,7 +44,7 @@ protected:
     void runQueuedTransaction();
 
     QDBusObjectPath tid;
-    ::OrgFreedesktopPackageKitTransactionInterface* p = 0;
+    QPointer<::OrgFreedesktopPackageKitTransactionInterface> p;
     Transaction *q_ptr;
     QList<QMetaMethod> connectedSignals;
 

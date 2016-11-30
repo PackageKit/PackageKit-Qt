@@ -21,7 +21,6 @@
 
 #include "transactionprivate.h"
 
-#include "transactionproxy.h"
 #include "daemon.h"
 #include "common.h"
 #include "details.h"
@@ -257,7 +256,7 @@ void TransactionPrivate::destroy()
     Q_Q(Transaction);
     if (p) {
        delete p;
-       p = 0;
+       p = nullptr;
     }
 
     if (!sentFinished) {
