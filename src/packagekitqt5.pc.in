@@ -7,5 +7,5 @@ Name: @LIBNAME@
 Description: PackageKit is a system daemon for installing stuff.
 Version: @VERSION@
 Requires: Qt5Core, Qt5DBus, Qt5Xml
-Libs: -L${libdir} -l@LIBNAME@
-Cflags: -I${includedir}/PackageKit/@LIBNAME@
+Libs: -L${libdir} -lpackagekitqt5
+Cflags: -I${includedir}/packagekitqt5/PackageKit
