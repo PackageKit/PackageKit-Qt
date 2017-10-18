@@ -93,6 +93,17 @@ public:
     Q_ENUM(Authorize)
 
     /**
+     * Actions to trigger
+     *
+     * \sa offlineTrigger()
+     */
+    enum OfflineAction {
+        OfflineActionPowerOff, /** < powers off the computer after applying offline updates */
+        OfflineActionReboot    /** < reboots the computer after applying offline updates */
+    };
+    Q_ENUM(OfflineAction)
+
+    /**
      * \brief Returns an instance of the Daemon
      *
      * The Daemon class is a singleton, you can call this method several times,
@@ -804,6 +815,13 @@ public:
      * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *whatProvides(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
+
+    /**
+     * Triggers the offline update for the next boot
+     *
+     * @p action is the action to take when finished applying updates
+     */
+    static QDBusPendingReply<> offlineTrigger(OfflineAction action);
 
 Q_SIGNALS:
     void isRunningChanged();

@@ -721,5 +721,25 @@ int Daemon::enumFromString(const QMetaObject& metaObject, const QString &str, co
     return enumValue;
 }
 
+QDBusPendingReply<> PackageKit::Daemon::offlineTrigger(PackageKit::Daemon::OfflineAction action)
+{
+    QString actionStr;
+    switch(action) {
+        case OfflineActionPowerOff:
+            actionStr = QStringLiteral("power-off");
+            break;
+        case OfflineActionReboot:
+            actionStr = QStringLiteral("reboot");
+            break;
+    };
+    Q_ASSERT(!actionStr.isEmpty());
+
+    OrgFreedesktopPackageKitOfflineInterface iface(QLatin1String(PK_NAME),
+                                                   QLatin1String(PK_PATH),
+                                                   QDBusConnection::systemBus(),
+                                                   nullptr);
+    return iface.Trigger(actionStr);
+}
+
 #include "moc_daemon.cpp"
 
