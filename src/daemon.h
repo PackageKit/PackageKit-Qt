@@ -523,6 +523,30 @@ public:
     static Transaction *getDistroUpgrades();
 
     /**
+     * Updates the whole system
+     *
+     * This method perfoms a distribution upgrade to the
+     * specified version.
+     *
+     * The \p type of upgrade, e.g. minimal, default or complete.
+     * Minimal upgrades will download the smallest amount of data
+     * before launching a installer.
+     * The default is to download enough data to launch a full
+     * graphical installer, but a complete upgrade will be
+     * required if there is no internet access during install time.
+     *
+     * \note This method typically emits
+     * \li progress()
+     * \li status()
+     * \li error()
+     * \li package()
+     *
+     * \warning check \sa errorCode() signal to know if it the call has any error
+     */
+    static Transaction *upgradeSystem(const QString &distroId, Transaction::UpgradeKind kind,
+                                      Transaction::TransactionFlags flags = Transaction::TransactionFlagOnlyTrusted);
+
+    /**
      * \brief Installs the local packages \p files
      *
      * \p onlyTrusted indicate if the packages are signed by a trusted authority
