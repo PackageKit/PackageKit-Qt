@@ -422,6 +422,16 @@ Transaction *Daemon::getDistroUpgrades()
     return ret;
 }
 
+Transaction *Daemon::upgradeSystem(const QString &distroId, Transaction::UpgradeKind kind, Transaction::TransactionFlags flags)
+{
+    Transaction *ret = new Transaction;
+    ret->d_ptr->role = Transaction::RoleUpgradeSystem;
+    ret->d_ptr->upgradeDistroId = distroId;
+    ret->d_ptr->upgradeKind = kind;
+    ret->d_ptr->transactionFlags = flags;
+    return ret;
+}
+
 Transaction *Daemon::installFiles(const QStringList &files, Transaction::TransactionFlags flags)
 {
     Transaction *ret = new Transaction;

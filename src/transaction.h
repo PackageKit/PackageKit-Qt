@@ -130,7 +130,8 @@ public:
         RoleRepairSystem,       // Since 0.7.2
         RoleGetDetailsLocal,    // Since 0.8.17
         RoleGetFilesLocal,      // Since 0.9.1
-        RoleRepoRemove          // Since 0.9.1
+        RoleRepoRemove,         // Since 0.9.1
+        RoleUpgradeSystem       // since 1.0.11
     };
     Q_ENUM(Role)
     typedef Bitfield Roles;
@@ -355,7 +356,19 @@ public:
 
     /**
      * Describes the type of distribution upgrade to perform
-     * \sa upgradeSystem()
+     * \sa Daemon::upgradeSystem()
+      */
+    enum UpgradeKind {
+        UpgradeKindUnknown,
+        UpgradeKindMinimal,
+        UpgradeKindDefault,
+        UpgradeKindComplete
+    };
+    Q_ENUM(UpgradeKind)
+
+    /**
+     * Describes the type of distribution upgrade to perform
+     * \sa Daemon::upgradeSystem()
      */
     enum TransactionFlag {
         TransactionFlagNone         = 1 << 0, // Since: 0.8.1
@@ -909,5 +922,6 @@ Q_DECLARE_METATYPE(PackageKit::Transaction::SigType)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Filter)
 Q_DECLARE_METATYPE(PackageKit::Transaction::TransactionFlags)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Filters)
+Q_DECLARE_METATYPE(PackageKit::Transaction::UpgradeKind)
 
 #endif

@@ -87,6 +87,9 @@ protected:
     QString data;
     QString cmdline;
 
+    QString upgradeDistroId;
+    Transaction::UpgradeKind upgradeKind;
+
     void setupSignal(const QMetaMethod &signal, bool connect);
 
 private:

@@ -180,6 +180,9 @@ void TransactionPrivate::runQueuedTransaction()
     case Transaction::RoleRepoRemove:
         reply = p->RepoRemove(transactionFlags, repoId, autoremove);
         break;
+    case Transaction::RoleUpgradeSystem:
+        reply = p->UpgradeSystem(transactionFlags, upgradeDistroId, upgradeKind);
+        break;
     default:
         break;
     }
