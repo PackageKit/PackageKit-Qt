@@ -45,7 +45,7 @@ class Details;
 * A Transaction is created whenever you do an asynchronous action (for example a Search, Install...).
 * This class allows you to monitor and control the flow of the action.
 *
-* You should delete the transaction after finished() is emitted
+* Transaction will be automatically deleted after finished() is emitted
 *
 * \sa Daemon
 */
