@@ -43,7 +43,7 @@ protected:
     QStringList hints;
     QList<QMetaMethod> connectedSignals;
 
-    void setupSignal(const QMetaMethod &signal, bool connect);
+    void setupSignal(const QMetaMethod &signal);
     void getAllProperties(bool sync);
 
     QString backendAuthor;

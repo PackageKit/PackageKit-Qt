@@ -55,21 +55,18 @@ Transaction::Transaction(const QDBusObjectPath &tid)
 void Transaction::connectNotify(const QMetaMethod &signal)
 {
     Q_D(Transaction);
-    if (!d->connectedSignals.contains(signal) && d->p) {
-        d->setupSignal(signal, true);
+    if (!d->connectedSignals.contains(signal)) {
+        d->connectedSignals << signal;
+
+        if (d->p) {
+            d->setupSignal(signal);
+        }
     }
-    d->connectedSignals << signal;
 }
 
 void Transaction::disconnectNotify(const QMetaMethod &signal)
 {
-    Q_D(Transaction);
-    if (d->connectedSignals.contains(signal)) {
-        d->connectedSignals.removeOne(signal);
-        if (d->p && !d->connectedSignals.contains(signal)) {
-            d->setupSignal(signal, false);
-        }
-    }
+    QObject::disconnectNotify(signal);
 }
 
 Transaction::Transaction(TransactionPrivate *d)
@@ -77,7 +74,7 @@ Transaction::Transaction(TransactionPrivate *d)
 {
 }
 
-void TransactionPrivate::setupSignal(const QMetaMethod &signal, bool connect)
+void TransactionPrivate::setupSignal(const QMetaMethod &signal)
 {
     Q_Q(Transaction);
 
@@ -135,11 +132,7 @@ void TransactionPrivate::setupSignal(const QMetaMethod &signal, bool connect)
     }
 
     if (signalToConnect && memberToConnect) {
-        if (connect) {
-            QObject::connect(p, signalToConnect, q, memberToConnect);
-        } else {
-            QObject::disconnect(p, signalToConnect, q, memberToConnect);
-        }
+        QObject::connect(p, signalToConnect, q, memberToConnect);
     }
 }
 

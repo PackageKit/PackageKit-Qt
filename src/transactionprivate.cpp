@@ -74,7 +74,7 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
 
     foreach (const QMetaMethod &signal, connectedSignals) {
-        setupSignal(signal, true);
+        setupSignal(signal);
     }
 
     // Execute pending call

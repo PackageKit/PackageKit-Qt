@@ -59,7 +59,7 @@ Daemon::Daemon(QObject *parent) :
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
 }
 
-void DaemonPrivate::setupSignal(const QMetaMethod &signal, bool connect)
+void DaemonPrivate::setupSignal(const QMetaMethod &signal)
 {
     Q_Q(Daemon);
 
@@ -81,11 +81,7 @@ void DaemonPrivate::setupSignal(const QMetaMethod &signal, bool connect)
     }
 
     if (signalToConnect && memberToConnect) {
-        if (connect) {
-            QObject::connect(daemon, signalToConnect, q, memberToConnect);
-        } else {
-            QObject::disconnect(daemon, signalToConnect, q, memberToConnect);
-        }
+        QObject::connect(daemon, signalToConnect, q, memberToConnect);
     }
 }
 
@@ -93,20 +89,14 @@ void Daemon::connectNotify(const QMetaMethod &signal)
 {
     Q_D(Daemon);
     if (!d->connectedSignals.contains(signal) && d->daemon) {
-        d->setupSignal(signal, true);
+        d->setupSignal(signal);
+        d->connectedSignals << signal;
     }
-    d->connectedSignals << signal;
 }
 
 void Daemon::disconnectNotify(const QMetaMethod &signal)
 {
-    Q_D(Daemon);
-    if (d->connectedSignals.contains(signal)) {
-        d->connectedSignals.removeOne(signal);
-        if (d->daemon && !d->connectedSignals.contains(signal)) {
-            d->setupSignal(signal, false);
-        }
-    }
+    QObject::disconnectNotify(signal);
 }
 
 Daemon::~Daemon()

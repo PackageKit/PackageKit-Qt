@@ -23,7 +23,7 @@
 #define PACKAGEKIT_TRANSACTION_PRIVATE_H
 
 #include <QString>
-#include <QHash>
+#include <QList>
 #include <QStringList>
 #include <QDBusPendingCallWatcher>
 
@@ -90,7 +90,7 @@ protected:
     QString upgradeDistroId;
     Transaction::UpgradeKind upgradeKind;
 
-    void setupSignal(const QMetaMethod &signal, bool connect);
+    void setupSignal(const QMetaMethod &signal);
 
 private:
     template <typename Func1, typename Func2>
