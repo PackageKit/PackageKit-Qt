@@ -862,9 +862,7 @@ protected:
     void connectNotify(const QMetaMethod &signal) override;
 
     /**
-     * This method disconnects from DBus signals
      * \attention Make sure to call this method in inherited classes
-     * otherwise no signals will be disconnected
      */
     void disconnectNotify(const QMetaMethod &signal) override;
 
