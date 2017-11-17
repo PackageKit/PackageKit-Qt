@@ -260,8 +260,10 @@ public:
         FilterNotCollections = 0x0800000,
         FilterApplication    = 0x1000000,
         FilterNotApplication = 0x2000000,
+        FilterDownloaded     = 0x4000000,
+        FilterNotDownloaded  = 0x8000000,
         /* this always has to be at the end of the list */
-        FilterLast           = 0x4000000
+        FilterLast           = 0x10000000
     };
     Q_ENUM(Filter)
     Q_DECLARE_FLAGS(Filters, Filter)
@@ -329,7 +331,8 @@ public:
         StatusScanProcessList,
         StatusCheckExecutableFiles,
         StatusCheckLibraries,
-        StatusCopyFiles
+        StatusCopyFiles,
+        StatusRunHook
     };
     Q_ENUM(Status)
 
