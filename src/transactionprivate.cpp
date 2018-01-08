@@ -252,6 +252,7 @@ void TransactionPrivate::finished(uint exitCode, uint runtime)
     Q_Q(Transaction);
     q->finished(static_cast<Transaction::Exit>(exitCode), runtime);
     sentFinished = true;
+    q->deleteLater();
 }
 
 void TransactionPrivate::destroy()
