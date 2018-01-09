@@ -226,22 +226,66 @@ uint Daemon::versionMicro()
 
 QString Daemon::packageName(const QString &packageID)
 {
-    return packageID.section(QLatin1Char(';'), 0, 0);
+    QString ret;
+    ret = packageID.left(packageID.indexOf(QLatin1Char(';')));
+    return ret;
 }
 
 QString Daemon::packageVersion(const QString &packageID)
 {
-    return packageID.section(QLatin1Char(';'), 1, 1);
+    QString ret;
+    int start = packageID.indexOf(QLatin1Char(';'));
+    if (start == -1) {
+        return ret;
+    }
+    int end = packageID.indexOf(QLatin1Char(';'), start);
+    if (end == -1) {
+        return ret;
+    }
+    ret = packageID.mid(start, end - start);
+    return ret;
 }
 
 QString Daemon::packageArch(const QString &packageID)
 {
-    return packageID.section(QLatin1Char(';'), 2, 2);
+    QString ret;
+    int start = packageID.indexOf(QLatin1Char(';'));
+    if (start == -1) {
+        return ret;
+    }
+    start = packageID.indexOf(QLatin1Char(';'), start);
+    if (start == -1) {
+        return ret;
+    }
+    int end = packageID.indexOf(QLatin1Char(';'), start);
+    if (end == -1) {
+        return ret;
+    }
+    ret = packageID.mid(start, end - start);
+    return ret;
 }
 
 QString Daemon::packageData(const QString &packageID)
 {
-    return packageID.section(QLatin1Char(';'), 3, 3);
+    QString ret;
+    int start = packageID.indexOf(QLatin1Char(';'));
+    if (start == -1) {
+        return ret;
+    }
+    start = packageID.indexOf(QLatin1Char(';'), start);
+    if (start == -1) {
+        return ret;
+    }
+    start = packageID.indexOf(QLatin1Char(';'), start);
+    if (start == -1) {
+        return ret;
+    }
+    int end = packageID.indexOf(QLatin1Char(';'), start);
+    if (end == -1) {
+        return ret;
+    }
+    ret = packageID.mid(start, end - start);
+    return ret;
 }
 
 Transaction *Daemon::acceptEula(const QString &eulaId)
