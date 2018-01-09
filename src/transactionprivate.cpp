@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2016 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -73,7 +73,8 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                                          q,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
 
-    foreach (const QMetaMethod &signal, connectedSignals) {
+    const QVector<QMetaMethod> signals = connectedSignals;
+    for (const QMetaMethod &signal : signals) {
         setupSignal(signal);
     }
 
@@ -187,36 +188,17 @@ void TransactionPrivate::runQueuedTransaction()
         break;
     }
 
-    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, q);
-    q->connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-               q, SLOT(methodCallFinished(QDBusPendingCallWatcher*)));
-}
-
-void TransactionPrivate::createTransactionFinished(QDBusPendingCallWatcher *call)
-{
-    Q_Q(Transaction);
-    QDBusPendingReply<QDBusObjectPath> reply = *call;
-    if (reply.isError()) {
-        q->errorCode(Transaction::ErrorInternalError, reply.error().message());
-        finished(Transaction::ExitFailed, 0);
-        destroy();
-    } else {
-        // Setup our new Transaction ID
-        setup(reply.argumentAt<0>());
-    }
-    call->deleteLater();
-}
-
-void TransactionPrivate::methodCallFinished(QDBusPendingCallWatcher *call)
-{
-    Q_Q(Transaction);
-    QDBusPendingReply<> reply = *call;
-    if (reply.isError()) {
-        q->errorCode(Transaction::ErrorInternalError, reply.error().message());
-        finished(Transaction::ExitFailed, 0);
-        destroy();
-    }
-    call->deleteLater();
+    auto watcher = new QDBusPendingCallWatcher(reply, q);
+    q->connect(watcher, &QDBusPendingCallWatcher::finished,
+               q, [this, q] (QDBusPendingCallWatcher *call) {
+        QDBusPendingReply<> reply = *call;
+        if (reply.isError()) {
+            q->errorCode(Transaction::ErrorInternalError, reply.error().message());
+            finished(Transaction::ExitFailed, 0);
+            destroy();
+        }
+        call->deleteLater();
+    });
 }
 
 void TransactionPrivate::details(const QVariantMap &values)
@@ -343,12 +325,6 @@ void TransactionPrivate::updateProperties(const QVariantMap &properties)
     }
 }
 
-void TransactionPrivate::message(uint type, const QString &message)
-{
-    Q_Q(Transaction);
-    q->message(static_cast<Transaction::Message>(type), message);
-}
-
 void TransactionPrivate::Package(uint info, const QString &pid, const QString &summary)
 {
     Q_Q(Transaction);
@@ -402,7 +378,7 @@ void TransactionPrivate::transaction(const QDBusObjectPath &oldTid,
 {
     Q_Q(Transaction);
 
-    TransactionPrivate *priv = new TransactionPrivate(q);
+    auto priv = new TransactionPrivate(q);
     priv->tid = tid;
     priv->timespec = QDateTime::fromString(timespec, Qt::ISODate);
     priv->succeeded = succeeded;
@@ -412,7 +388,7 @@ void TransactionPrivate::transaction(const QDBusObjectPath &oldTid,
     priv->uid = uid;
     priv->cmdline = cmdline;
 
-    Transaction *transaction = new Transaction(priv);
+    auto transaction = new Transaction(priv);
     priv->q_ptr = transaction;
 
     q->transaction(transaction);

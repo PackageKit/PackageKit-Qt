@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2011 Daniel Nicoletti <dantti85-pk@yahoo.com.br>
+ * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -35,12 +35,26 @@ using namespace PackageKit;
 Transaction::Transaction()
     : d_ptr(new TransactionPrivate(this))
 {
+    Q_D(Transaction);
+
     connect(Daemon::global(), SIGNAL(daemonQuit()), SLOT(daemonQuit()));
 
     QDBusPendingReply<QDBusObjectPath> reply = Daemon::global()->createTransaction();
-    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
-    connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-            this, SLOT(createTransactionFinished(QDBusPendingCallWatcher*)));
+    auto watcher = new QDBusPendingCallWatcher(reply, this);
+    connect(watcher, &QDBusPendingCallWatcher::finished,
+            this, [this, d] (QDBusPendingCallWatcher *call)
+    {
+        QDBusPendingReply<QDBusObjectPath> reply = *call;
+        if (reply.isError()) {
+            errorCode(Transaction::ErrorInternalError, reply.error().message());
+            d->finished(Transaction::ExitFailed, 0);
+            d->destroy();
+        } else {
+            // Setup our new Transaction ID
+            d->setup(reply.argumentAt<0>());
+        }
+        call->deleteLater();
+    });
 }
 
 Transaction::Transaction(const QDBusObjectPath &tid)
@@ -99,9 +113,6 @@ void TransactionPrivate::setupSignal(const QMetaMethod &signal)
     } else if (signal == QMetaMethod::fromSignal(&Transaction::finished)) {
         signalToConnect = SIGNAL(Finished(uint,uint));
         memberToConnect = SLOT(finished(uint,uint));
-    } else if (signal == QMetaMethod::fromSignal(&Transaction::message)) {
-        signalToConnect = SIGNAL(Message(uint,QString));
-        memberToConnect = SLOT(message(uint,QString));
     } else if (signal == QMetaMethod::fromSignal(&Transaction::package)) {
         signalToConnect = SIGNAL(Package(uint,QString,QString));
         memberToConnect = SLOT(Package(uint,QString,QString));
@@ -187,11 +198,6 @@ QString Transaction::packageArch(const QString &packageID)
 QString Transaction::packageData(const QString &packageID)
 {
     return packageID.section(QLatin1Char(';'), 3, 3);
-}
-
-QString Transaction::packageIcon(const QString &packageID)
-{
-    return QString();
 }
 
 QString Transaction::lastPackage() const
@@ -335,4 +341,3 @@ Transaction::InternalError Transaction::parseError(const QString &errorName)
 }
 
 #include "moc_transaction.cpp"
-

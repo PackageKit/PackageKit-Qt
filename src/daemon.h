@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2016 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -287,13 +287,6 @@ public:
      * Returns the package data from the \p packageID
      */
     Q_INVOKABLE static QString packageData(const QString &packageID);
-
-    /**
-     * Returns the package icon from the \p packageID
-     *
-     * @deprecated use Appstream to fetch icons
-     */
-    Q_INVOKABLE QT_DEPRECATED static QString packageIcon(const QString &packageID);
     
     static QString enumToString(const QMetaObject &metaObject, int value, const char *enumName);
 
@@ -877,7 +870,6 @@ protected:
 
 private:
     Q_DECLARE_PRIVATE(Daemon)
-    Q_PRIVATE_SLOT(d_func(), void serviceOwnerChanged(QString,QString,QString))
     Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
     Q_PRIVATE_SLOT(d_func(), void updateProperties(QVariantMap))
     Daemon(QObject *parent = 0);

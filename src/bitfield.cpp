@@ -78,7 +78,6 @@ Bitfield Bitfield::operator|= (Bitfield mask)
 	return m_val;
 }
 
-
 Bitfield& Bitfield::operator= (const Bitfield& other)
 {
     if (this == &other)

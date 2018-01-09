@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2016 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -244,14 +244,9 @@ QString Daemon::packageData(const QString &packageID)
     return packageID.section(QLatin1Char(';'), 3, 3);
 }
 
-QString Daemon::packageIcon(const QString &packageID)
-{
-    return Transaction::packageIcon(packageID);
-}
-
 Transaction *Daemon::acceptEula(const QString &eulaId)
 {
-    Transaction *ret = new Transaction;
+    auto ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleAcceptEula;
     ret->d_ptr->eulaId = eulaId;
     return ret;
@@ -259,7 +254,7 @@ Transaction *Daemon::acceptEula(const QString &eulaId)
 
 Transaction *Daemon::downloadPackages(const QStringList &packageIDs, bool storeInCache)
 {
-    Transaction *ret = new Transaction;
+    auto ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleDownloadPackages;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->storeInCache = storeInCache;
@@ -273,14 +268,14 @@ Transaction *Daemon::downloadPackage(const QString &packageID, bool storeInCache
 
 Transaction *Daemon::getCategories()
 {
-    Transaction *ret = new Transaction;
+    auto ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetCategories;
     return ret;
 }
 
 Transaction *Daemon::dependsOn(const QStringList &packageIDs, Transaction::Filters filters, bool recursive)
 {
-    Transaction *ret = new Transaction;
+    auto ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleDependsOn;
     ret->d_ptr->search = packageIDs;
     ret->d_ptr->filters = filters;
@@ -295,7 +290,7 @@ Transaction *Daemon::dependsOn(const QString &packageID, Transaction::Filters fi
 
 Transaction *Daemon::getDetails(const QStringList &packageIDs)
 {
-    Transaction *ret = new Transaction;
+    auto ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetDetails;
     ret->d_ptr->search = packageIDs;
     return ret;
@@ -303,12 +298,12 @@ Transaction *Daemon::getDetails(const QStringList &packageIDs)
 
 Transaction *Daemon::getDetails(const QString &packageID)
 {
-    return getDetails(QStringList() << packageID);
+    return getDetails({ packageID });
 }
 
 Transaction *Daemon::getDetailsLocal(const QStringList &files)
 {
-    Transaction *ret = new Transaction;
+    auto ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetDetailsLocal;
     ret->d_ptr->search = files;
     return ret;
@@ -316,12 +311,12 @@ Transaction *Daemon::getDetailsLocal(const QStringList &files)
 
 Transaction *Daemon::getDetailsLocal(const QString &file)
 {
-    return getDetailsLocal(QStringList() << file);
+    return getDetailsLocal({ file });
 }
 
 Transaction *Daemon::getFiles(const QStringList &packageIDs)
 {
-    Transaction *ret = new Transaction;
+    auto ret = new Transaction;
     ret->d_ptr->role = Transaction::RoleGetFiles;
     ret->d_ptr->search = packageIDs;
     return ret;

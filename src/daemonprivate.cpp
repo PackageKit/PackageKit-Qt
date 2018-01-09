@@ -34,12 +34,36 @@ using namespace PackageKit;
 DaemonPrivate::DaemonPrivate(Daemon* parent)
     : q_ptr(parent)
 {
+    Q_Q(Daemon);
+
     m_watcher = new QDBusServiceWatcher(QLatin1String(PK_NAME),
                                         QDBusConnection::systemBus(),
                                         QDBusServiceWatcher::WatchForOwnerChange,
                                         q_ptr);
-    q_ptr->connect(m_watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)),
-                   SLOT(serviceOwnerChanged(QString,QString,QString)));
+    q->connect(m_watcher, &QDBusServiceWatcher::serviceOwnerChanged,
+                   q, [this, q] (const QString &service, const QString &oldOwner, const QString &newOwner) {
+        if (newOwner.isEmpty() || !oldOwner.isEmpty()) {
+            // TODO check if we don't emit this twice when
+            // the daemon exits cleanly
+            q->daemonQuit();
+        }
+
+        // There is a new PackageKit running get it's props
+        if (!newOwner.isEmpty()) {
+            // We don't have more transactions running
+            q->transactionListChanged(QStringList());
+
+            getAllProperties(false);
+
+            if (!running) {
+                running = true;
+                q->isRunningChanged();
+            }
+        } else if (running) {
+            running = false;
+            q->isRunningChanged();
+        }
+    });
 
     // On PK 0.9 this will always be async
     getAllProperties(false);

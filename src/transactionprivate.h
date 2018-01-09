@@ -46,7 +46,7 @@ protected:
     QDBusObjectPath tid;
     QPointer<::OrgFreedesktopPackageKitTransactionInterface> p;
     Transaction *q_ptr;
-    QList<QMetaMethod> connectedSignals;
+    QVector<QMetaMethod> connectedSignals;
 
     bool sentFinished = false;
     bool allowCancel = false;
@@ -97,14 +97,11 @@ private:
     void processConnect(bool connect, Func1 signal, Func2 slot);
 
 protected Q_SLOTS:
-    void createTransactionFinished(QDBusPendingCallWatcher *call);
-    void methodCallFinished(QDBusPendingCallWatcher *call);
     void details(const QVariantMap &values);
     void distroUpgrade(uint type, const QString &name, const QString &description);
     void errorCode(uint error, const QString &details);
     void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText);
     void finished(uint exitCode, uint runtime);
-    void message(uint type, const QString &message);
     void Package(uint info, const QString &pid, const QString &summary);
     void ItemProgress(const QString &itemID, uint status, uint percentage);
     void RepoSignatureRequired(const QString &pid,

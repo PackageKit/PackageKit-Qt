@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2016 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -267,30 +267,6 @@ public:
     };
     Q_ENUM(Filter)
     Q_DECLARE_FLAGS(Filters, Filter)
-
-    /**
-     * Describes a message's type
-     */
-    enum Message {
-        MessageUnknown,
-        MessageBrokenMirror,
-        MessageConnectionRefused,
-        MessageParameterInvalid,
-        MessagePriorityInvalid,
-        MessageBackendError,
-        MessageDaemonError,
-        MessageCacheBeingRebuilt,
-        MessageUntrustedPackage,
-        MessageNewerPackageExists,
-        MessageCouldNotFindPackage,
-        MessageConfigFilesChanged,
-        MessagePackageAlreadyInstalled,
-        MessageAutoremoveIgnored,
-        MessageRepoMetadataDownloadFailed,
-        MessageRepoForDevelopersOnly,
-        MessageOtherUpdatesHeldBack
-    };
-    Q_ENUM(Message)
 
     /**
      * Describes the current state of the transaction
@@ -690,13 +666,6 @@ public:
      */
     static QString packageData(const QString &packageID);
 
-    /**
-     * Returns the package icon from the \p packageID
-     *
-     * @deprecated use Appstream to fetch icons
-     */
-    static QT_DEPRECATED QString packageIcon(const QString &packageID);
-
 Q_SIGNALS:
     void allowCancelChanged();
 
@@ -784,13 +753,6 @@ Q_SIGNALS:
      * \p status describes the exit status, \p runtime is the number of seconds it took to complete the transaction
      */
     void finished(PackageKit::Transaction::Exit status, uint runtime);
-
-    /**
-     * Conveys a message sent from the backend
-     *
-     * \p type is the type of the \p message
-     */
-    QT_DEPRECATED void message(PackageKit::Transaction::Message type, const QString &message);
 
     /**
      * Emitted when the transaction sends a new package
@@ -883,14 +845,11 @@ private:
     friend class Daemon;
     Q_DECLARE_PRIVATE(Transaction)
     Q_DISABLE_COPY(Transaction)
-    Q_PRIVATE_SLOT(d_func(), void createTransactionFinished(QDBusPendingCallWatcher*))
-    Q_PRIVATE_SLOT(d_func(), void methodCallFinished(QDBusPendingCallWatcher*))
     Q_PRIVATE_SLOT(d_func(), void distroUpgrade(uint type, const QString &name, const QString &description))
     Q_PRIVATE_SLOT(d_func(), void details(const QVariantMap &values))
     Q_PRIVATE_SLOT(d_func(), void errorCode(uint error, const QString &details))
     Q_PRIVATE_SLOT(d_func(), void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText))
     Q_PRIVATE_SLOT(d_func(), void finished(uint exitCode, uint runtime))
-    Q_PRIVATE_SLOT(d_func(), void message(uint type, const QString &message))
     Q_PRIVATE_SLOT(d_func(), void Package(uint info, const QString &pid, const QString &summary))
     Q_PRIVATE_SLOT(d_func(), void ItemProgress(const QString &itemID, uint status, uint percentage))
     Q_PRIVATE_SLOT(d_func(), void RepoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type))
@@ -898,7 +857,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void transaction(const QDBusObjectPath &oldTid, const QString &timespec, bool succeeded, uint role, uint duration, const QString &data, uint uid, const QString &cmdline))
     Q_PRIVATE_SLOT(d_func(), void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated))
     Q_PRIVATE_SLOT(d_func(), void destroy())
-    Q_PRIVATE_SLOT(d_func(), void daemonQuit())
     Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
     Q_PRIVATE_SLOT(d_func(), void updateProperties(QVariantMap))
 };
@@ -910,7 +868,6 @@ Q_DECLARE_METATYPE(PackageKit::Transaction::InternalError)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Role)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Error)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Exit)
-Q_DECLARE_METATYPE(PackageKit::Transaction::Message)
 Q_DECLARE_METATYPE(PackageKit::Transaction::Status)
 Q_DECLARE_METATYPE(PackageKit::Transaction::MediaType)
 Q_DECLARE_METATYPE(PackageKit::Transaction::DistroUpgrade)
