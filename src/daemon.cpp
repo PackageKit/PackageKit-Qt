@@ -307,7 +307,7 @@ Transaction *Daemon::downloadPackages(const QStringList &packageIDs, bool storeI
 
 Transaction *Daemon::downloadPackage(const QString &packageID, bool storeInCache)
 {
-    return downloadPackages({ packageID }, storeInCache);
+    return downloadPackages(QStringList{ packageID }, storeInCache);
 }
 
 Transaction *Daemon::getCategories()
@@ -329,7 +329,7 @@ Transaction *Daemon::dependsOn(const QStringList &packageIDs, Transaction::Filte
 
 Transaction *Daemon::dependsOn(const QString &packageID, Transaction::Filters filters, bool recursive)
 {
-    return dependsOn({ packageID }, filters, recursive);
+    return dependsOn(QStringList{ packageID }, filters, recursive);
 }
 
 Transaction *Daemon::getDetails(const QStringList &packageIDs)
@@ -342,7 +342,7 @@ Transaction *Daemon::getDetails(const QStringList &packageIDs)
 
 Transaction *Daemon::getDetails(const QString &packageID)
 {
-    return getDetails({ packageID });
+    return getDetails(QStringList{ packageID });
 }
 
 Transaction *Daemon::getDetailsLocal(const QStringList &files)
@@ -355,7 +355,7 @@ Transaction *Daemon::getDetailsLocal(const QStringList &files)
 
 Transaction *Daemon::getDetailsLocal(const QString &file)
 {
-    return getDetailsLocal({ file });
+    return getDetailsLocal(QStringList{ file });
 }
 
 Transaction *Daemon::getFiles(const QStringList &packageIDs)
@@ -368,7 +368,7 @@ Transaction *Daemon::getFiles(const QStringList &packageIDs)
 
 Transaction *Daemon::getFiles(const QString &packageID)
 {
-    return getFiles({ packageID });
+    return getFiles(QStringList{ packageID });
 }
 
 Transaction *Daemon::getFilesLocal(const QStringList &files)
@@ -381,7 +381,7 @@ Transaction *Daemon::getFilesLocal(const QStringList &files)
 
 Transaction *Daemon::getFilesLocal(const QString &file)
 {
-    return getFilesLocal({ file });
+    return getFilesLocal(QStringList{ file });
 }
 
 Transaction *Daemon::getOldTransactions(uint number)
@@ -420,7 +420,7 @@ Transaction *Daemon::requiredBy(const QStringList &packageIDs, Transaction::Filt
 
 Transaction *Daemon::requiredBy(const QString &packageID, Transaction::Filters filters, bool recursive)
 {
-    return requiredBy({ packageID }, filters, recursive);
+    return requiredBy(QStringList{ packageID }, filters, recursive);
 }
 
 Transaction *Daemon::getUpdatesDetails(const QStringList &packageIDs)
@@ -433,7 +433,7 @@ Transaction *Daemon::getUpdatesDetails(const QStringList &packageIDs)
 
 Transaction *Daemon::getUpdateDetail(const QString &packageID)
 {
-    return getUpdatesDetails({ packageID });
+    return getUpdatesDetails(QStringList{ packageID });
 }
 
 Transaction *Daemon::getUpdates(Transaction::Filters filters)
@@ -472,7 +472,7 @@ Transaction *Daemon::installFiles(const QStringList &files, Transaction::Transac
 
 Transaction *Daemon::installFile(const QString &file, Transaction::TransactionFlags flags)
 {
-    return installFiles({ file }, flags);
+    return installFiles(QStringList{ file }, flags);
 }
 
 Transaction *Daemon::installPackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
@@ -486,7 +486,7 @@ Transaction *Daemon::installPackages(const QStringList &packageIDs, Transaction:
 
 Transaction *Daemon::installPackage(const QString &packageID, Transaction::TransactionFlags flags)
 {
-    return installPackages({ packageID }, flags);
+    return installPackages(QStringList{ packageID }, flags);
 }
 
 Transaction *Daemon::installSignature(Transaction::SigType type, const QString &keyID, const QString &packageID)
@@ -520,7 +520,7 @@ Transaction *Daemon::removePackages(const QStringList &packageIDs, bool allowDep
 
 Transaction *Daemon::removePackage(const QString &packageID, bool allowDeps, bool autoremove, Transaction::TransactionFlags flags)
 {
-    return removePackages({ packageID }, allowDeps, autoremove, flags);
+    return removePackages(QStringList{ packageID }, allowDeps, autoremove, flags);
 }
 
 Transaction *Daemon::repairSystem(Transaction::TransactionFlags flags)
@@ -571,7 +571,7 @@ Transaction *Daemon::resolve(const QStringList &packageNames, Transaction::Filte
 
 Transaction *Daemon::resolve(const QString &packageName, Transaction::Filters filters)
 {
-    return resolve({ packageName }, filters);
+    return resolve(QStringList{ packageName }, filters);
 }
 
 Transaction *Daemon::searchFiles(const QStringList &search, Transaction::Filters filters)
@@ -585,7 +585,7 @@ Transaction *Daemon::searchFiles(const QStringList &search, Transaction::Filters
 
 Transaction *Daemon::searchFiles(const QString &search, Transaction::Filters filters)
 {
-    return searchFiles({ search }, filters);
+    return searchFiles(QStringList{ search }, filters);
 }
 
 Transaction *Daemon::searchDetails(const QStringList &search, Transaction::Filters filters)
@@ -599,7 +599,7 @@ Transaction *Daemon::searchDetails(const QStringList &search, Transaction::Filte
 
 Transaction *Daemon::searchDetails(const QString &search, Transaction::Filters filters)
 {
-    return searchDetails({ search }, filters);
+    return searchDetails(QStringList{ search }, filters);
 }
 
 Transaction *Daemon::searchGroups(const QStringList &groups, Transaction::Filters filters)
@@ -613,7 +613,7 @@ Transaction *Daemon::searchGroups(const QStringList &groups, Transaction::Filter
 
 Transaction *Daemon::searchGroup(const QString &group, Transaction::Filters filters)
 {
-    return searchGroups({ group }, filters);
+    return searchGroups(QStringList{ group }, filters);
 }
 
 Transaction *Daemon::searchGroup(Transaction::Group group, Transaction::Filters filters)
@@ -647,7 +647,7 @@ Transaction *Daemon::searchNames(const QStringList &search, Transaction::Filters
 
 Transaction *Daemon::searchNames(const QString &search, Transaction::Filters filters)
 {
-    return searchNames({ search }, filters);
+    return searchNames(QStringList{ search }, filters);
 }
 
 Transaction *Daemon::updatePackages(const QStringList &packageIDs, Transaction::TransactionFlags flags)
@@ -661,7 +661,7 @@ Transaction *Daemon::updatePackages(const QStringList &packageIDs, Transaction::
 
 Transaction *Daemon::updatePackage(const QString &packageID, Transaction::TransactionFlags flags)
 {
-    return updatePackages({ packageID }, flags);
+    return updatePackages(QStringList{ packageID }, flags);
 }
 
 Transaction *Daemon::whatProvides(const QStringList &search, Transaction::Filters filters)
@@ -675,7 +675,7 @@ Transaction *Daemon::whatProvides(const QStringList &search, Transaction::Filter
 
 Transaction *Daemon::whatProvides(const QString &search, Transaction::Filters filters)
 {
-    return whatProvides({ search }, filters);
+    return whatProvides(QStringList{ search }, filters);
 }
 
 QString Daemon::enumToString(const QMetaObject &metaObject, int value, const char *enumName)

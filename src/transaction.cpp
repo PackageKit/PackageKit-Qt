@@ -253,7 +253,7 @@ QDBusPendingReply<> Transaction::setHints(const QStringList &hints)
 
 QDBusPendingReply<> Transaction::setHints(const QString &hints)
 {
-    return setHints({ hints });
+    return setHints(QStringList{ hints });
 }
 
 Transaction::Status Transaction::status() const
