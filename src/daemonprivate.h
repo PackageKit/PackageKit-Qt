@@ -22,14 +22,23 @@
 #ifndef DAEMON_PRIVATE_H
 #define DAEMON_PRIVATE_H
 
-#include <QtCore/QStringList>
-#include <QtDBus/QDBusServiceWatcher>
+#include <QStringList>
+#include <QLoggingCategory>
 
 #include "daemon.h"
+
+Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION)
+Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON)
 
 class OrgFreedesktopPackageKitInterface;
 
 namespace PackageKit {
+
+static QString PK_NAME = QStringLiteral("org.freedesktop.PackageKit");
+static QString PK_PATH = QStringLiteral("/org/freedesktop/PackageKit");
+static QString PK_TRANSACTION_INTERFACE = QStringLiteral("org.freedesktop.PackageKit.Transaction");
+
+static QString DBUS_PROPERTIES = QStringLiteral("org.freedesktop.DBus.Properties");
 
 class DaemonPrivate
 {
@@ -44,7 +53,7 @@ protected:
     QList<QMetaMethod> connectedSignals;
 
     void setupSignal(const QMetaMethod &signal);
-    void getAllProperties(bool sync);
+    void getAllProperties();
 
     QString backendAuthor;
     QString backendDescription;
@@ -52,23 +61,18 @@ protected:
     QString distroId;
     Transaction::Filters filters = Transaction::FilterNone;
     Transaction::Groups groups = Transaction::GroupUnknown;
-    bool locked = false;
     QStringList mimeTypes;
     Daemon::Network networkState = Daemon::NetworkUnknown;
     Transaction::Roles roles = Transaction::RoleUnknown;
     uint versionMajor = 0;
     uint versionMicro = 0;
     uint versionMinor = 0;
-
+    bool locked = false;
     bool running = false;
 
 protected Q_SLOTS:
-    void serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner);
     void propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties);
     void updateProperties(const QVariantMap &properties);
-
-private:
-    QDBusServiceWatcher *m_watcher;
 };
 
 } // End namespace PackageKit

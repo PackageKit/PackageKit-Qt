@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2018 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -253,7 +253,7 @@ QDBusPendingReply<> Transaction::setHints(const QStringList &hints)
 
 QDBusPendingReply<> Transaction::setHints(const QString &hints)
 {
-    return setHints(QStringList() << hints);
+    return setHints({ hints });
 }
 
 Transaction::Status Transaction::status() const

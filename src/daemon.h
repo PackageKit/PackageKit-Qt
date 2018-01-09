@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2018 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -872,7 +872,7 @@ private:
     Q_DECLARE_PRIVATE(Daemon)
     Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
     Q_PRIVATE_SLOT(d_func(), void updateProperties(QVariantMap))
-    Daemon(QObject *parent = 0);
+    Daemon(QObject *parent = nullptr);
     static Daemon *m_global;
 };
 

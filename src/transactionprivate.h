@@ -48,9 +48,6 @@ protected:
     Transaction *q_ptr;
     QVector<QMetaMethod> connectedSignals;
 
-    bool sentFinished = false;
-    bool allowCancel = false;
-    bool callerActive = false;
     qulonglong downloadSizeRemaining = 0;
     uint elapsedTime = 0;
     QString lastPackage;
@@ -60,6 +57,9 @@ protected:
     uint speed = 0;
     Transaction::Status status = Transaction::StatusUnknown;
     uint uid = 0;
+    bool sentFinished = false;
+    bool allowCancel = false;
+    bool callerActive = false;
 
     // Queue params
     QString eulaId;

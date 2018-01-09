@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2017 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2018 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -20,13 +20,13 @@
  */
 
 #include "transactionprivate.h"
+#include "daemonprivate.h"
 
 #include "daemon.h"
 #include "common.h"
 #include "details.h"
 
 #include <QStringList>
-#include <QDebug>
 
 using namespace PackageKit;
 
@@ -45,7 +45,7 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
     Q_Q(Transaction);
 
     tid = transactionId;
-    p = new OrgFreedesktopPackageKitTransactionInterface(QLatin1String(PK_NAME),
+    p = new OrgFreedesktopPackageKitTransactionInterface(PK_NAME,
                                                          tid.path(),
                                                          QDBusConnection::systemBus(),
                                                          q);
@@ -56,19 +56,19 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
     q->connect(p, SIGNAL(Destroy()), SLOT(destroy()));
 
     // Get current properties
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String(PK_NAME),
+    QDBusMessage message = QDBusMessage::createMethodCall(PK_NAME,
                                                           tid.path(),
-                                                          QLatin1String(DBUS_PROPERTIES),
+                                                          DBUS_PROPERTIES,
                                                           QLatin1String("GetAll"));
-    message << QLatin1String(PK_TRANSACTION_INTERFACE);
+    message << PK_TRANSACTION_INTERFACE;
     QDBusConnection::systemBus().callWithCallback(message,
                                                   q,
                                                   SLOT(updateProperties(QVariantMap)));
 
     // Watch for properties updates
-    QDBusConnection::systemBus().connect(QLatin1String(PK_NAME),
+    QDBusConnection::systemBus().connect(PK_NAME,
                                          tid.path(),
-                                         QLatin1String(DBUS_PROPERTIES),
+                                         DBUS_PROPERTIES,
                                          QLatin1String("PropertiesChanged"),
                                          q,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));

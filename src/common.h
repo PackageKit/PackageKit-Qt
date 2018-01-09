@@ -1,6 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
+ * Copyright (C) 2010-2018 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -18,15 +19,6 @@
  * Boston, MA 02110-1301, USA.
  */
 #include <QtCore/QLoggingCategory>
-
-Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION)
-Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON)
-
-#define PK_NAME					"org.freedesktop.PackageKit"
-#define PK_PATH					"/org/freedesktop/PackageKit"
-#define PK_TRANSACTION_INTERFACE "org.freedesktop.PackageKit.Transaction"
-
-#define DBUS_PROPERTIES  "org.freedesktop.DBus.Properties"
 
 #define AUTH_PACKAGE_INSTALL			"org.freedesktop.packagekit.package-install"
 #define AUTH_PACKAGE_INSTALL_UNTRUSTED		"org.freedesktop.packagekit.package-install-untrusted"

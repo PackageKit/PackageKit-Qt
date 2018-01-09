@@ -1,7 +1,7 @@
 /*
  * This file is part of the QPackageKit project
  * Copyright (C) 2008 Adrien Bustany <madcat@mymadcat.com>
- * Copyright (C) 2010-2016 Daniel Nicoletti <dantti12@gmail.com>
+ * Copyright (C) 2010-2018 Daniel Nicoletti <dantti12@gmail.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,11 +23,11 @@
 #include "transaction.h"
 #include "common.h"
 
+#include <QDBusServiceWatcher>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusArgument>
 #include <QDBusReply>
-#include <QDebug>
 
 using namespace PackageKit;
 
@@ -36,12 +36,13 @@ DaemonPrivate::DaemonPrivate(Daemon* parent)
 {
     Q_Q(Daemon);
 
-    m_watcher = new QDBusServiceWatcher(QLatin1String(PK_NAME),
-                                        QDBusConnection::systemBus(),
-                                        QDBusServiceWatcher::WatchForOwnerChange,
-                                        q_ptr);
-    q->connect(m_watcher, &QDBusServiceWatcher::serviceOwnerChanged,
+    auto watcher = new QDBusServiceWatcher(PK_NAME,
+                                           QDBusConnection::systemBus(),
+                                           QDBusServiceWatcher::WatchForOwnerChange,
+                                           q_ptr);
+    q->connect(watcher, &QDBusServiceWatcher::serviceOwnerChanged,
                    q, [this, q] (const QString &service, const QString &oldOwner, const QString &newOwner) {
+        Q_UNUSED(service)
         if (newOwner.isEmpty() || !oldOwner.isEmpty()) {
             // TODO check if we don't emit this twice when
             // the daemon exits cleanly
@@ -53,7 +54,7 @@ DaemonPrivate::DaemonPrivate(Daemon* parent)
             // We don't have more transactions running
             q->transactionListChanged(QStringList());
 
-            getAllProperties(false);
+            getAllProperties();
 
             if (!running) {
                 running = true;
@@ -65,57 +66,21 @@ DaemonPrivate::DaemonPrivate(Daemon* parent)
         }
     });
 
-    // On PK 0.9 this will always be async
-    getAllProperties(false);
+    getAllProperties();
 }
 
-void DaemonPrivate::serviceOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner)
-{
-    Q_Q(Daemon);
-    Q_UNUSED(service)
-
-    if (newOwner.isEmpty() || !oldOwner.isEmpty()) {
-        // TODO check if we don't emit this twice when
-        // the daemon exits cleanly
-        q->daemonQuit();
-    }
-
-    // There is a new PackageKit running get it's props
-    if (!newOwner.isEmpty()) {
-        // We don't have more transactions running
-        q->transactionListChanged(QStringList());
-
-        getAllProperties(false);
-
-        if (!running) {
-            running = true;
-            q->isRunningChanged();
-        }
-    } else if (running) {
-        running = false;
-        q->isRunningChanged();
-    }
-}
-
-void DaemonPrivate::getAllProperties(bool sync)
+void DaemonPrivate::getAllProperties()
 {
     Q_Q(Daemon);
 
-    QDBusMessage message = QDBusMessage::createMethodCall(QLatin1String(PK_NAME),
-                                                          QLatin1String(PK_PATH),
-                                                          QLatin1String(DBUS_PROPERTIES),
+    QDBusMessage message = QDBusMessage::createMethodCall(PK_NAME,
+                                                          PK_PATH,
+                                                          DBUS_PROPERTIES,
                                                           QLatin1String("GetAll"));
-    message << QLatin1String(PK_NAME);
-    if (sync) {
-        QDBusReply<QVariantMap> reply = QDBusConnection::systemBus().call(message);
-        if (reply.isValid()) {
-            updateProperties(reply.value());
-        }
-    } else {
-        QDBusConnection::systemBus().callWithCallback(message,
-                                                      q,
-                                                      SLOT(updateProperties(QVariantMap)));
-    }
+    message << PK_NAME;
+    QDBusConnection::systemBus().callWithCallback(message,
+                                                  q,
+                                                  SLOT(updateProperties(QVariantMap)));
 }
 
 void DaemonPrivate::propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties)
