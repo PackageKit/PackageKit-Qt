@@ -1,8 +1,14 @@
-# CMakeLists for PackageKit-Qt
-project(packagekit-qt)
+cmake_minimum_required(VERSION 3.1)
+cmake_policy(SET CMP0048 NEW)
 
-cmake_minimum_required(VERSION 2.8.10 FATAL_ERROR)
-find_package(PkgConfig REQUIRED)
+if (POLICY CMP0043)
+  cmake_policy(SET CMP0043 NEW)
+endif()
+if (POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
+endif()
+
+project(packagekit-qt VERSION 1.0.0)
 
 # Used to set installation paths
 set(CMAKE_AUTOMOC ON)
@@ -11,21 +17,20 @@ set(BUILD_SHARED_LIBS ON)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
 include(GNUInstallDirs)
 
-set(QPACKAGEKIT_VERSION_MAJOR  "0")
-set(QPACKAGEKIT_VERSION_MINOR  "10")
-set(QPACKAGEKIT_VERSION_PATCH  "0")
-set(QPACKAGEKIT_VERSION_SUFFIX "${VERSION_SUFFIX}")
-set(QPACKAGEKIT_API_LEVEL "0")
-set(QPACKAGEKIT_VERSION "${QPACKAGEKIT_VERSION_MAJOR}.${QPACKAGEKIT_VERSION_MINOR}.${QPACKAGEKIT_VERSION_PATCH}")
+set(QPACKAGEKIT_API_LEVEL "1")
 
-add_definitions(-DQT_NO_CAST_TO_ASCII
-                -DQT_NO_CAST_FROM_ASCII
-                -DQT_NO_URL_CAST_FROM_STRING
-                -DQT_NO_CAST_FROM_BYTEARRAY
-                -DQT_NO_SIGNALS_SLOTS_KEYWORDS
-                -DQT_USE_FAST_OPERATOR_PLUS
-                -DQT_USE_QSTRINGBUILDER
-               )
+add_definitions(
+    -DQT_NO_KEYWORDS
+    -DQT_NO_CAST_TO_ASCII
+    -DQT_NO_CAST_FROM_ASCII
+    -DQT_STRICT_ITERATORS
+    -DQT_NO_URL_CAST_FROM_STRING
+    -DQT_NO_CAST_FROM_BYTEARRAY
+    -DQT_USE_QSTRINGBUILDER
+    -DQT_NO_SIGNALS_SLOTS_KEYWORDS
+    -DQT_USE_FAST_OPERATOR_PLUS
+    -DQT_DISABLE_DEPRECATED_BEFORE=0x050900
+)
 
 # Forbid in-tree building
 if(${CMAKE_SOURCE_DIR} MATCHES ${CMAKE_BINARY_DIR})
@@ -51,7 +56,6 @@ set (LOCALSTATEDIR "/var")
 set (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/packagekitqt5/")
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
-add_definitions("-std=gnu++11")
 
 configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 

@@ -41,7 +41,7 @@ qt5_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
 qt5_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
 
 add_library(packagekitqt5 ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
-set_target_properties(packagekitqt5 PROPERTIES VERSION ${QPACKAGEKIT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})
+set_target_properties(packagekitqt5 PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})
 
 target_link_libraries(packagekitqt5 PUBLIC Qt5::DBus)
 

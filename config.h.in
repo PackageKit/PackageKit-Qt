@@ -17,9 +17,9 @@
 #define PACKAGE_URL "http://packagekit.org"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "@VERSION@"
+#define PACKAGE_VERSION "@PROJECT_VERSION@"
 
 /* Version number of package */
-#define VERSION "@VERSION@"
+#define VERSION "@PROJECT_VERSION@"
 
 #endif /*CONFIG_H*/
