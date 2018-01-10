@@ -234,7 +234,7 @@ QString Daemon::packageName(const QString &packageID)
 QString Daemon::packageVersion(const QString &packageID)
 {
     QString ret;
-    int start = packageID.indexOf(QLatin1Char(';'));
+    int start = packageID.indexOf(QLatin1Char(';')) + 1;
     if (start == -1) {
         return ret;
     }
@@ -249,11 +249,11 @@ QString Daemon::packageVersion(const QString &packageID)
 QString Daemon::packageArch(const QString &packageID)
 {
     QString ret;
-    int start = packageID.indexOf(QLatin1Char(';'));
+    int start = packageID.indexOf(QLatin1Char(';')) + 1;
     if (start == -1) {
         return ret;
     }
-    start = packageID.indexOf(QLatin1Char(';'), start);
+    start = packageID.indexOf(QLatin1Char(';'), start) + 1;
     if (start == -1) {
         return ret;
     }
@@ -268,15 +268,15 @@ QString Daemon::packageArch(const QString &packageID)
 QString Daemon::packageData(const QString &packageID)
 {
     QString ret;
-    int start = packageID.indexOf(QLatin1Char(';'));
+    int start = packageID.indexOf(QLatin1Char(';')) + 1;
     if (start == -1) {
         return ret;
     }
-    start = packageID.indexOf(QLatin1Char(';'), start);
+    start = packageID.indexOf(QLatin1Char(';'), start) + 1;
     if (start == -1) {
         return ret;
     }
-    start = packageID.indexOf(QLatin1Char(';'), start);
+    start = packageID.indexOf(QLatin1Char(';'), start) + 1;
     if (start == -1) {
         return ret;
     }
