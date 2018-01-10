@@ -226,66 +226,22 @@ uint Daemon::versionMicro()
 
 QString Daemon::packageName(const QString &packageID)
 {
-    QString ret;
-    ret = packageID.left(packageID.indexOf(QLatin1Char(';')));
-    return ret;
+    return Transaction::packageName(packageID);
 }
 
 QString Daemon::packageVersion(const QString &packageID)
 {
-    QString ret;
-    int start = packageID.indexOf(QLatin1Char(';')) + 1;
-    if (start == -1) {
-        return ret;
-    }
-    int end = packageID.indexOf(QLatin1Char(';'), start);
-    if (end == -1) {
-        return ret;
-    }
-    ret = packageID.mid(start, end - start);
-    return ret;
+    return Transaction::packageVersion(packageID);
 }
 
 QString Daemon::packageArch(const QString &packageID)
 {
-    QString ret;
-    int start = packageID.indexOf(QLatin1Char(';')) + 1;
-    if (start == -1) {
-        return ret;
-    }
-    start = packageID.indexOf(QLatin1Char(';'), start) + 1;
-    if (start == -1) {
-        return ret;
-    }
-    int end = packageID.indexOf(QLatin1Char(';'), start);
-    if (end == -1) {
-        return ret;
-    }
-    ret = packageID.mid(start, end - start);
-    return ret;
+    return Transaction::packageArch(packageID);
 }
 
 QString Daemon::packageData(const QString &packageID)
 {
-    QString ret;
-    int start = packageID.indexOf(QLatin1Char(';')) + 1;
-    if (start == -1) {
-        return ret;
-    }
-    start = packageID.indexOf(QLatin1Char(';'), start) + 1;
-    if (start == -1) {
-        return ret;
-    }
-    start = packageID.indexOf(QLatin1Char(';'), start) + 1;
-    if (start == -1) {
-        return ret;
-    }
-    int end = packageID.indexOf(QLatin1Char(';'), start);
-    if (end == -1) {
-        return ret;
-    }
-    ret = packageID.mid(start, end - start);
-    return ret;
+    return Transaction::packageData(packageID);
 }
 
 Transaction *Daemon::acceptEula(const QString &eulaId)

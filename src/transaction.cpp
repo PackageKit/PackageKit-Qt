@@ -194,11 +194,12 @@ QString Transaction::packageVersion(const QString &packageID)
     if (start == -1) {
         return ret;
     }
-    int end = packageID.indexOf(QLatin1Char(';'), start);
-    if (end == -1) {
-        return ret;
+    int end = packageID.indexOf(QLatin1Char(';'), ++start);
+    if (Q_UNLIKELY(end == -1)) {
+        ret = packageID.mid(start);
+    } else {
+        ret = packageID.mid(start, end - start);
     }
-    ret = packageID.mid(start, end - start);
     return ret;
 }
 
@@ -209,15 +210,16 @@ QString Transaction::packageArch(const QString &packageID)
     if (start == -1) {
         return ret;
     }
-    start = packageID.indexOf(QLatin1Char(';'), start);
+    start = packageID.indexOf(QLatin1Char(';'), ++start);
     if (start == -1) {
         return ret;
     }
-    int end = packageID.indexOf(QLatin1Char(';'), start);
-    if (end == -1) {
-        return ret;
+    int end = packageID.indexOf(QLatin1Char(';'), ++start);
+    if (Q_UNLIKELY(end == -1)) {
+        ret = packageID.mid(start);
+    } else {
+        ret = packageID.mid(start, end - start);
     }
-    ret = packageID.mid(start, end - start);
     return ret;
 }
 
@@ -228,19 +230,16 @@ QString Transaction::packageData(const QString &packageID)
     if (start == -1) {
         return ret;
     }
-    start = packageID.indexOf(QLatin1Char(';'), start);
+    start = packageID.indexOf(QLatin1Char(';'), ++start);
     if (start == -1) {
         return ret;
     }
-    start = packageID.indexOf(QLatin1Char(';'), start);
+    start = packageID.indexOf(QLatin1Char(';'), ++start);
     if (start == -1) {
         return ret;
     }
-    int end = packageID.indexOf(QLatin1Char(';'), start);
-    if (end == -1) {
-        return ret;
-    }
-    ret = packageID.mid(start, end - start);
+
+    ret = packageID.mid(++start);
     return ret;
 }
 
