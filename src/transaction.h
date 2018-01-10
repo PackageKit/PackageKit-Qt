@@ -350,10 +350,13 @@ public:
      * \sa Daemon::upgradeSystem()
      */
     enum TransactionFlag {
-        TransactionFlagNone         = 1 << 0, // Since: 0.8.1
-        TransactionFlagOnlyTrusted  = 1 << 1, // Since: 0.8.1
-        TransactionFlagSimulate     = 1 << 2, // Since: 0.8.1
-        TransactionFlagOnlyDownload = 1 << 3  // Since: 0.8.1
+        TransactionFlagNone           = 1 << 0, // Since: 0.8.1
+        TransactionFlagOnlyTrusted    = 1 << 1, // Since: 0.8.1
+        TransactionFlagSimulate       = 1 << 2, // Since: 0.8.1
+        TransactionFlagOnlyDownload   = 1 << 3,  // Since: 1.0.2
+        TransactionFlagAllowReinstall = 1 << 4,  // Since: 1.0.2
+        TransactionFlagJustReinstall  = 1 << 5,  // Since: 1.0.2
+        TransactionFlagAllowDowngrade = 1 << 6  // Since: 0.8.1
     };
     Q_DECLARE_FLAGS(TransactionFlags, TransactionFlag)
     Q_ENUM(TransactionFlag)
@@ -454,7 +457,8 @@ public:
         InfoPreparing,
         InfoDecompressing,
         InfoUntrusted,
-        InfoTrusted
+        InfoTrusted,
+        InfoUnavailable
     };
     Q_ENUM(Info)
 
