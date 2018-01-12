@@ -24,10 +24,12 @@
 #include <QDBusPendingReply>
 #include <QVariantMap>
 
+#include <packagekitqt_global.h>
+
 namespace PackageKit {
 
 class OfflinePrivate;
-class Offline : public QObject
+class PACKAGEKITQT_LIBRARY Offline : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Offline)
