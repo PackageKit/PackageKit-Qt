@@ -33,6 +33,8 @@
 
 namespace PackageKit {
 
+class Offline;
+
 /**
  * \class Daemon daemon.h Daemon
  * \author Adrien Bustany \e <madcat@mymadcat.com>
@@ -91,17 +93,6 @@ public:
         AuthorizeInteractive
     };
     Q_ENUM(Authorize)
-
-    /**
-     * Actions to trigger
-     *
-     * \sa offlineTrigger()
-     */
-    enum OfflineAction {
-        OfflineActionPowerOff, /** < powers off the computer after applying offline updates */
-        OfflineActionReboot    /** < reboots the computer after applying offline updates */
-    };
-    Q_ENUM(OfflineAction)
 
     /**
      * \brief Returns an instance of the Daemon
@@ -267,6 +258,12 @@ public:
      * Asks PackageKit to quit, for example to let a native package manager operate
      */
     static QDBusPendingReply<> suggestDaemonQuit();
+
+    /**
+     * Returns a class representing PackageKit offline interface, as with the Daemon
+     * class this will only have valid properties if isRunning() is true
+     */
+    Offline *offline() const;
 
     /**
      * Returns the package name from the \p packageID
@@ -808,13 +805,6 @@ public:
      * \warning check \sa errorCode() signal to know if it the call has any error
      */
     static Transaction *whatProvides(const QString &search, Transaction::Filters filters = Transaction::FilterNone);
-
-    /**
-     * Triggers the offline update for the next boot
-     *
-     * @p action is the action to take when finished applying updates
-     */
-    static QDBusPendingReply<> offlineTrigger(OfflineAction action);
 
 Q_SIGNALS:
     void isRunningChanged();

@@ -26,6 +26,7 @@
 #include <QLoggingCategory>
 
 #include "daemon.h"
+#include "offline.h"
 
 Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION)
 Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON)
@@ -35,6 +36,7 @@ class OrgFreedesktopPackageKitInterface;
 namespace PackageKit {
 
 static QString PK_NAME = QStringLiteral("org.freedesktop.PackageKit");
+static QString PK_OFFLINE_INTERFACE = QStringLiteral("org.freedesktop.PackageKit.Offline");
 static QString PK_PATH = QStringLiteral("/org/freedesktop/PackageKit");
 static QString PK_TRANSACTION_INTERFACE = QStringLiteral("org.freedesktop.PackageKit.Transaction");
 
@@ -64,6 +66,7 @@ protected:
     QStringList mimeTypes;
     Daemon::Network networkState = Daemon::NetworkUnknown;
     Transaction::Roles roles = Transaction::RoleUnknown;
+    Offline *offline;
     uint versionMajor = 0;
     uint versionMicro = 0;
     uint versionMinor = 0;

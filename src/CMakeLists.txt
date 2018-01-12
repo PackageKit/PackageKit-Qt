@@ -12,6 +12,8 @@ set(packagekitqt_HEADERS
     details.h
     bitfield.h
     packagekitqt_global.h
+    offline.h
+    Offline
 )
 
 set(packagekitqt_SRC
@@ -21,6 +23,7 @@ set(packagekitqt_SRC
     transaction.cpp
     transactionprivate.cpp
     details.cpp
+    offline.cpp
 )
 
 find_path(PK_INTERFACES_DIR org.freedesktop.PackageKit.xml

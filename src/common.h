@@ -18,7 +18,6 @@
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#include <QtCore/QLoggingCategory>
 
 #define AUTH_PACKAGE_INSTALL			"org.freedesktop.packagekit.package-install"
 #define AUTH_PACKAGE_INSTALL_UNTRUSTED		"org.freedesktop.packagekit.package-install-untrusted"

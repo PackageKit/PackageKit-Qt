@@ -27,6 +27,7 @@
 #include "common.h"
 
 Q_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON, "packagekitqt.daemon")
+Q_LOGGING_CATEGORY(PACKAGEKITQT_OFFLINE, "packagekitqt.offline")
 
 using namespace PackageKit;
 
@@ -207,6 +208,11 @@ QDBusPendingReply<> Daemon::stateHasChanged(const QString& reason)
 QDBusPendingReply<> Daemon::suggestDaemonQuit()
 {
     return global()->d_ptr->daemon->SuggestDaemonQuit();
+}
+
+Offline *Daemon::offline() const
+{
+    return global()->d_ptr->offline;
 }
 
 uint Daemon::versionMajor()
@@ -704,26 +710,6 @@ int Daemon::enumFromString(const QMetaObject& metaObject, const QString &str, co
 //         }
     }
     return enumValue;
-}
-
-QDBusPendingReply<> PackageKit::Daemon::offlineTrigger(PackageKit::Daemon::OfflineAction action)
-{
-    QString actionStr;
-    switch(action) {
-        case OfflineActionPowerOff:
-            actionStr = QStringLiteral("power-off");
-            break;
-        case OfflineActionReboot:
-            actionStr = QStringLiteral("reboot");
-            break;
-    };
-    Q_ASSERT(!actionStr.isEmpty());
-
-    OrgFreedesktopPackageKitOfflineInterface iface(PK_NAME,
-                                                   PK_PATH,
-                                                   QDBusConnection::systemBus(),
-                                                   nullptr);
-    return iface.Trigger(actionStr);
 }
 
 #include "moc_daemon.cpp"

@@ -23,6 +23,8 @@
 #include "transaction.h"
 #include "common.h"
 
+#include "offline_p.h"
+
 #include <QDBusServiceWatcher>
 #include <QDBusConnection>
 #include <QDBusMessage>
@@ -33,6 +35,7 @@ using namespace PackageKit;
 
 DaemonPrivate::DaemonPrivate(Daemon* parent)
     : q_ptr(parent)
+    , offline(new Offline(parent))
 {
     Q_Q(Daemon);
 
@@ -81,14 +84,28 @@ void DaemonPrivate::getAllProperties()
     QDBusConnection::systemBus().callWithCallback(message,
                                                   q,
                                                   SLOT(updateProperties(QVariantMap)));
+
+    message = QDBusMessage::createMethodCall(PK_NAME,
+                                             PK_PATH,
+                                             DBUS_PROPERTIES,
+                                             QLatin1String("GetAll"));
+    message << PK_OFFLINE_INTERFACE;
+    QDBusConnection::systemBus().callWithCallback(message,
+                                                  offline,
+                                                  SLOT(updateProperties(QVariantMap)));
 }
 
 void DaemonPrivate::propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties)
 {
-    Q_UNUSED(interface)
     Q_UNUSED(invalidatedProperties)
 
-    updateProperties(properties);
+    if (interface == PK_NAME) {
+        updateProperties(properties);
+    } else if (interface == PK_OFFLINE_INTERFACE) {
+        offline->d_ptr->updateProperties(properties);
+    } else {
+        qCWarning(PACKAGEKITQT_DAEMON) << "Unknown PackageKit interface:" << interface;
+    }
 }
 
 void DaemonPrivate::updateProperties(const QVariantMap &properties)
