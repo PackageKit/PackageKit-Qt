@@ -184,7 +184,7 @@ public:
      * Allows a client to find out if it would be allowed to authorize an action.
      * The action ID, e.g. org.freedesktop.packagekit.system-network-proxy-configure
      * specified in \p actionId
-     * Returm might be either yes, no or interactive \sa Authorize.
+     * Return might be either yes, no or interactive \sa Authorize.
      */
     static QDBusPendingReply<Authorize> canAuthorize(const QString &actionId);
 
