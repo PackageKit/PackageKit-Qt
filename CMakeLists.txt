@@ -56,6 +56,7 @@ set (LOCALSTATEDIR "/var")
 set (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/packagekitqt5/")
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
+set (CMAKE_CXX_STANDARD 11)
 
 configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 

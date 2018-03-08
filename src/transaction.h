@@ -508,9 +508,9 @@ public:
     bool allowCancel() const;
 
     /**
-     * Indicates weither the transaction caller is active or not
+     * Indicates whether the transaction caller is active or not
      *
-     * The caller can be inactive if it has quitted before the transaction finished.
+     * The caller can be inactive if it has quit before the transaction finished.
      *
      * \return true if the caller is active, false else
      */
@@ -583,7 +583,7 @@ public:
     QDateTime timespec() const;
 
     /**
-     * Returns weither the transaction succeded or not
+     * Returns whether the transaction succeded or not
      * \return true if the transaction succeeded, false else
      * \note This function only returns a real value for old transactions returned by getOldTransactions
      */
@@ -597,7 +597,7 @@ public:
     uint duration() const;
 
     /**
-     * Returns some data set by the backend to pass additionnal information
+     * Returns some data set by the backend to pass additional information
      * \return a string set by the backend
      * \note This function only returns a real value for old transactions returned by getOldTransactions
      */
