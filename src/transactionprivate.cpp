@@ -188,6 +188,11 @@ void TransactionPrivate::runQueuedTransaction()
         break;
     }
 
+    if (reply.isFinished() && reply.isError()) {
+        q->errorCode(Transaction::ErrorInternalError, reply.error().message());
+        finished(Transaction::ExitFailed, 0);
+        return;
+    }
     auto watcher = new QDBusPendingCallWatcher(reply, q);
     q->connect(watcher, &QDBusPendingCallWatcher::finished,
                q, [this, q] (QDBusPendingCallWatcher *call) {
