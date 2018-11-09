@@ -384,8 +384,11 @@ public:
      * Gets more details about the given \p files
      *
      * \sa Transaction::details
-     * \note This method emits \sa package()
-     * with details set
+     * \note this method emits:
+     * \li details()
+     * \li status()
+     * \li progress()
+     * \li error()
      *
      * \warning check \sa errorCode() signal to know if it the call has any error
      */
@@ -395,8 +398,12 @@ public:
      * Gets more details about the given \p file
      *
      * \sa Transaction::details
-     * \note This method emits \sa package()
-     * with details set
+     *
+     * \note this method emits:
+     * \li details()
+     * \li status()
+     * \li progress()
+     * \li error()
      *
      * \warning check \sa errorCode() signal to know if it the call has any error
      */
