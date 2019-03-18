@@ -27,6 +27,7 @@
 
 #include "daemon.h"
 #include "offline.h"
+#include "networkmanagermonitor.h"
 
 Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION)
 Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON)
@@ -72,10 +73,12 @@ protected:
     uint versionMinor = 0;
     bool locked = false;
     bool running = false;
+    NetworkManagerMonitor networkManagerMonitor;
 
 protected Q_SLOTS:
     void propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties);
     void updateProperties(const QVariantMap &properties);
+    void getAllPropertiesIfPackageKitNotRunning();
 };
 
 } // End namespace PackageKit

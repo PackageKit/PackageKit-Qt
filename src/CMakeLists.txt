@@ -24,6 +24,7 @@ set(packagekitqt_SRC
     transactionprivate.cpp
     details.cpp
     offline.cpp
+    networkmanagermonitor.cpp
 )
 
 find_path(PK_INTERFACES_DIR org.freedesktop.PackageKit.xml
