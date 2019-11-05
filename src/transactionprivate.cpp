@@ -193,7 +193,10 @@ void TransactionPrivate::runQueuedTransaction()
                q, [this, q] (QDBusPendingCallWatcher *call) {
         QDBusPendingReply<> reply = *call;
         if (reply.isError()) {
-            q->errorCode(Transaction::ErrorInternalError, reply.error().message());
+            QDBusError error = reply.error();
+            Transaction::Error transactionError = error.type() == QDBusError::AccessDenied ? Transaction::ErrorNotAuthorized
+                                                                                           : Transaction::ErrorInternalError;
+            q->errorCode(transactionError, error.message());
             finished(Transaction::ExitFailed, 0);
             destroy();
         }
