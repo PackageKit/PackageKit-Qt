@@ -46,7 +46,10 @@ Transaction::Transaction()
     {
         QDBusPendingReply<QDBusObjectPath> reply = *call;
         if (reply.isError()) {
-            errorCode(Transaction::ErrorInternalError, reply.error().message());
+            QDBusError error = reply.error();
+            Transaction::Error transactionError = error.type() == QDBusError::AccessDenied ? Transaction::ErrorNotAuthorized
+                                                                                           : Transaction::ErrorInternalError;
+            errorCode(transactionError, error.message());
             d->finished(Transaction::ExitFailed, 0);
             d->destroy();
         } else {
