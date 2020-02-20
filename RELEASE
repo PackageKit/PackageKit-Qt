@@ -2,10 +2,10 @@ PackageKit-Qt Release Notes
 
 1. Write NEWS entries for PackageKit-Qt in the same format as usual.
 
-git shortlog v1.0.1.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog v1.0.2.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
 --------------------------------------------------------------------------------
-Version 1.0.2
+Version 1.0.3
 ~~~~~~~~~~~~~
 Released: 2020-xx-xx
 
@@ -20,13 +20,13 @@ Bugfixes:
 
 3. Commit changes in PackageKit-Qt git:
 
-git commit -a -m "Release version 1.0.2"
-git tag -s -f -m "Release 1.0.2" v1.0.2
+git commit -a -m "Release version 1.0.3"
+git tag -s -f -m "Release 1.0.3" v1.0.3
 <gpg password>
 git push --tags
 git push
 
-4. run './release.sh --version=1.0.2 --git-tag=v1.0.2 --sign'
+4. run './release.sh --version=1.0.3 --git-tag=v1.0.3 --sign'
 
 5. Upload tarball to:
 
@@ -42,7 +42,7 @@ git push
 8. Send an email to packagekit@lists.freedesktop.org
 
 =================================================
-PackageKit-Qt 1.0.2 released!
+PackageKit-Qt 1.0.3 released!
 
 Tarballs available here: http://www.packagekit.org/releases/
 
