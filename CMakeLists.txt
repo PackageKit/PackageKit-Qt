@@ -8,7 +8,7 @@ if (POLICY CMP0063)
   cmake_policy(SET CMP0063 NEW)
 endif()
 
-project(packagekit-qt VERSION 1.0.1)
+project(packagekit-qt VERSION 1.0.2)
 
 # Used to set installation paths
 set(CMAKE_AUTOMOC ON)

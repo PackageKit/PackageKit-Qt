@@ -1,3 +1,14 @@
+Version 1.0.2
+~~~~~~~~~~~~~
+Released: 2020-02-20
+
+Bugfixes:
+ * Fix documentation (Aleix Pol)
+ * Fix pkg-config include path (Matthias Klumpp)
+ * Fix some documentation typos (Pekka Vuorela)
+ * Make sure the build is done as c++11 (Pekka Vuorela)
+ * Map DBusError::AccessDenied to Transaction::ErrorNotAuthorized (Raine Makelainen)
+
 Version 1.0.1
 ~~~~~~~~~~~~~
 Released: 2018-01-16
