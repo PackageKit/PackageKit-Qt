@@ -40,8 +40,10 @@ fi
 rm -rf ./release-tar-tmp
 
 # check if we can build PackageKit-Qt
+rm -rf ./t-build-release
 mkdir -p ./t-build-release
-make -C ./build clean all
+cmake -B ./t-build-release -DMAINTAINER=ON
+make -C ./t-build-release clean all
 rm -rf ./t-build-release
 
 mkdir -p ./release-tar-tmp

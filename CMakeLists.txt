@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.2)
 cmake_policy(SET CMP0048 NEW)
 
 if (POLICY CMP0043)
@@ -63,8 +63,8 @@ configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 #
 # Custom C flags
 #
-option (DISABLE_MAINTAINER_CFLAGS "Disable maintainer CFlags" ON)
-if (NOT DISABLE_MAINTAINER_CFLAGS)
+option (MAINTAINER "Enable maintainer CFlags" OFF)
+if (MAINTAINER)
     set (MAINTAINER_CFLAGS "-Werror -Wall -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Winit-self")
     add_definitions(${MAINTAINER_CFLAGS})
 endif ()
