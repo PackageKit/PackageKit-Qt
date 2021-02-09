@@ -286,40 +286,40 @@ void TransactionPrivate::updateProperties(const QVariantMap &properties)
         const QVariant &value = it.value();
         if (property == QLatin1String("AllowCancel")) {
             allowCancel = value.toBool();
-            QMetaObject::invokeMethod(q, "allowCancelChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::allowCancelChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("CallerActive")) {
             callerActive = value.toBool();
-            QMetaObject::invokeMethod(q, "isCallerActiveChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::isCallerActiveChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("DownloadSizeRemaining")) {
             downloadSizeRemaining = value.toLongLong();
-            QMetaObject::invokeMethod(q, "downloadSizeRemainingChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::downloadSizeRemainingChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("ElapsedTime")) {
             elapsedTime = value.toUInt();
-            QMetaObject::invokeMethod(q, "elapsedTimeChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::elapsedTimeChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("LastPackage")) {
             lastPackage = value.toString();
-            QMetaObject::invokeMethod(q, "lastPackageChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::lastPackageChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("Percentage")) {
             percentage = value.toUInt();
-            QMetaObject::invokeMethod(q, "percentageChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::percentageChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("RemainingTime")) {
             remainingTime = value.toUInt();
             q->remainingTimeChanged();
         } else if (property == QLatin1String("Role")) {
             role = static_cast<Transaction::Role>(value.toUInt());
-            QMetaObject::invokeMethod(q, "roleChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::roleChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("Speed")) {
             speed = value.toUInt();
-            QMetaObject::invokeMethod(q, "speedChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::speedChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("Status")) {
             status = static_cast<Transaction::Status>(value.toUInt());
-            QMetaObject::invokeMethod(q, "statusChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::statusChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("TransactionFlags")) {
             transactionFlags = static_cast<Transaction::TransactionFlags>(value.toUInt());
-            QMetaObject::invokeMethod(q, "transactionFlagsChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::transactionFlagsChanged, Qt::QueuedConnection);
         } else if (property == QLatin1String("Uid")) {
             uid = value.toUInt();
-            QMetaObject::invokeMethod(q, "uidChanged", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(q, &Transaction::uidChanged, Qt::QueuedConnection);
         } else {
             qCWarning(PACKAGEKITQT_TRANSACTION) << "Unknown Transaction property:" << property << value;
         }
