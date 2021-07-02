@@ -1,6 +1,6 @@
 # CMakeLists for PackageKit-Qt library
 
-find_package(Qt5 5.10 REQUIRED COMPONENTS Core DBus)
+find_package(Qt${QT_VERSION_MAJOR} 5.10 REQUIRED COMPONENTS Core DBus)
 
 set(packagekitqt_HEADERS
     Daemon
@@ -40,25 +40,30 @@ endif ()
 set_source_files_properties(${PK_INTERFACE_XML} PROPERTIES NO_NAMESPACE true)
 set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES NO_NAMESPACE true)
 
+if(${QT_VERSION_MAJOR} EQUAL 6)
+qt6_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
+qt6_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+else()
 qt5_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
 qt5_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+endif()
 
-add_library(packagekitqt5 ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
-set_target_properties(packagekitqt5 PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})
+add_library(packagekitqt${QT_VERSION_MAJOR} ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
+set_target_properties(packagekitqt${QT_VERSION_MAJOR} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})
 
-target_link_libraries(packagekitqt5 PUBLIC Qt5::DBus)
+target_link_libraries(packagekitqt${QT_VERSION_MAJOR} PUBLIC Qt${QT_VERSION_MAJOR}::DBus)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekitqt5.pc.in
-  ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt5.pc
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekitqt${QT_VERSION_MAJOR}.pc.in
+  ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt${QT_VERSION_MAJOR}.pc
   @ONLY
 )
-target_include_directories(packagekitqt5 INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/packagekitqt5/PackageKit/;${CMAKE_INSTALL_INCLUDEDIR}/packagekitqt5>")
-install(TARGETS packagekitqt5 EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt5.pc
+target_include_directories(packagekitqt${QT_VERSION_MAJOR} INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/packagekitqt${QT_VERSION_MAJOR}/PackageKit/;${CMAKE_INSTALL_INCLUDEDIR}/packagekitqt${QT_VERSION_MAJOR}>")
+install(TARGETS packagekitqt${QT_VERSION_MAJOR} EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt${QT_VERSION_MAJOR}.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 install(FILES ${packagekitqt_HEADERS}
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/packagekitqt5/PackageKit/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/packagekitqt${QT_VERSION_MAJOR}/PackageKit/
 )
 
 add_subdirectory(modules)
