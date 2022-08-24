@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+
+Name: @LIBNAME@
+Description: PackageKit is a package management abstraction layer.
+Version: @PROJECT_VERSION@
+Requires: Qt6Core, Qt6DBus
+Libs: -L${libdir} -lpackagekitqt6
+Cflags: -I${includedir}/packagekitqt6
