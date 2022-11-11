@@ -119,6 +119,10 @@ void TransactionPrivate::setupSignal(const QMetaMethod &signal)
     } else if (signal == QMetaMethod::fromSignal(&Transaction::package)) {
         signalToConnect = SIGNAL(Package(uint,QString,QString));
         memberToConnect = SLOT(Package(uint,QString,QString));
+
+        if (!p->connection().connect(p->service(), p->path(), p->interface(), QStringLiteral("Packages"), q, SLOT(Packages(QList<PackageKit::PkPackage>)))) {
+            qWarning() << "Failed to connect Packages";
+        }
     } else if (signal == QMetaMethod::fromSignal(&Transaction::repoDetail)) {
         signalToConnect = SIGNAL(RepoDetail(QString,QString,bool));
         memberToConnect = SIGNAL(repoDetail(QString,QString,bool));
@@ -143,10 +147,15 @@ void TransactionPrivate::setupSignal(const QMetaMethod &signal)
     } else if (signal == QMetaMethod::fromSignal(&Transaction::updateDetail)) {
         signalToConnect = SIGNAL(UpdateDetail(QString,QStringList,QStringList,QStringList,QStringList,QStringList,uint,QString,QString,uint,QString,QString));
         memberToConnect = SLOT(UpdateDetail(QString,QStringList,QStringList,QStringList,QStringList,QStringList,uint,QString,QString,uint,QString,QString));
+
+        if (!p->connection().connect(p->service(), p->path(), p->interface(), QStringLiteral("UpdateDetails"), q, SLOT(UpdateDetails(QList<PackageKit::PkDetail>)))) {
+            qWarning() << "Failed to connect UpdateDetails";
+        }
     }
 
     if (signalToConnect && memberToConnect) {
-        QObject::connect(p, signalToConnect, q, memberToConnect);
+        bool b = QObject::connect(p, signalToConnect, q, memberToConnect);
+        Q_ASSERT(b);
     }
 }
 

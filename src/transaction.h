@@ -34,6 +34,8 @@
 namespace PackageKit {
 
 class Details;
+struct PkPackage;
+struct PkDetail;
 
 /**
 * \class Transaction transaction.h Transaction
@@ -855,11 +857,13 @@ private:
     Q_PRIVATE_SLOT(d_func(), void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText))
     Q_PRIVATE_SLOT(d_func(), void finished(uint exitCode, uint runtime))
     Q_PRIVATE_SLOT(d_func(), void Package(uint info, const QString &pid, const QString &summary))
+    Q_PRIVATE_SLOT(d_func(), void Packages(QList<PackageKit::PkPackage>))
     Q_PRIVATE_SLOT(d_func(), void ItemProgress(const QString &itemID, uint status, uint percentage))
     Q_PRIVATE_SLOT(d_func(), void RepoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type))
     Q_PRIVATE_SLOT(d_func(), void requireRestart(uint type, const QString &pid))
     Q_PRIVATE_SLOT(d_func(), void transaction(const QDBusObjectPath &oldTid, const QString &timespec, bool succeeded, uint role, uint duration, const QString &data, uint uid, const QString &cmdline))
     Q_PRIVATE_SLOT(d_func(), void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated))
+    Q_PRIVATE_SLOT(d_func(), void UpdateDetails(const QList<PackageKit::PkDetail> &dets))
     Q_PRIVATE_SLOT(d_func(), void destroy())
     Q_PRIVATE_SLOT(d_func(), void daemonQuit())
     Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
