@@ -29,6 +29,69 @@
 Q_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON, "packagekitqt.daemon")
 Q_LOGGING_CATEGORY(PACKAGEKITQT_OFFLINE, "packagekitqt.offline")
 
+Q_DECLARE_METATYPE(PackageKit::PkPackage);
+Q_DECLARE_METATYPE(QList<PackageKit::PkPackage>);
+Q_DECLARE_METATYPE(PackageKit::PkDetail);
+Q_DECLARE_METATYPE(QList<PackageKit::PkDetail>);
+
+const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkPackage &pkg)
+{
+    argument.beginStructure();
+    argument << pkg.info;
+    argument << pkg.pid;
+    argument << pkg.summary;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkPackage &pkg)
+{
+    argument.beginStructure();
+    argument >> pkg.info;
+    argument >> pkg.pid;
+    argument >> pkg.summary;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkDetail &detail)
+{
+    argument.beginStructure();
+    argument >> detail.package_id;
+    argument >> detail.updates;
+    argument >> detail.obsoletes;
+    argument >> detail.vendor_urls;
+    argument >> detail.bugzilla_urls;
+    argument >> detail.cve_urls;
+    argument >> detail.restart;
+    argument >> detail.update_text;
+    argument >> detail.changelog;
+    argument >> detail.state;
+    argument >> detail.issued;
+    argument >> detail.updated;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkDetail &detail)
+{
+    argument.beginStructure();
+    argument << detail.package_id;
+    argument << detail.updates;
+    argument << detail.obsoletes;
+    argument << detail.vendor_urls;
+    argument << detail.bugzilla_urls;
+    argument << detail.cve_urls;
+    argument << detail.restart;
+    argument << detail.update_text;
+    argument << detail.changelog;
+    argument << detail.state;
+    argument << detail.issued;
+    argument << detail.updated;
+    argument.endStructure();
+    return argument;
+}
+
 using namespace PackageKit;
 
 Daemon* Daemon::m_global = nullptr;
@@ -58,6 +121,11 @@ Daemon::Daemon(QObject *parent) :
                                          QLatin1String("PropertiesChanged"),
                                          this,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+
+    qDBusRegisterMetaType<PackageKit::PkPackage>();
+    qDBusRegisterMetaType<QList<PackageKit::PkPackage>>();
+    qDBusRegisterMetaType<PackageKit::PkDetail>();
+    qDBusRegisterMetaType<QList<PackageKit::PkDetail>>();
 }
 
 void DaemonPrivate::setupSignal(const QMetaMethod &signal)

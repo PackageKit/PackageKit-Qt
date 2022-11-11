@@ -32,6 +32,27 @@
 
 namespace PackageKit {
 
+struct PkPackage {
+    uint info;
+    QString pid;
+    QString summary;
+};
+
+struct PkDetail {
+    QString package_id;
+    QStringList updates;
+    QStringList obsoletes;
+    QStringList vendor_urls;
+    QStringList bugzilla_urls;
+    QStringList cve_urls;
+    uint restart;
+    QString update_text;
+    QString changelog;
+    uint state;
+    QString issued;
+    QString updated;
+};
+
 class TransactionPrivate
 {
     Q_DECLARE_PUBLIC(Transaction)
@@ -103,6 +124,7 @@ protected Q_SLOTS:
     void mediaChangeRequired(uint mediaType, const QString &mediaId, const QString &mediaText);
     void finished(uint exitCode, uint runtime);
     void Package(uint info, const QString &pid, const QString &summary);
+    void Packages(const QList<PackageKit::PkPackage> &packages);
     void ItemProgress(const QString &itemID, uint status, uint percentage);
     void RepoSignatureRequired(const QString &pid,
                                const QString &repoName,
@@ -115,6 +137,7 @@ protected Q_SLOTS:
     void requireRestart(uint type, const QString &pid);
     void transaction(const QDBusObjectPath &oldTid, const QString &timespec, bool succeeded, uint role, uint duration, const QString &data, uint uid, const QString &cmdline);
     void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated);
+    void UpdateDetails(const QList<PackageKit::PkDetail> &details);
     void destroy();
     void daemonQuit();
     void propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties);

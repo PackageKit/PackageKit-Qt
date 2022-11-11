@@ -49,9 +49,9 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                                                          tid.path(),
                                                          QDBusConnection::systemBus(),
                                                          q);
-    if (!Daemon::global()->hints().isEmpty()) {
-        q->setHints(Daemon::global()->hints());
-    }
+    QStringList hints = Daemon::global()->hints();
+    hints << QStringLiteral("supports-plural-signals=true");
+    q->setHints(hints);
 
     q->connect(p, SIGNAL(Destroy()), SLOT(destroy()));
 
@@ -341,6 +341,14 @@ void TransactionPrivate::Package(uint info, const QString &pid, const QString &s
                summary);
 }
 
+void TransactionPrivate::Packages(const QList<PackageKit::PkPackage> &pkgs)
+{
+    Q_Q(Transaction);
+    for (PkPackage const &pkg : pkgs) {
+        q->package(static_cast<Transaction::Info>(pkg.info), pkg.pid, pkg.summary);
+    }
+}
+
 void TransactionPrivate::ItemProgress(const QString &itemID, uint status, uint percentage)
 {
     Q_Q(Transaction);
@@ -428,4 +436,23 @@ void TransactionPrivate::UpdateDetail(const QString &package_id,
                     static_cast<PackageKit::Transaction::UpdateState>(state),
                     QDateTime::fromString(issued, Qt::ISODate),
                     QDateTime::fromString(updated, Qt::ISODate));
+}
+
+void TransactionPrivate::UpdateDetails(const QList<PkDetail> &details)
+{
+    Q_Q(Transaction);
+    for (const PkDetail &detail : details) {
+        q->updateDetail(detail.package_id,
+                        detail.updates,
+                        detail.obsoletes,
+                        detail.vendor_urls,
+                        detail.bugzilla_urls,
+                        detail.cve_urls,
+                        static_cast<PackageKit::Transaction::Restart>(detail.restart),
+                        detail.update_text,
+                        detail.changelog,
+                        static_cast<PackageKit::Transaction::UpdateState>(detail.state),
+                        QDateTime::fromString(detail.issued, Qt::ISODate),
+                        QDateTime::fromString(detail.updated, Qt::ISODate));
+    }
 }
