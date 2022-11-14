@@ -1,0 +1,8 @@
+FROM fedora:31
+
+RUN dnf -y update
+RUN dnf -y install dnf-plugins-core libdnf-devel redhat-rpm-config cmake gcc-c++ ninja-build
+RUN dnf -y builddep PackageKit-Qt
+
+RUN mkdir /build
+WORKDIR /build
