@@ -33,7 +33,8 @@ public:
     {
     }
 
-    void updateProperties(const QVariantMap &properties);
+    void initializeProperties(const QVariantMap &properties);
+    void updateProperties(const QString &interface, const QVariantMap &properties, const QStringList &invalidate);
 
     Offline *q_ptr;
     OrgFreedesktopPackageKitOfflineInterface iface;

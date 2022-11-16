@@ -132,7 +132,8 @@ protected:
     explicit Offline(QObject *parent = nullptr);
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void updateProperties(QVariantMap))
+    Q_PRIVATE_SLOT(d_func(), void initializeProperties(QVariantMap))
+    Q_PRIVATE_SLOT(d_func(), void updateProperties(QString, QVariantMap, QStringList))
 
     OfflinePrivate *d_ptr;
 };
