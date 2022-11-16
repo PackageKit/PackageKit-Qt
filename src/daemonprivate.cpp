@@ -92,7 +92,7 @@ void DaemonPrivate::getAllProperties()
     message << PK_OFFLINE_INTERFACE;
     QDBusConnection::systemBus().callWithCallback(message,
                                                   offline,
-                                                  SLOT(updateProperties(QVariantMap)));
+                                                  SLOT(initializeProperties(QVariantMap)));
 }
 
 void DaemonPrivate::propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties)
@@ -102,7 +102,7 @@ void DaemonPrivate::propertiesChanged(const QString &interface, const QVariantMa
     if (interface == PK_NAME) {
         updateProperties(properties);
     } else if (interface == PK_OFFLINE_INTERFACE) {
-        offline->d_ptr->updateProperties(properties);
+        offline->d_ptr->updateProperties(interface, properties, invalidatedProperties);
     } else {
         qCWarning(PACKAGEKITQT_DAEMON) << "Unknown PackageKit interface:" << interface;
     }

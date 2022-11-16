@@ -31,7 +31,7 @@ Offline::Offline(QObject *parent) : QObject(parent)
                                          DBUS_PROPERTIES,
                                          QLatin1String("PropertiesChanged"),
                                          this,
-                                         SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+                                         SLOT(updateProperties(QString,QVariantMap,QStringList)));
 }
 
 Offline::~Offline()
@@ -145,7 +145,7 @@ void Offline::getPrepared()
     });
 }
 
-void OfflinePrivate::updateProperties(const QVariantMap &properties)
+void OfflinePrivate::initializeProperties(const QVariantMap &properties)
 {
     Q_Q(Offline);
 
@@ -182,6 +182,20 @@ void OfflinePrivate::updateProperties(const QVariantMap &properties)
     if (!properties.isEmpty()) {
         q->changed();
     }
+}
+
+void OfflinePrivate::updateProperties(const QString &interface, const QVariantMap &properties, const QStringList &invalidate)
+{
+    if(interface != PK_OFFLINE_INTERFACE) {
+        qCWarning(PACKAGEKITQT_OFFLINE) << "Cannot process" << interface << "as" << PK_OFFLINE_INTERFACE;
+        return;
+    }
+
+    if (!invalidate.isEmpty()) {
+        qCWarning(PACKAGEKITQT_OFFLINE) << "Properties could not be invalidated" << interface << invalidate;
+    }
+
+    initializeProperties(properties);
 }
 
 #include "moc_offline.cpp"
