@@ -1,3 +1,22 @@
+Version 1.1.0
+~~~~~~~~~~~~~
+Released: 2022-12-01
+
+Notes:
+ - Make PackageKit-Qt depend on Qt 5.10 (Aleix Pol)
+
+Features:
+ - Add build system support for Qt6 (Nicolas Fella)
+ - Add support for plural signals (Aleix Pol)
+ - Add initial GitHub Actions CI (Neal Gompa)
+
+Bugfixes:
+ - Prefer invoking methods by pointer rather than by name (Aleix Pol)
+ - Emit error if transaction is already done before watcher setup (#28) (Aleix Pol)
+ - offline: Address issues with dbus connections (Aleix Pol)
+ - Add the missing pkgconfig file for Qt 6 builds (Christophe Giboudeaux)
+ - Replace 404 Link by working one in README (Max Buchholz)
+
 Version 1.0.2
 ~~~~~~~~~~~~~
 Released: 2020-02-20
