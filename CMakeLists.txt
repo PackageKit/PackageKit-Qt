@@ -65,11 +65,32 @@ configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 #
 # Custom C flags
 #
+add_definitions(
+  "-Wformat"
+  "-Wno-unused-parameter"
+  "-Werror=empty-body"
+  "-Werror=pointer-arith"
+  "-Werror=init-self"
+  "-Werror=missing-declarations"
+  "-Werror=return-type"
+  "-Werror=misleading-indentation"
+  "-Werror=format-security"
+)
 option (MAINTAINER "Enable maintainer CFlags" OFF)
 if (MAINTAINER)
-    set (MAINTAINER_CFLAGS "-Werror -Wall -Wcast-align -Wno-uninitialized -Wempty-body -Wformat-security -Winit-self")
+    set(MAINTAINER_CFLAGS
+      "-Werror"
+      "-Wall"
+      "-Wcast-align"
+      "-Wno-uninitialized"
+      "-Wempty-body"
+      "-Winit-self"
+      "-Wnull-dereference"
+      "-Wfloat-equal"
+      "-Winline"
+    )
     add_definitions(${MAINTAINER_CFLAGS})
-endif ()
+endif()
 
 add_subdirectory(src)
 

@@ -30,6 +30,8 @@
 #include "transaction.h"
 #include "transactionproxy.h"
 
+Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_TRANSACTION)
+
 namespace PackageKit {
 
 struct PkPackage {

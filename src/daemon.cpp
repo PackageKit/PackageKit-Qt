@@ -34,7 +34,7 @@ Q_DECLARE_METATYPE(QList<PackageKit::PkPackage>);
 Q_DECLARE_METATYPE(PackageKit::PkDetail);
 Q_DECLARE_METATYPE(QList<PackageKit::PkDetail>);
 
-const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkPackage &pkg)
+static const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkPackage &pkg)
 {
     argument.beginStructure();
     argument << pkg.info;
@@ -44,7 +44,7 @@ const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkPac
     return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkPackage &pkg)
+static const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkPackage &pkg)
 {
     argument.beginStructure();
     argument >> pkg.info;
@@ -54,7 +54,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkPac
     return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkDetail &detail)
+static const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkDetail &detail)
 {
     argument.beginStructure();
     argument >> detail.package_id;
@@ -73,7 +73,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::PkDet
     return argument;
 }
 
-const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkDetail &detail)
+static const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkDetail &detail)
 {
     argument.beginStructure();
     argument << detail.package_id;

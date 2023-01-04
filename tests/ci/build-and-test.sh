@@ -4,7 +4,7 @@ set -e
 if [ -d "build" ]; then
   rm build -rf
 fi
-cmake -S . -B build -GNinja -DMAINTAINER=1 $@
+cmake -S . -B build -GNinja -DMAINTAINER:BOOL=ON $@
 
 # Build, Test & Install
 cmake --build build
