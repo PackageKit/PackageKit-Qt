@@ -325,6 +325,9 @@ void TransactionPrivate::updateProperties(const QVariantMap &properties)
         } else if (property == QLatin1String("Uid")) {
             uid = value.toUInt();
             QMetaObject::invokeMethod(q, &Transaction::uidChanged, Qt::QueuedConnection);
+        } else if (property == QLatin1String("Sender")) {
+            senderName = value.toString();
+            QMetaObject::invokeMethod(q, &Transaction::senderNameChanged, Qt::QueuedConnection);
         } else {
             qCWarning(PACKAGEKITQT_TRANSACTION) << "Unknown Transaction property:" << property << value;
         }
@@ -390,6 +393,7 @@ void TransactionPrivate::transaction(const QDBusObjectPath &oldTid,
                                      uint duration,
                                      const QString &data,
                                      uint uid,
+                                     const QString &senderName,
                                      const QString &cmdline)
 {
     Q_Q(Transaction);
@@ -402,6 +406,7 @@ void TransactionPrivate::transaction(const QDBusObjectPath &oldTid,
     priv->duration = duration;
     priv->data = data;
     priv->uid = uid;
+    priv->senderName = senderName;
     priv->cmdline = cmdline;
 
     auto transaction = new Transaction(priv);

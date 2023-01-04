@@ -78,6 +78,7 @@ protected:
     uint speed = 0;
     Transaction::Status status = Transaction::StatusUnknown;
     uint uid = 0;
+    QString senderName;
     bool sentFinished = false;
     bool allowCancel = false;
     bool callerActive = false;
@@ -135,7 +136,7 @@ protected Q_SLOTS:
                                const QString &keyTimestamp,
                                uint type);
     void requireRestart(uint type, const QString &pid);
-    void transaction(const QDBusObjectPath &oldTid, const QString &timespec, bool succeeded, uint role, uint duration, const QString &data, uint uid, const QString &cmdline);
+    void transaction(const QDBusObjectPath &oldTid, const QString &timespec, bool succeeded, uint role, uint duration, const QString &data, uint uid, const QString &senderName, const QString &cmdline);
     void UpdateDetail(const QString &package_id, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendor_urls, const QStringList &bugzilla_urls, const QStringList &cve_urls, uint restart, const QString &update_text, const QString &changelog, uint state, const QString &issued, const QString &updated);
     void UpdateDetails(const QList<PackageKit::PkDetail> &details);
     void destroy();
