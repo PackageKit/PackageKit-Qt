@@ -353,6 +353,12 @@ uint Transaction::uid() const
     return d->uid;
 }
 
+QString Transaction::senderName() const
+{
+    Q_D(const Transaction);
+    return d->senderName;
+}
+
 QString Transaction::cmdline() const
 {
     Q_D(const Transaction);
