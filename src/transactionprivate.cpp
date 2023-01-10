@@ -21,6 +21,7 @@
 
 #include "transactionprivate.h"
 #include "daemonprivate.h"
+#include "dbusproperties.h"
 
 #include "daemon.h"
 #include "common.h"
@@ -49,6 +50,7 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                                                          tid.path(),
                                                          QDBusConnection::systemBus(),
                                                          q);
+
     QStringList hints = Daemon::global()->hints();
     hints << QStringLiteral("supports-plural-signals=true");
     q->setHints(hints);
@@ -56,22 +58,27 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
     q->connect(p, SIGNAL(Destroy()), SLOT(destroy()));
 
     // Get current properties
-    QDBusMessage message = QDBusMessage::createMethodCall(PK_NAME,
-                                                          tid.path(),
-                                                          DBUS_PROPERTIES,
-                                                          QLatin1String("GetAll"));
-    message << PK_TRANSACTION_INTERFACE;
-    QDBusConnection::systemBus().callWithCallback(message,
-                                                  q,
-                                                  SLOT(updateProperties(QVariantMap)));
+    auto props = new OrgFreedesktopDBusPropertiesInterface(PK_NAME, tid.path(), QDBusConnection::systemBus(), q);
+    Q_ASSERT(props->isValid());
+    QDBusPendingReply<QVariantMap> allPropertiesReply = props->GetAll(PK_TRANSACTION_INTERFACE);
+    QDBusPendingCallWatcher *w = new QDBusPendingCallWatcher(allPropertiesReply);
+    QObject::connect(w, &QDBusPendingCallWatcher::finished, q, [this, allPropertiesReply] (QDBusPendingCallWatcher *w) {
+        w->deleteLater();
+        if (w->isError()) {
+            qCWarning(PACKAGEKITQT_TRANSACTION) << "Failed to get properties from" << PK_NAME << w->error();
+        } else {
+            updateProperties(allPropertiesReply.value());
+        }
+    });
 
-    // Watch for properties updates
-    QDBusConnection::systemBus().connect(PK_NAME,
-                                         tid.path(),
-                                         DBUS_PROPERTIES,
-                                         QLatin1String("PropertiesChanged"),
+    // Uncomment this next line to make it blocking
+    // allPropertiesReply.waitForFinished();
+
+    QObject::connect(props, &OrgFreedesktopDBusPropertiesInterface::PropertiesChanged,
                                          q,
-                                         SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+                                         [this] (const QString &interface, const QVariantMap &changed_properties, const QStringList &invalidated_properties) {
+                                             propertiesChanged(interface, changed_properties, invalidated_properties);
+                                        });
 
     const QVector<QMetaMethod> signals = connectedSignals;
     for (const QMetaMethod &signal : signals) {

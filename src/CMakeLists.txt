@@ -43,9 +43,11 @@ set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES NO_NAMESP
 if(${QT_VERSION_MAJOR} EQUAL 6)
 qt6_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
 qt6_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+qt6_add_dbus_interface(packagekitqt_SRC org.freedesktop.DBus.Properties.xml dbusproperties)
 else()
 qt5_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
 qt5_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
+qt5_add_dbus_interface(packagekitqt_SRC org.freedesktop.DBus.Properties.xml dbusproperties)
 endif()
 
 add_library(packagekitqt${QT_VERSION_MAJOR} ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
