@@ -22,6 +22,7 @@
 #include "daemonprivate.h"
 #include "transaction.h"
 #include "common.h"
+#include "dbusproperties.h"
 
 #include "offline_p.h"
 
@@ -69,30 +70,36 @@ DaemonPrivate::DaemonPrivate(Daemon* parent)
         }
     });
 
+    m_properties = new OrgFreedesktopDBusPropertiesInterface(PK_NAME, PK_PATH, QDBusConnection::systemBus(), q);
+    Q_ASSERT(m_properties->isValid());
+
     getAllProperties();
 }
 
 void DaemonPrivate::getAllProperties()
 {
     Q_Q(Daemon);
+    auto allPropertiesReply = m_properties->GetAll(PK_NAME);
+    QDBusPendingCallWatcher *w = new QDBusPendingCallWatcher(allPropertiesReply);
+    QObject::connect(w, &QDBusPendingCallWatcher::finished, q, [this, allPropertiesReply] (QDBusPendingCallWatcher *w) {
+        w->deleteLater();
+        if (w->isError()) {
+            qCWarning(PACKAGEKITQT_DAEMON) << "Failed to get properties from" << PK_NAME << w->error();
+        } else {
+            updateProperties(allPropertiesReply.value());
+        }
+    });
 
-    QDBusMessage message = QDBusMessage::createMethodCall(PK_NAME,
-                                                          PK_PATH,
-                                                          DBUS_PROPERTIES,
-                                                          QLatin1String("GetAll"));
-    message << PK_NAME;
-    QDBusConnection::systemBus().callWithCallback(message,
-                                                  q,
-                                                  SLOT(updateProperties(QVariantMap)));
-
-    message = QDBusMessage::createMethodCall(PK_NAME,
-                                             PK_PATH,
-                                             DBUS_PROPERTIES,
-                                             QLatin1String("GetAll"));
-    message << PK_OFFLINE_INTERFACE;
-    QDBusConnection::systemBus().callWithCallback(message,
-                                                  offline,
-                                                  SLOT(initializeProperties(QVariantMap)));
+    auto offlinePropertiesReply = m_properties->GetAll(PK_OFFLINE_INTERFACE);
+    QDBusPendingCallWatcher *offlineWatcher = new QDBusPendingCallWatcher(offlinePropertiesReply);
+    QObject::connect(offlineWatcher, &QDBusPendingCallWatcher::finished, q, [this, offlinePropertiesReply] (QDBusPendingCallWatcher *w) {
+        w->deleteLater();
+        if (w->isError()) {
+            qCWarning(PACKAGEKITQT_DAEMON) << "Failed to get properties from" << PK_NAME << w->error();
+        } else {
+            offline->d_ptr->initializeProperties(offlinePropertiesReply.value());
+        }
+    });
 }
 
 void DaemonPrivate::propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties)

@@ -23,6 +23,7 @@
 #include "daemonprivate.h"
 #include "transactionprivate.h"
 #include "daemonproxy.h"
+#include "dbusproperties.h"
 
 #include "common.h"
 
@@ -115,12 +116,9 @@ Daemon::Daemon(QObject *parent) :
                                                         QDBusConnection::systemBus(),
                                                         this);
 
-    QDBusConnection::systemBus().connect(PK_NAME,
-                                         PK_PATH,
-                                         DBUS_PROPERTIES,
-                                         QLatin1String("PropertiesChanged"),
-                                         this,
-                                         SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
+    connect(d_ptr->m_properties, &OrgFreedesktopDBusPropertiesInterface::PropertiesChanged, this, [this](const QString &interface_name, const QVariantMap &changed_properties, const QStringList &invalidated_properties) {
+        d_ptr->propertiesChanged(interface_name, changed_properties, invalidated_properties);
+    });
 
     qDBusRegisterMetaType<PackageKit::PkPackage>();
     qDBusRegisterMetaType<QList<PackageKit::PkPackage>>();

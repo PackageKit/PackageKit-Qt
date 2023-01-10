@@ -31,6 +31,7 @@
 Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_DAEMON)
 Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_OFFLINE)
 
+class OrgFreedesktopDBusPropertiesInterface;
 class OrgFreedesktopPackageKitInterface;
 
 namespace PackageKit {
@@ -72,6 +73,7 @@ protected:
     uint versionMinor = 0;
     bool locked = false;
     bool running = false;
+    OrgFreedesktopDBusPropertiesInterface *m_properties = nullptr;
 
 protected Q_SLOTS:
     void propertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidatedProperties);
