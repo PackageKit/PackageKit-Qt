@@ -63,7 +63,7 @@ protected:
     TransactionPrivate(Transaction *parent);
     virtual ~TransactionPrivate();
 
-    void setup(const QDBusObjectPath &transactionId);
+    void setup(const QDBusObjectPath &transactionId, const bool needRunTransaction);
     void runQueuedTransaction();
 
     QDBusObjectPath tid;

@@ -54,7 +54,7 @@ Transaction::Transaction()
             d->destroy();
         } else {
             // Setup our new Transaction ID
-            d->setup(reply.argumentAt<0>());
+            d->setup(reply.argumentAt<0>(), true);
         }
         call->deleteLater();
     });
@@ -66,7 +66,7 @@ Transaction::Transaction(const QDBusObjectPath &tid)
     Q_D(Transaction);
 
     connect(Daemon::global(), SIGNAL(daemonQuit()), SLOT(daemonQuit()));
-    d->setup(tid);
+    d->setup(tid, false);
 }
 
 void Transaction::connectNotify(const QMetaMethod &signal)

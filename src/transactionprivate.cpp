@@ -40,7 +40,7 @@ TransactionPrivate::~TransactionPrivate()
     delete p;
 }
 
-void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
+void TransactionPrivate::setup(const QDBusObjectPath &transactionId, const bool needRunTransaction)
 {
     Q_Q(Transaction);
 
@@ -78,8 +78,10 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
         setupSignal(signal);
     }
 
-    // Execute pending call
-    runQueuedTransaction();
+    if (needRunTransaction) {
+        // Execute pending call
+        runQueuedTransaction();
+    }
 }
 
 void TransactionPrivate::runQueuedTransaction()
