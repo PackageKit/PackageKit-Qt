@@ -2,3 +2,4 @@ build/
 *~
 *.o
 *.moc
+/compile_commands.json
