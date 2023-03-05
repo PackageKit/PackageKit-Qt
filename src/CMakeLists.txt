@@ -1,7 +1,5 @@
 # CMakeLists for PackageKit-Qt library
 
-find_package(Qt${QT_VERSION_MAJOR} 5.10 REQUIRED COMPONENTS Core DBus)
-
 set(packagekitqt_HEADERS
     Daemon
     Transaction
