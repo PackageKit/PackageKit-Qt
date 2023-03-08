@@ -88,6 +88,8 @@ void TransactionPrivate::runQueuedTransaction()
 
     QDBusPendingReply<> reply;
     switch (role) {
+    case Transaction::RoleUnknown:
+        return;
     case Transaction::RoleAcceptEula:
         reply = p->AcceptEula(eulaId);
         break;
