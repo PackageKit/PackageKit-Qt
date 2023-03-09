@@ -185,7 +185,7 @@ void TransactionPrivate::runQueuedTransaction()
         reply = p->UpgradeSystem(transactionFlags, upgradeDistroId, upgradeKind);
         break;
     default:
-        break;
+        return;
     }
 
     if (reply.isFinished() && reply.isError()) {
