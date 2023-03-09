@@ -88,8 +88,6 @@ void TransactionPrivate::runQueuedTransaction()
 
     QDBusPendingReply<> reply;
     switch (role) {
-    case Transaction::RoleUnknown:
-        return;
     case Transaction::RoleAcceptEula:
         reply = p->AcceptEula(eulaId);
         break;
@@ -187,7 +185,7 @@ void TransactionPrivate::runQueuedTransaction()
         reply = p->UpgradeSystem(transactionFlags, upgradeDistroId, upgradeKind);
         break;
     default:
-        break;
+        return;
     }
 
     if (reply.isFinished() && reply.isError()) {
