@@ -1,3 +1,16 @@
+Version 1.1.1
+~~~~~~~~~~~~~
+Released: 2023-03-10
+
+Features:
+ * Add explicit CMake option to control Qt major version (Nicolas Fella)
+
+Bugfixes:
+ * Return if we can't handle the transaction role (Cat Ericka)
+ * Transaction: Implement all methods (Aleix Pol)
+ * Read the Sender transaction property (Matthias Klumpp)
+ * Apply stricter compiler flags when building the library (Matthias Klumpp)
+
 Version 1.1.0
 ~~~~~~~~~~~~~
 Released: 2022-12-01
