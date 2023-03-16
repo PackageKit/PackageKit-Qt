@@ -92,7 +92,15 @@ QDBusPendingReply<> Offline::trigger(Action action)
     };
     Q_ASSERT(!actionStr.isEmpty());
 
-    return d->iface.Trigger(actionStr);
+    // Manually invoke dbus because the qdbusxml2cpp does not allow
+    // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
+    auto msg = QDBusMessage::createMethodCall(PK_NAME,
+                                              PK_PATH,
+                                              PK_OFFLINE_INTERFACE,
+                                              QStringLiteral("Trigger"));
+    msg << actionStr;
+    msg.setInteractiveAuthorizationAllowed(true);
+    return QDBusConnection::systemBus().asyncCall(msg);
 }
 
 QDBusPendingReply<> Offline::triggerUpgrade(Action action)
@@ -112,19 +120,39 @@ QDBusPendingReply<> Offline::triggerUpgrade(Action action)
     };
     Q_ASSERT(!actionStr.isEmpty());
 
-    return d->iface.TriggerUpgrade(actionStr);
+    // Manually invoke dbus because the qdbusxml2cpp does not allow
+    // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
+    auto msg = QDBusMessage::createMethodCall(PK_NAME,
+                                              PK_PATH,
+                                              PK_OFFLINE_INTERFACE,
+                                              QStringLiteral("TriggerUpgrade"));
+    msg << actionStr;
+    msg.setInteractiveAuthorizationAllowed(true);
+    return QDBusConnection::systemBus().asyncCall(msg, 24 * 60 * 1000 * 1000);
 }
 
 QDBusPendingReply<> Offline::cancel()
 {
-    Q_D(Offline);
-    return d->iface.Cancel();
+    // Manually invoke dbus because the qdbusxml2cpp does not allow
+    // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
+    auto msg = QDBusMessage::createMethodCall(PK_NAME,
+                                              PK_PATH,
+                                              PK_OFFLINE_INTERFACE,
+                                              QStringLiteral("Cancel"));
+    msg.setInteractiveAuthorizationAllowed(true);
+    return QDBusConnection::systemBus().asyncCall(msg);
 }
 
 QDBusPendingReply<> Offline::clearResults()
 {
-    Q_D(Offline);
-    return d->iface.ClearResults();
+    // Manually invoke dbus because the qdbusxml2cpp does not allow
+    // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
+    auto msg = QDBusMessage::createMethodCall(PK_NAME,
+                                              PK_PATH,
+                                              PK_OFFLINE_INTERFACE,
+                                              QStringLiteral("ClearResults"));
+    msg.setInteractiveAuthorizationAllowed(true);
+    return QDBusConnection::systemBus().asyncCall(msg);
 }
 
 void Offline::getPrepared()
