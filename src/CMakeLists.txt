@@ -31,7 +31,7 @@ find_path(PK_INTERFACES_DIR org.freedesktop.PackageKit.xml
 set(PK_INTERFACE_XML "${PK_INTERFACES_DIR}/org.freedesktop.PackageKit.xml")
 set(PK_TRANSACTION_INTERFACE_XML "${PK_INTERFACES_DIR}/org.freedesktop.PackageKit.Transaction.xml")
 
-if (NOT PK_INTERFACE_XML OR NOT PK_TRANSACTION_INTERFACE_XML)
+if (NOT EXISTS "${PK_INTERFACE_XML}" OR NOT EXISTS "${PK_TRANSACTION_INTERFACE_XML}")
 	message (FATAL_ERROR "Unable to find PackageKit DBus specifications! Please install PackageKit to continue!")
 endif ()
 
