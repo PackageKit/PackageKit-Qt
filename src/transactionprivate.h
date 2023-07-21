@@ -82,6 +82,8 @@ protected:
     uint uid = 0;
     QString senderName;
     bool sentFinished = false;
+    bool receivedReply = false;
+    bool destroyOnReply = false;
     bool allowCancel = false;
     bool callerActive = false;
 
