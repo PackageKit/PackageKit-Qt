@@ -26,6 +26,7 @@
 #include <QList>
 #include <QStringList>
 #include <QDBusPendingCallWatcher>
+#include <optional>
 
 #include "transaction.h"
 #include "transactionproxy.h"
@@ -84,6 +85,7 @@ protected:
     bool sentFinished = false;
     bool allowCancel = false;
     bool callerActive = false;
+    std::optional<QStringList> hints;
 
     // Queue params
     QString eulaId;

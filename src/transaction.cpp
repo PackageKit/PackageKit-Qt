@@ -300,6 +300,7 @@ Transaction::Role Transaction::role() const
 QDBusPendingReply<> Transaction::setHints(const QStringList &hints)
 {
     Q_D(Transaction);
+    d->hints = hints;
     if (d->p) {
         return d->p->SetHints(hints);
     }
