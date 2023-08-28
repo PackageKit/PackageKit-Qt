@@ -634,11 +634,14 @@ public:
      * the package manager which can change as the transaction runs.
      *
      * This method can be sent before the transaction has been run
-     * (by using Daemon::setHints) or whilst it is running
-     * (by using Transaction::setHints).
+     * or whilst it is running. If it is used before the transaction has
+     * been run, the return value is meaningless: the \p hints will be
+     * applied upon starting the transaction.
      * There is no limit to the number of times this
      * method can be sent, although some backends may only use the values
      * that were set before the transaction was started.
+     * This method will override the global hints previously set by
+     * Daemon::setHints, that are otherwise used by default.
      *
      * The \p hints can be filled with entries like these
      * ('locale=en_GB.utf8','idle=true','interactive=false').

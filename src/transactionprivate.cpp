@@ -49,7 +49,7 @@ void TransactionPrivate::setup(const QDBusObjectPath &transactionId)
                                                          tid.path(),
                                                          QDBusConnection::systemBus(),
                                                          q);
-    QStringList hints = Daemon::global()->hints();
+    QStringList hints = this->hints ? *this->hints : Daemon::global()->hints();
     hints << QStringLiteral("supports-plural-signals=true");
     q->setHints(hints);
 

@@ -66,7 +66,7 @@ set (LOCALSTATEDIR "/var")
 set (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/packagekitqt${QT_VERSION_MAJOR}/")
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 
