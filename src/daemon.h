@@ -674,7 +674,7 @@ public:
     static Transaction *resolve(const QStringList &packageNames, Transaction::Filters filters = Transaction::FilterNone);
 
     /**
-     * Convenience function to remove a package name
+     * Convenience function to resolve a package name
      * \sa resolve(const QStringList &packageNames, Transaction::Filters filters = Transaction::FilterNone)
      *
      * \warning check \sa errorCode() signal to know if it the call has any error
