@@ -552,7 +552,7 @@ public:
      * \return speed bits per second, or 0 if not known.
      */
     uint speed() const;
-    
+
     /**
      * Returns the number of bytes remaining to download
      * \return bytes to download, or 0 if nothing is left to download.
@@ -666,22 +666,22 @@ public:
     /**
      * Returns the package name from the \p packageID
      */
-    static QString packageName(const QString &packageID);
+    static QStringView packageName(QStringView packageID);
 
     /**
      * Returns the package version from the \p packageID
      */
-    static QString packageVersion(const QString &packageID);
+    static QStringView packageVersion(QStringView packageID);
 
     /**
      * Returns the package arch from the \p packageID
      */
-    static QString packageArch(const QString &packageID);
+    static QStringView packageArch(QStringView packageID);
 
     /**
      * Returns the package data from the \p packageID
      */
-    static QString packageData(const QString &packageID);
+    static QStringView packageData(QStringView packageID);
 
 Q_SIGNALS:
     void allowCancelChanged();
