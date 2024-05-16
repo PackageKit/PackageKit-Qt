@@ -461,7 +461,12 @@ public:
         InfoDecompressing,
         InfoUntrusted,
         InfoTrusted,
-        InfoUnavailable
+        InfoUnavailable,
+        InfoCritical,
+        InfoInstall,
+        InfoRemove,
+        InfoObsolete,
+        InfoDowngrade
     };
     Q_ENUM(Info)
 
