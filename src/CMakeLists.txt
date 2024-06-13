@@ -1,6 +1,7 @@
 # CMakeLists for PackageKit-Qt library
 
 set(packagekitqt_HEADERS
+    PackageKitQt
     Daemon
     Transaction
     common.h
@@ -23,6 +24,9 @@ set(packagekitqt_SRC
     details.cpp
     offline.cpp
 )
+
+set(QPK_VERSION_HDR ${CMAKE_CURRENT_BINARY_DIR}/qpk-version.h)
+configure_file(qpk-version.h.in ${QPK_VERSION_HDR})
 
 find_path(PK_INTERFACES_DIR org.freedesktop.PackageKit.xml
 	HINTS ${CMAKE_INSTALL_PREFIX} /usr
@@ -60,7 +64,7 @@ install(TARGETS packagekitqt${QT_VERSION_MAJOR} EXPORT PackageKitQtTargets DESTI
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt${QT_VERSION_MAJOR}.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
-install(FILES ${packagekitqt_HEADERS}
+install(FILES ${packagekitqt_HEADERS} ${QPK_VERSION_HDR}
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/packagekitqt${QT_VERSION_MAJOR}/PackageKit/
 )
 
