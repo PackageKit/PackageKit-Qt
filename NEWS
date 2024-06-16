@@ -1,3 +1,16 @@
+Version 1.1.2
+~~~~~~~~~~~~~
+Released: 2024-06-16
+
+Features:
+ * Add version test macro for PackageKitQt (Matthias Klumpp)
+
+Bugfixes:
+ * offline: Make sure we allow for interactive authorization (Aleix Pol)
+ * Allow Transaction::setHints before the transaction has started (Alessandro Astone)
+ * Fix check for PackageKit D-Bus specs (Joaquim Monteiro)
+ * Add missing info enum values (Matthias Klumpp)
+
 Version 1.1.1
 ~~~~~~~~~~~~~
 Released: 2023-03-10
