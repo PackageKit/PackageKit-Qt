@@ -869,6 +869,7 @@ private:
     Q_DECLARE_PRIVATE(Daemon)
     Q_PRIVATE_SLOT(d_func(), void propertiesChanged(QString,QVariantMap,QStringList))
     Q_PRIVATE_SLOT(d_func(), void updateProperties(QVariantMap))
+    Q_PRIVATE_SLOT(d_func(), void getAllPropertiesIfPackageKitNotRunning())
     Daemon(QObject *parent = nullptr);
     static Daemon *m_global;
 };
