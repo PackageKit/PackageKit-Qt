@@ -23,6 +23,7 @@ set(packagekitqt_SRC
     transactionprivate.cpp
     details.cpp
     offline.cpp
+    networkmanagermonitor.cpp
 )
 
 set(QPK_VERSION_HDR ${CMAKE_CURRENT_BINARY_DIR}/qpk-version.h)
