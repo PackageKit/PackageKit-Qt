@@ -24,6 +24,8 @@
 #include <QDBusPendingReply>
 #include <QVariantMap>
 
+#include <Transaction>
+
 #include <packagekitqt_global.h>
 
 namespace PackageKit {
@@ -100,20 +102,9 @@ public:
     QDBusPendingReply<> triggerUpgrade(Action action);
 
     /**
-     * Returns if the last offline action was completed successfully.
+     * Returns the information about the last offline action performed.
      */
-    QDBusPendingReply<bool> getResult();
-
-    /**
-     * Returns a list of packages that were updated during the last offline action.
-     */
-    QDBusPendingReply<QStringList> getResultPackages();
-
-    /**
-     * Returns the error if the last offline action has failed. The first returned
-     * string is a PackageKit error code. The second one is a textual description.
-     */
-    QDBusPendingReply<QString, QString> getResultError();
+    QDBusPendingReply<bool, QStringList, Transaction::Role, qint64, Transaction::Error, QString> getResults();
 
     /**
      * Cancels the offline update so the next boot procceeds as normal.

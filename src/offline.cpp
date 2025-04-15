@@ -131,38 +131,14 @@ QDBusPendingReply<> Offline::triggerUpgrade(Action action)
     return QDBusConnection::systemBus().asyncCall(msg, 24 * 60 * 1000 * 1000);
 }
 
-QDBusPendingReply<bool> Offline::getResult()
+QDBusPendingReply<bool, QStringList, Transaction::Role, qint64, Transaction::Error, QString> Offline::getResults()
 {
     // Manually invoke dbus because the qdbusxml2cpp does not allow
     // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
     auto msg = QDBusMessage::createMethodCall(PK_NAME,
                                               PK_PATH,
                                               PK_OFFLINE_INTERFACE,
-                                              QStringLiteral("GetResult"));
-    msg.setInteractiveAuthorizationAllowed(true);
-    return QDBusConnection::systemBus().asyncCall(msg, 24 * 60 * 1000 * 1000);
-}
-
-QDBusPendingReply<QStringList> Offline::getResultPackages()
-{
-    // Manually invoke dbus because the qdbusxml2cpp does not allow
-    // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
-    auto msg = QDBusMessage::createMethodCall(PK_NAME,
-                                              PK_PATH,
-                                              PK_OFFLINE_INTERFACE,
-                                              QStringLiteral("GetResultPackages"));
-    msg.setInteractiveAuthorizationAllowed(true);
-    return QDBusConnection::systemBus().asyncCall(msg, 24 * 60 * 1000 * 1000);
-}
-
-QDBusPendingReply<QString, QString> Offline::getResultError()
-{
-    // Manually invoke dbus because the qdbusxml2cpp does not allow
-    // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
-    auto msg = QDBusMessage::createMethodCall(PK_NAME,
-                                              PK_PATH,
-                                              PK_OFFLINE_INTERFACE,
-                                              QStringLiteral("GetResultError"));
+                                              QStringLiteral("GetResults"));
     msg.setInteractiveAuthorizationAllowed(true);
     return QDBusConnection::systemBus().asyncCall(msg, 24 * 60 * 1000 * 1000);
 }
