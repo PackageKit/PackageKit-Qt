@@ -45,7 +45,7 @@ class Offline;
  * This class holds all the functions enabling the user to interact with the PackageKit daemon.
  *
  * Most methods are static so that you can just call Daemon::backendName() to get the name of the backend.
- * 
+ *
  * This class is a singleton, its constructor is private. Call Daemon::global() to get
  * an instance of the Daemon object, you only need Daemon::global() when connecting to the signals
  * of this class.
@@ -268,23 +268,23 @@ public:
     /**
      * Returns the package name from the \p packageID
      */
-    Q_INVOKABLE static QString packageName(const QString &packageID);
+    Q_INVOKABLE static QStringView packageName(QStringView packageID);
 
     /**
      * Returns the package version from the \p packageID
      */
-    Q_INVOKABLE static QString packageVersion(const QString &packageID);
+    Q_INVOKABLE static QStringView packageVersion(QStringView packageID);
 
     /**
      * Returns the package arch from the \p packageID
      */
-    Q_INVOKABLE static QString packageArch(const QString &packageID);
+    Q_INVOKABLE static QStringView packageArch(QStringView packageID);
 
     /**
      * Returns the package data from the \p packageID
      */
-    Q_INVOKABLE static QString packageData(const QString &packageID);
-    
+    Q_INVOKABLE static QStringView packageData(QStringView packageID);
+
     static QString enumToString(const QMetaObject &metaObject, int value, const char *enumName);
 
     /**
@@ -297,7 +297,7 @@ public:
     }
 
     static int enumFromString(const QMetaObject &metaObject, const QString &str, const char *enumName);
-    
+
     template<class T> static int enumFromString(const QString &str, const char *enumName)
     {
         return enumFromString(T::staticMetaObject, str, enumName);

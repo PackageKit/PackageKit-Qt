@@ -192,16 +192,16 @@ QDBusPendingReply<> Transaction::cancel()
     return QDBusPendingReply<>();
 }
 
-QString Transaction::packageName(const QString &packageID)
+QStringView Transaction::packageName(QStringView packageID)
 {
-    QString ret;
+    QStringView ret;
     ret = packageID.left(packageID.indexOf(QLatin1Char(';')));
     return ret;
 }
 
-QString Transaction::packageVersion(const QString &packageID)
+QStringView Transaction::packageVersion(QStringView packageID)
 {
-    QString ret;
+    QStringView ret;
     int start = packageID.indexOf(QLatin1Char(';'));
     if (start == -1) {
         return ret;
@@ -215,9 +215,9 @@ QString Transaction::packageVersion(const QString &packageID)
     return ret;
 }
 
-QString Transaction::packageArch(const QString &packageID)
+QStringView Transaction::packageArch(QStringView packageID)
 {
-    QString ret;
+    QStringView ret;
     int start = packageID.indexOf(QLatin1Char(';'));
     if (start == -1) {
         return ret;
@@ -235,9 +235,9 @@ QString Transaction::packageArch(const QString &packageID)
     return ret;
 }
 
-QString Transaction::packageData(const QString &packageID)
+QStringView Transaction::packageData(QStringView packageID)
 {
-    QString ret;
+    QStringView ret;
     int start = packageID.indexOf(QLatin1Char(';'));
     if (start == -1) {
         return ret;
@@ -289,7 +289,7 @@ qulonglong Transaction::downloadSizeRemaining() const
 {
     Q_D(const Transaction);
     return d->downloadSizeRemaining;
-}    
+}
 
 Transaction::Role Transaction::role() const
 {
@@ -372,9 +372,9 @@ Transaction::InternalError Transaction::parseError(const QString &errorName)
     if (error.startsWith(QLatin1String("org.freedesktop.packagekit."))) {
         return Transaction::InternalErrorFailedAuth;
     }
-    
+
     error.remove(QLatin1String("org.freedesktop.PackageKit.Transaction."));
-    
+
     if (error.startsWith(QLatin1String("PermissionDenied")) ||
         error.startsWith(QLatin1String("RefusedByPolicy"))) {
         return Transaction::InternalErrorFailedAuth;
