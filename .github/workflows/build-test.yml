@@ -1,0 +1,25 @@
+name: Build Test
+
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        distro:
+          - fedora
+          - debian
+      fail-fast: false
+
+    steps:
+      - name: Get this version
+        uses: actions/checkout@v4
+
+      - name: Create Build Environment
+        run: podman build -t packagekitqt-${{ matrix.distro }} -f tests/ci/Dockerfile-${{ matrix.distro }} .
+
+      - name: Build & Test
+        run: podman run -t -v `pwd`:/build packagekitqt-${{ matrix.distro }}
+             ./tests/ci/build-and-test.sh

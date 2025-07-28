@@ -1,17 +1,18 @@
-FROM debian:bullseye
-
-# allow fetching source packages
-RUN echo "deb-src http://deb.debian.org/debian/ bullseye main" >> /etc/apt/sources.list
+FROM debian:trixie
 
 # prepare
 RUN apt-get update -qq
 
-# install build essentials
-RUN apt-get install -yq build-essential
+# install essentials
+RUN apt-get install -yq eatmydata build-essential
 
-# install PackageKit-Qt dependencies
-RUN apt-get build-dep -yq packagekit-qt
-RUN apt-get install -yq cmake ninja-build
+# install build dependencies
+RUN eatmydata apt-get install -yq --no-install-recommends \
+	cmake \
+	ninja-build \
+	packagekit \
+	pkgconf \
+	qt6-base-dev
 
 # finish
 RUN mkdir /build

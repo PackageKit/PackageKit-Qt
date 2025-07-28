@@ -4,11 +4,20 @@ set -e
 if [ -d "build" ]; then
   rm build -rf
 fi
-cmake -S . -B build -GNinja -DMAINTAINER:BOOL=ON $@
+set -x
+
+cmake -S . -B build -GNinja \
+  -DMAINTAINER:BOOL=ON \
+  $@
 
 # Build, Test & Install
 cmake --build build
+
 ## No tests yet
 #cd build && ctest && cd -
 
-DESTDIR=/tmp/install_root/ cmake --install build
+DUMMY_DESTDIR=/tmp/install-root/
+rm -rf $DUMMY_DESTDIR
+
+# Test installation
+DESTDIR=$DUMMY_DESTDIR cmake --install build
