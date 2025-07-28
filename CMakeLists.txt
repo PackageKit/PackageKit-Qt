@@ -19,12 +19,12 @@ include(GNUInstallDirs)
 
 set(QPACKAGEKIT_API_LEVEL "1")
 
-option(BUILD_WITH_QT6 "Use Qt6 instead of Qt5" OFF)
+option(BUILD_WITH_QT5 "Use Qt5 instead of Qt6" OFF)
 
-if(BUILD_WITH_QT6)
-  set(QT_VERSION_MAJOR 6)
-else()
+if(BUILD_WITH_QT5)
   set(QT_VERSION_MAJOR 5)
+else()
+  set(QT_VERSION_MAJOR 6)
 endif()
 
 find_package(Qt${QT_VERSION_MAJOR} 5.10 REQUIRED COMPONENTS Core DBus)
