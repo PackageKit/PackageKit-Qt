@@ -26,7 +26,6 @@ using namespace PackageKit;
 Offline::Offline(QObject *parent) : QObject(parent)
   , d_ptr(new OfflinePrivate(this))
 {
-    qRegisterMetaType<Transaction::Role>();
     QDBusConnection::systemBus().connect(PK_NAME,
                                          PK_PATH,
                                          DBUS_PROPERTIES,
