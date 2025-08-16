@@ -48,6 +48,26 @@ public:
     };
     Q_ENUM(Action)
 
+    /**
+     * Wrapper class representing the returning value of getResults()
+     */
+    class Results
+    {
+        friend class Offline;
+    public:
+        Results(const QDBusPendingCall &call);
+
+        bool isError() const;
+        bool success() const;
+        QStringList packageIds() const;
+        Transaction::Role role() const;
+        qulonglong timeFinished() const;
+        Transaction::Error error() const;
+        QString errorDescription() const;
+    private:
+        QDBusPendingReply<bool, QStringList, unsigned, qulonglong, unsigned, QString> m_reply;
+    };
+
     ~Offline();
 
     Q_PROPERTY(QVariantMap preparedUpgrade READ preparedUpgrade NOTIFY changed)
@@ -104,7 +124,7 @@ public:
     /**
      * Returns the information about the last offline action performed.
      */
-    QDBusPendingReply<bool, QStringList, Transaction::Role, qint64, Transaction::Error, QString> getResults();
+    Results getResults();
 
     /**
      * Cancels the offline update so the next boot procceeds as normal.
