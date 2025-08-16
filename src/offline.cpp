@@ -23,6 +23,51 @@ Q_DECLARE_LOGGING_CATEGORY(PACKAGEKITQT_OFFLINE)
 
 using namespace PackageKit;
 
+Offline::Results::Results(const QDBusPendingCall &call)
+    : m_reply(call)
+{
+}
+
+bool Offline::Results::isError() const
+{
+    return m_reply.isError();
+}
+
+void Offline::Results::waitForFinished()
+{
+    m_reply.waitForFinished();
+}
+
+bool Offline::Results::success() const
+{
+    return m_reply.argumentAt<0>();
+}
+
+QStringList Offline::Results::packageIds() const
+{
+    return m_reply.argumentAt<1>();
+}
+
+Transaction::Role Offline::Results::role() const
+{
+    return static_cast<Transaction::Role>(m_reply.argumentAt<2>());
+}
+
+qulonglong Offline::Results::timeFinished() const
+{
+    return m_reply.argumentAt<3>();
+}
+
+Transaction::Error Offline::Results::error() const
+{
+    return static_cast<Transaction::Error>(m_reply.argumentAt<4>());
+}
+
+QString Offline::Results::errorDescription() const
+{
+    return m_reply.argumentAt<5>();
+}
+
 Offline::Offline(QObject *parent) : QObject(parent)
   , d_ptr(new OfflinePrivate(this))
 {
@@ -131,7 +176,7 @@ QDBusPendingReply<> Offline::triggerUpgrade(Action action)
     return QDBusConnection::systemBus().asyncCall(msg, 24 * 60 * 1000 * 1000);
 }
 
-QDBusPendingReply<bool, QStringList, Transaction::Role, qint64, Transaction::Error, QString> Offline::getResults()
+Offline::Results Offline::getResults()
 {
     // Manually invoke dbus because the qdbusxml2cpp does not allow
     // setting the ALLOW_INTERACTIVE_AUTHORIZATION flag
