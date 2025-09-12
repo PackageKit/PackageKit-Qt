@@ -19,15 +19,8 @@ include(GNUInstallDirs)
 
 set(QPACKAGEKIT_API_LEVEL "1")
 
-option(BUILD_WITH_QT5 "Use Qt5 instead of Qt6" OFF)
 
-if(BUILD_WITH_QT5)
-  set(QT_VERSION_MAJOR 5)
-else()
-  set(QT_VERSION_MAJOR 6)
-endif()
-
-find_package(Qt${QT_VERSION_MAJOR} 5.10 REQUIRED COMPONENTS Core DBus)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core DBus)
 
 add_definitions(
     -DQT_NO_KEYWORDS
@@ -63,7 +56,7 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 set (GETTEXT_PACKAGE "packagekit")
 set (VERSION "${QPACKAGEKIT_VERSION}")
 set (LOCALSTATEDIR "/var")
-set (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/packagekitqt${QT_VERSION_MAJOR}/")
+set (CMAKECONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/packagekitqt6/")
 
 add_definitions("-DLOCALSTATEDIR=\"${LOCALSTATEDIR}\"")
 set (CMAKE_CXX_STANDARD 17)
