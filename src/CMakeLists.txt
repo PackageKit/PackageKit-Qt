@@ -56,7 +56,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekitqt.pc.in
 )
 target_include_directories(packagekitqt INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/PackageKitQt/PackageKit/;${CMAKE_INSTALL_INCLUDEDIR}/PackageKitQt>")
 install(TARGETS packagekitqt EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt.pc
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt6.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 install(FILES ${packagekitqt_HEADERS} ${QPK_VERSION_HDR}
