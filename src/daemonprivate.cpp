@@ -70,6 +70,20 @@ DaemonPrivate::DaemonPrivate(Daemon* parent)
     });
 
     getAllProperties();
+
+    // If PackageKit is not running, we are not getting a signal when
+    // properties are updated (like when the network changes its state)
+    // so we connect to the NetworkManager dbus signal directly and then
+    // get all properties again to force packagekit to run and
+    // update the properties so we can emit the appropiate signals.
+    q_ptr->connect(&networkManagerMonitor, SIGNAL(networkStateChanged(uint)),
+                   SLOT(getAllPropertiesIfPackageKitNotRunning()));
+}
+
+void DaemonPrivate::getAllPropertiesIfPackageKitNotRunning()
+{
+    if (!running)
+        getAllProperties();
 }
 
 void DaemonPrivate::getAllProperties()
