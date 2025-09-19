@@ -34,6 +34,42 @@ Q_DECLARE_METATYPE(QList<PackageKit::PkPackage>);
 Q_DECLARE_METATYPE(PackageKit::PkDetail);
 Q_DECLARE_METATYPE(QList<PackageKit::PkDetail>);
 
+static const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::Transaction::Role &role)
+{
+    argument.beginStructure();
+    argument << static_cast<qlonglong>(role);
+    argument.endStructure();
+    return argument;
+}
+
+static const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::Transaction::Role &role)
+{
+    argument.beginStructure();
+    qlonglong result = 0;
+    argument >> result;
+    role = static_cast<PackageKit::Transaction::Role>(result);
+    argument.endStructure();
+    return argument;
+}
+
+static const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::Transaction::Status &status)
+{
+    argument.beginStructure();
+    argument << static_cast<qlonglong>(status);
+    argument.endStructure();
+    return argument;
+}
+
+static const QDBusArgument &operator>>(const QDBusArgument &argument, PackageKit::Transaction::Status &status)
+{
+    argument.beginStructure();
+    qlonglong result = 0;
+    argument >> result;
+    status = static_cast<PackageKit::Transaction::Status>(result);
+    argument.endStructure();
+    return argument;
+}
+
 static const QDBusArgument &operator<<(QDBusArgument &argument, const PackageKit::PkPackage &pkg)
 {
     argument.beginStructure();
@@ -122,6 +158,8 @@ Daemon::Daemon(QObject *parent) :
                                          this,
                                          SLOT(propertiesChanged(QString,QVariantMap,QStringList)));
 
+    qDBusRegisterMetaType<PackageKit::Transaction::Role>();
+    qDBusRegisterMetaType<PackageKit::Transaction::Status>();
     qDBusRegisterMetaType<PackageKit::PkPackage>();
     qDBusRegisterMetaType<QList<PackageKit::PkPackage>>();
     qDBusRegisterMetaType<PackageKit::PkDetail>();
