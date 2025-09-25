@@ -298,22 +298,22 @@ uint Daemon::versionMicro()
     return global()->d_ptr->versionMicro;
 }
 
-QString Daemon::packageName(const QString &packageID)
+QStringView Daemon::packageName(QStringView packageID)
 {
     return Transaction::packageName(packageID);
 }
 
-QString Daemon::packageVersion(const QString &packageID)
+QStringView Daemon::packageVersion(QStringView packageID)
 {
     return Transaction::packageVersion(packageID);
 }
 
-QString Daemon::packageArch(const QString &packageID)
+QStringView Daemon::packageArch(QStringView packageID)
 {
     return Transaction::packageArch(packageID);
 }
 
-QString Daemon::packageData(const QString &packageID)
+QStringView Daemon::packageData(QStringView packageID)
 {
     return Transaction::packageData(packageID);
 }
