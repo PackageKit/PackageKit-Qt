@@ -1,3 +1,14 @@
+Version 1.1.4
+~~~~~~~~~~~~~
+Released: 2025-10-02
+
+Features:
+ * Drop Qt5 support (Matthias Klumpp)
+
+Bugfixes:
+ * Make Offline::getResults return a wrapper object (Gleb Popov)
+ * Unpack info enum in "package" signals, like pk-glib does (Matthias Klumpp)
+
 Version 1.1.3
 ~~~~~~~~~~~~~
 Released: 2025-07-28
