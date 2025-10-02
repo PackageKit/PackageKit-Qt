@@ -2,10 +2,10 @@ PackageKit-Qt Release Notes
 
 1. Write NEWS entries for PackageKit-Qt in the same format as usual.
 
-git shortlog v1.1.3.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog v1.1.4.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
 --------------------------------------------------------------------------------
-Version 1.1.4
+Version 1.1.5
 ~~~~~~~~~~~~~
 Released: 2025-xx-xx
 
@@ -22,12 +22,12 @@ Miscellaneous:
 
 3. Commit changes in PackageKit-Qt git:
 
-git commit -a -m "Release version 1.1.4"
-git tag -s -f -m "Release 1.1.4" v1.1.4
+git commit -a -m "Release version 1.1.5"
+git tag -s -f -m "Release 1.1.5" v1.1.5
 <gpg password>
 git push --tags && git push
 
-4. run './release.sh --version=1.1.4 --git-tag=v1.1.4 --sign'
+4. run './release.sh --version=1.1.5 --git-tag=v1.1.5 --sign'
 
 5. Upload tarball to:
 
@@ -43,7 +43,7 @@ git push
 8. Send an email to packagekit@lists.freedesktop.org
 
 =================================================
-PackageKit-Qt 1.1.4 released!
+PackageKit-Qt 1.1.5 released!
 
 Tarballs available here: https://www.freedesktop.org/software/PackageKit/releases/
 
