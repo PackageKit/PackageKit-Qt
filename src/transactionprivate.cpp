@@ -340,15 +340,24 @@ void TransactionPrivate::Package(uint info, const QString &pid, const QString &s
 {
     Q_Q(Transaction);
 
-    const auto infoReal = static_cast<Transaction::Info>(info & 0xFFFF);
-    const auto updateSeverity = static_cast<Transaction::Info>((info >> 16) & 0xFFFF);
+    constexpr quint32 LOW_MASK  = 0x0000FFFFu;
+    constexpr quint32 HIGH_MASK = 0xFFFF0000u;
+    const auto infoPacked = static_cast<quint32>(info);
 
-    // FIXME: This is band-aid for an API break in PackageKit that should not have happened
-    // It should likely be fixed in a different way, or we need to wait for PK 2.0
-    if (infoReal == Transaction::InfoUnknown) {
-        q->package(updateSeverity, pid, summary);
+    if ((infoPacked & HIGH_MASK) != 0) {
+        // we have packed values
+
+        const auto infoReal = static_cast<Transaction::Info>(infoPacked & LOW_MASK);
+        const auto updateSeverity = static_cast<Transaction::Info>((infoPacked >> 16) & LOW_MASK);
+
+        // FIXME: This is band-aid for an API break in PackageKit that should not have happened
+        // It should likely be fixed in a different way, or we need to wait for PK 2.0
+        if (infoReal == Transaction::InfoUnknown)
+            q->package(updateSeverity, pid, summary);
+        else
+            q->package(infoReal, pid, summary);
     } else {
-        q->package(infoReal, pid, summary);
+        q->package(static_cast<Transaction::Info>(info), pid, summary);
     }
 }
 
