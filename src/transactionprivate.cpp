@@ -339,9 +339,17 @@ void TransactionPrivate::updateProperties(const QVariantMap &properties)
 void TransactionPrivate::Package(uint info, const QString &pid, const QString &summary)
 {
     Q_Q(Transaction);
-    q->package(static_cast<Transaction::Info>(info),
-               pid,
-               summary);
+
+    const auto infoReal = static_cast<Transaction::Info>(info & 0xFFFF);
+    const auto updateSeverity = static_cast<Transaction::Info>((info >> 16) & 0xFFFF);
+
+    // FIXME: This is band-aid for an API break in PackageKit that should not have happened
+    // It should likely be fixed in a different way, or we need to wait for PK 2.0
+    if (infoReal == Transaction::InfoUnknown) {
+        q->package(updateSeverity, pid, summary);
+    } else {
+        q->package(infoReal, pid, summary);
+    }
 }
 
 void TransactionPrivate::Packages(const QList<PackageKit::PkPackage> &pkgs)
