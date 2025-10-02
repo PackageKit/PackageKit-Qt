@@ -45,17 +45,17 @@ set_source_files_properties(${PK_TRANSACTION_INTERFACE_XML} PROPERTIES NO_NAMESP
 qt6_add_dbus_interface(packagekitqt_SRC ${PK_INTERFACE_XML} daemonproxy)
 qt6_add_dbus_interface(packagekitqt_SRC ${PK_TRANSACTION_INTERFACE_XML} transactionproxy)
 
-add_library(packagekitqt ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
-set_target_properties(packagekitqt PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${QPACKAGEKIT_API_LEVEL})
+add_library(packagekitqt6 ${packagekitqt_SRC} ${packagekitqt_HEADERS} ${packagekitqt_HEADERS_PRIVATE})
+set_target_properties(packagekitqt6 PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${QPACKAGEKIT_ABI_LEVEL})
 
-target_link_libraries(packagekitqt PUBLIC Qt6::DBus)
+target_link_libraries(packagekitqt6 PUBLIC Qt6::DBus)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/packagekitqt.pc.in
   ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt6.pc
   @ONLY
 )
-target_include_directories(packagekitqt INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/PackageKitQt/PackageKit/;${CMAKE_INSTALL_INCLUDEDIR}/PackageKitQt>")
-install(TARGETS packagekitqt EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
+target_include_directories(packagekitqt6 INTERFACE "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/PackageKitQt/PackageKit/;${CMAKE_INSTALL_INCLUDEDIR}/PackageKitQt>")
+install(TARGETS packagekitqt6 EXPORT PackageKitQtTargets DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/packagekitqt6.pc
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
