@@ -40,10 +40,7 @@ public:
     OrgFreedesktopPackageKitOfflineInterface iface;
     QVariantMap preparedUpgrade;
     Offline::Action triggerAction = Offline::ActionUnset;
-    bool updatePrepared = false;
-    bool updateTriggered = false;
-    bool upgradePrepared = false;
-    bool upgradeTriggered = false;
+    QMap<QString, bool> m_properties;
 };
 }
 
