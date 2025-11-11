@@ -99,25 +99,25 @@ Offline::Action Offline::triggerAction() const
 bool Offline::updatePrepared() const
 {
     Q_D(const Offline);
-    return d->updatePrepared;
+    return d->m_properties[QLatin1StringView("UpdatePrepared")];
 }
 
 bool Offline::updateTriggered() const
 {
     Q_D(const Offline);
-    return d->updateTriggered;
+    return d->m_properties[QLatin1StringView("UpdateTriggered")];
 }
 
 bool Offline::upgradePrepared() const
 {
     Q_D(const Offline);
-    return d->upgradePrepared;
+    return d->m_properties[QLatin1StringView("UpgradePrepared")];
 }
 
 bool Offline::upgradeTriggered() const
 {
     Q_D(const Offline);
-    return d->upgradeTriggered;
+    return d->m_properties[QLatin1StringView("UpgradeTriggered")];
 }
 
 QDBusPendingReply<> Offline::trigger(Action action)
@@ -249,23 +249,11 @@ void OfflinePrivate::initializeProperties(const QVariantMap &properties)
             } else {
                 triggerAction = Offline::ActionUnset;
             }
-        } else if (property == QLatin1String("UpdatePrepared")) {
-            updatePrepared = value.toBool();
-        } else if (property == QLatin1String("UpdateTriggered")) {
-            updateTriggered = value.toBool();
-        } else if (property == QLatin1String("UpgradePrepared")) {
-            upgradePrepared = value.toBool();
-        } else if (property == QLatin1String("UpgradeTriggered")) {
-            upgradeTriggered = value.toBool();
         } else {
-            qCWarning(PACKAGEKITQT_OFFLINE) << "Unknown property:" << property << value;
+            m_properties[property] = value.toBool();
         }
 
         ++it;
-    }
-
-    if (!properties.isEmpty()) {
-        q->changed();
     }
 }
 
@@ -276,11 +264,25 @@ void OfflinePrivate::updateProperties(const QString &interface, const QVariantMa
         return;
     }
 
-    if (!invalidate.isEmpty()) {
-        qCWarning(PACKAGEKITQT_OFFLINE) << "Properties could not be invalidated" << interface << invalidate;
+    bool invalidations = false;
+    for (const QString &property : invalidate) {
+        invalidations = true;
+
+        if (property == QLatin1String("PreparedUpgrade")) {
+            preparedUpgrade.clear();
+        } else if (property == QLatin1String("TriggerAction")) {
+            triggerAction = Offline::ActionUnset;
+        } else {
+            m_properties.remove(property);
+        }
     }
 
     initializeProperties(properties);
+
+    if (invalidations || !properties.isEmpty()) {
+        Q_Q(Offline);
+        q->changed();
+    }
 }
 
 #include "moc_offline.cpp"
