@@ -48,6 +48,8 @@ public:
 
     qulonglong size() const;
 
+    qulonglong downloadSize() const;
+
 };
 
 }

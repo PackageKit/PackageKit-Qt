@@ -66,3 +66,8 @@ qulonglong PackageKit::Details::size() const
 {
     return value(QLatin1String("size")).toULongLong();
 }
+
+qulonglong PackageKit::Details::downloadSize() const
+{
+    return value(QLatin1String("download-size")).toULongLong();
+}
