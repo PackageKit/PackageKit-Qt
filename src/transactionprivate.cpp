@@ -188,14 +188,18 @@ void TransactionPrivate::runQueuedTransaction()
         return;
     }
 
-    if (reply.isFinished() && reply.isError()) {
-        q->errorCode(Transaction::ErrorInternalError, reply.error().message());
-        finished(Transaction::ExitFailed, 0);
+    if (reply.isFinished()) {
+        receivedReply = true;
+        if (reply.isError()) {
+            q->errorCode(Transaction::ErrorInternalError, reply.error().message());
+            finished(Transaction::ExitFailed, 0);
+        }
         return;
     }
     auto watcher = new QDBusPendingCallWatcher(reply, q);
     q->connect(watcher, &QDBusPendingCallWatcher::finished,
                q, [this, q] (QDBusPendingCallWatcher *call) {
+        receivedReply = true;
         QDBusPendingReply<> reply = *call;
         if (reply.isError()) {
             QDBusError error = reply.error();
@@ -203,6 +207,8 @@ void TransactionPrivate::runQueuedTransaction()
                                                                                            : Transaction::ErrorInternalError;
             q->errorCode(transactionError, error.message());
             finished(Transaction::ExitFailed, 0);
+            destroy();
+        } else if (destroyOnReply) {
             destroy();
         }
         call->deleteLater();
@@ -248,6 +254,12 @@ void TransactionPrivate::finished(uint exitCode, uint runtime)
 void TransactionPrivate::destroy()
 {
     Q_Q(Transaction);
+
+    if (!receivedReply) {
+        destroyOnReply = true;
+        return;
+    }
+
     if (p) {
        delete p;
        p = nullptr;
