@@ -66,6 +66,8 @@ public:
         qulonglong timeFinished() const;
         Transaction::Error error() const;
         QString errorDescription() const;
+
+        operator QDBusPendingCall() const { return m_reply; }
     private:
         QDBusPendingReply<bool, QStringList, quint32, qulonglong, quint32, QString> m_reply;
     };
